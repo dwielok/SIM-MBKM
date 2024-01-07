@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
 use App\Models\Master\PerusahaanModel;
+use App\Models\Setting\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -108,7 +110,21 @@ class PerusahaanController extends Controller
                 ]);
             }
 
+            $user = [
+                'username' => $request->email,
+                'name' => $request->nama_perusahaan,
+                'password' => Hash::make($request->email),
+                'group_id' => 5,
+                'is_active' => 1,
+                'email' => $request->email,
+            ];
+            $insert = UserModel::create($user);
+
+            $request['user_id'] = $insert->user_id;
+
             $res = PerusahaanModel::insertData($request);
+
+
 
             return response()->json([
                 'stat' => $res,

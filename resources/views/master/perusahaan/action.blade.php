@@ -25,6 +25,14 @@ $is_edit = isset($data);
                     </div>
                 </div>
                 <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Email</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control form-control-sm" id="email"
+                            name="email"
+                            value="{{ isset($data->email) ? $data->email : '' }}" />
+                    </div>
+                </div>
+                <div class="form-group required row mb-2">
                     <label class="col-sm-3 control-label col-form-label">Kategori</label>
                     <div class="col-sm-9">
                         <select data-testid="partner-category" class="form-control form-control-sm" id="kategori"

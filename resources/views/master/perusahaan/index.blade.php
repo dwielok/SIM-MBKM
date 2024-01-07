@@ -129,11 +129,14 @@
                         "bSortable": false,
                         "bSearchable": false,
                         "mRender": function(data, type, row, meta) {
-                            return ''
+                            var buttons = '';
                             @if ($allowAccess->update)
-                                +
-                                `<a href="{{ $page->url }}/${data}/kegiatan" class="btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat Kegiatan" ><i class="fa fa-th"></i> Kegiatan</a> `
+                                if (row.status == 1) {
+                                    buttons +=
+                                        `<a href="{{ $page->url }}/${data}/kegiatan" class="btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat Kegiatan" ><i class="fa fa-th"></i> Kegiatan</a> `
+                                }
                             @endif
+                            return buttons;
                         }
                     },
                     {
