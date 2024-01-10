@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Models\Master\PeriodeModel;
 use App\Models\Master\TipeKegiatanModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -51,7 +52,17 @@ class TipeKegiatanController extends Controller
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data  = TipeKegiatanModel::selectRaw("tipe_kegiatan_id, nama_kegiatan");
+        $data  = TipeKegiatanModel::selectRaw("tipe_kegiatan_id, nama_kegiatan, periode_id, prodi_id, created_at, updated_at")
+            ->with([
+                'periode' => function ($query) {
+                    $query->selectRaw("periode_id, semester, tahun_ajar");
+                },
+                'prodi' => function ($query) {
+                    $query->selectRaw("prodi_id, prodi_name");
+                }
+            ]);
+
+        // dd($data);
 
         return DataTables::of($data)
             ->addIndexColumn()
@@ -69,8 +80,16 @@ class TipeKegiatanController extends Controller
             'title' => 'Tambah ' . $this->menuTitle
         ];
 
+        $tipes = TipeKegiatanModel::selectRaw("tipe_kegiatan_id, nama_kegiatan")
+            ->get();
+
+        $periodes = PeriodeModel::selectRaw("periode_id, semester, tahun_ajar")
+            ->get();
+
         return view($this->viewPath . 'action')
-            ->with('page', (object) $page);
+            ->with('page', (object) $page)
+            ->with('tipes', $tipes)
+            ->with('periodes', $periodes);
     }
 
 
@@ -120,11 +139,19 @@ class TipeKegiatanController extends Controller
 
         $data = TipeKegiatanModel::find($id);
 
+        $tipes = TipeKegiatanModel::selectRaw("tipe_kegiatan_id, nama_kegiatan")
+            ->get();
+
+        $periodes = PeriodeModel::selectRaw("periode_id, semester, tahun_ajar")
+            ->get();
+
         return (!$data) ? $this->showModalError() :
             view($this->viewPath . 'action')
             ->with('page', (object) $page)
             ->with('id', $id)
-            ->with('data', $data);
+            ->with('data', $data)
+            ->with('tipes', $tipes)
+            ->with('periodes', $periodes);
     }
 
 

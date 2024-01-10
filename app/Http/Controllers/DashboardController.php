@@ -16,7 +16,8 @@ use DataTables;
 class DashboardController extends Controller
 {
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->menuCode  = 'DASHBOARD';
         $this->menuUrl   = url('/');     // set URL untuk menu ini
         $this->menuTitle = 'Halaman Utama';                       // set nama menu
@@ -24,7 +25,8 @@ class DashboardController extends Controller
     }
 
 
-    public function index(){
+    public function index()
+    {
         $this->authAction('read');
         $this->authCheckDetailAccess();
 
@@ -53,37 +55,49 @@ class DashboardController extends Controller
             default => $this->index_default($breadcrumb, $activeMenu, $page),
         };*/
 
-        switch (Auth::user()->getRole()){
-            case 'SPR': return $this->index_admin($breadcrumb, $activeMenu, $page); break;
-            case 'ADM' : return $this->index_admin($breadcrumb, $activeMenu, $page); break;
-            case 'DSN' : return $this->index_dosen($breadcrumb, $activeMenu, $page); break;
-            case 'MHS' : return $this->index_mahasiswa($breadcrumb, $activeMenu, $page); break;
-            default : return $this->index_default($breadcrumb, $activeMenu, $page); break;
+        switch (Auth::user()->getRole()) {
+            case 'KOM':
+                return $this->index_admin($breadcrumb, $activeMenu, $page);
+                break;
+            case 'MHS':
+                return $this->index_mahasiswa($breadcrumb, $activeMenu, $page);
+                break;
+            case 'PER':
+                return $this->index_perusahaan($breadcrumb, $activeMenu, $page);
+                break;
+            default:
+                return $this->index_default($breadcrumb, $activeMenu, $page);
+                break;
         }
     }
 
-    private function index_default($breadcrumb, $activeMenu, $page){
-        return view($this->viewPath .'.default.index')
+    private function index_default($breadcrumb, $activeMenu, $page)
+    {
+        return view($this->viewPath . '.default.index')
             ->with('breadcrumb', (object) $breadcrumb)
             ->with('activeMenu', (object) $activeMenu)
             ->with('page', (object) $page);
     }
 
-    private function index_admin($breadcrumb, $activeMenu, $page){
+    private function index_admin($breadcrumb, $activeMenu, $page)
+    {
         return $this->index_default($breadcrumb, $activeMenu, $page);
     }
 
-    private function index_dosen($breadcrumb, $activeMenu, $page){
+    private function index_mahasiswa($breadcrumb, $activeMenu, $page)
+    {
         return $this->index_default($breadcrumb, $activeMenu, $page);
     }
 
-    private function index_mahasiswa($breadcrumb, $activeMenu, $page){
+    private function index_perusahaan($breadcrumb, $activeMenu, $page)
+    {
         return $this->index_default($breadcrumb, $activeMenu, $page);
     }
 
-    public function quota_dosen(Request $request){
+    public function quota_dosen(Request $request)
+    {
         $this->authAction('read', 'json');
-        if($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         $data  = DosenQuotaView::selectRaw("dosen_nip, dosen_nidn, dosen_name, quota, jumlah_proposal, jumlah_bimbingan")
             ->where('periode_id', getPeriodeID());
@@ -93,13 +107,14 @@ class DashboardController extends Controller
             ->make(true);
     }
 
-    public function berita(Request $request){
+    public function berita(Request $request)
+    {
         $this->authAction('read', 'json');
-        if($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         $data  = BeritaView::selectRaw("berita_uid, prodi_code, kategori_name, berita_judul, date_format(created_at, '%d %b %Y %H:%i') as tanggal, created_by")
             ->where('jurusan_id', getJurusanID())
-            ->where(function($query){
+            ->where(function ($query) {
                 $query->where('prodi_id', getProdiID())
                     ->orWhereNull('prodi_id');
             })
@@ -111,14 +126,15 @@ class DashboardController extends Controller
             ->make(true);
     }
 
-    public function berita_detail(Request $request, $uid){
+    public function berita_detail(Request $request, $uid)
+    {
         $this->authAction('read', 'modal');
-        if($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         $data  = BeritaView::where('berita_uid', $uid)->first();
 
-        return (!$data)? $this->showModalError() :
+        return (!$data) ? $this->showModalError() :
             view($this->viewPath . 'detail_berita')
-                ->with('data', $data);
+            ->with('data', $data);
     }
 }

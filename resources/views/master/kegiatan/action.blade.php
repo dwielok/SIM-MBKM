@@ -17,166 +17,101 @@ $is_edit = isset($data);
             <div class="modal-body">
                 <div class="form-message text-center"></div>
                 <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Nama Perusahaan</label>
+                    <label class="col-sm-3 control-label col-form-label">Tipe Kegiatan</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control form-control-sm" id="nama_perusahaan"
-                            name="nama_perusahaan"
-                            value="{{ isset($data->nama_perusahaan) ? $data->nama_perusahaan : '' }}" />
-                    </div>
-                </div>
-                <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Kategori</label>
-                    <div class="col-sm-9">
-                        <select data-testid="partner-category" class="form-control form-control-sm" id="kategori"
-                            name="kategori" value="{{ isset($data->kategori) ? $data->kategori : '' }}">
-                            <option disabled selected value="">Pilih opsi yang sesuai</option>
-                            <option value="BUMN"
-                                {{ isset($data->kategori) ? ($data->kategori == 'BUMN' ? 'selected' : '') : '' }}>BUMN
-                            </option>
-                            <option value="Perusahaan Terbuka"
-                                {{ isset($data->kategori) ? ($data->kategori == 'Perusahaan Terbuka' ? 'selected' : '') : '' }}>
-                                Perusahaan Terbuka</option>
-                            <option value="UMKM"
-                                {{ isset($data->kategori) ? ($data->kategori == 'UMKM' ? 'selected' : '') : '' }}>UMKM
-                            </option>
-                            <option value="Perusahaan Multinasional"
-                                {{ isset($data->kategori) ? ($data->kategori == 'Perusahaan Multinasional' ? 'selected' : '') : '' }}>
-                                Perusahaan Multinasional</option>
-                            <option value="Yayasan / Non-profit"
-                                {{ isset($data->kategori) ? ($data->kategori == 'Yayasan / Non-profit' ? 'selected' : '') : '' }}>
-                                Yayasan / Non-profit</option>
-                            <option value="Perusahaan Tertutup/Private"
-                                {{ isset($data->kategori) ? ($data->kategori == 'Perusahaan Tertutup/Private' ? 'selected' : '') : '' }}>
-                                Perusahaan Tertutup/Private</option>
-                            <option value="Instansi Pemerintahan"
-                                {{ isset($data->kategori) ? ($data->kategori == 'Instansi Pemerintahan' ? 'selected' : '') : '' }}>
-                                Instansi Pemerintahan</option>
-                            <option value="Instansi Multilalteral / Internasional"
-                                {{ isset($data->kategori) ? ($data->kategori == 'Instansi Multilalteral / Internasional' ? 'selected' : '') : '' }}>
-                                Instansi Multilalteral / Internasional</option>
-                            <option value="Perguruan Tinggi atau Satuan Pendidikan lainnya"
-                                {{ isset($data->kategori) ? ($data->kategori == 'Perguruan Tinggi atau Satuan Pendidikan lainnya' ? 'selected' : '') : '' }}>
-                                Perguruan Tinggi atau Satuan Pendidikan lainnya</option>
-                            <option value="Lainnya"
-                                {{ isset($data->kategori) ? ($data->kategori == 'Lainnya' ? 'selected' : '') : '' }}>
-                                Lainnya</option>
+                        <select data-testid="partner-category" class="form-control form-control-sm"
+                            id="tipe_kegiatan_id" name="tipe_kegiatan_id"
+                            value="{{ isset($data->tipe_kegiatan_id) ? $data->tipe_kegiatan_id : '' }}">
+                            <option disabled selected value="">Pilih opsi</option>
+                            @foreach ($tipes as $tipe)
+                                <option value="{{ $tipe->tipe_kegiatan_id }}"
+                                    {{ isset($data->tipe_kegiatan_id) ? ($data->tipe_kegiatan_id == $tipe->tipe_kegiatan_id ? 'selected' : '') : '' }}>
+                                    {{ $tipe->nama_kegiatan }}
+                                </option>
+                            @endforeach
                         </select>
 
                     </div>
                 </div>
                 <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Tipe Industri</label>
+                    <label class="col-sm-3 control-label col-form-label">Jenis Magang</label>
                     <div class="col-sm-9">
-                        <select data-testid="partner-category" class="form-control form-control-sm" id="tipe_industri"
-                            name="tipe_industri">
-                            <option disabled selected value="">Pilih opsi yang sesuai</option>
-                            <option value="Energi dan Pertambangan"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'Energi dan Pertambangan' ? 'selected' : '' }}>
-                                Energi dan Pertambangan</option>
-                            <option value="Basic Material (Industri Kimia, Kertas, Kayu, dll)"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'Basic Material (Industri Kimia, Kertas, Kayu, dll)' ? 'selected' : '' }}>
-                                Basic Material (Industri Kimia, Kertas, Kayu, dll)</option>
-                            <option value="Jasa Industrial"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'Jasa Industrial' ? 'selected' : '' }}>
-                                Jasa Industrial</option>
-                            <option value="Makanan dan Minuman"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'Makanan dan Minuman' ? 'selected' : '' }}>
-                                Makanan dan Minuman</option>
-                            <option value="Pertanian dan Perkebunan"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'Pertanian dan Perkebunan' ? 'selected' : '' }}>
-                                Pertanian dan Perkebunan</option>
-                            <option value="FMCG"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'FMCG' ? 'selected' : '' }}>
-                                FMCG</option>
-                            <option value="Otomotif"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'Otomotif' ? 'selected' : '' }}>
-                                Otomotif</option>
-                            <option value="Ritel"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'Ritel' ? 'selected' : '' }}>
-                                Ritel</option>
-                            <option value="Pariwisata"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'Pariwisata' ? 'selected' : '' }}>
-                                Pariwisata</option>
-                            <option value="Media"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'Media' ? 'selected' : '' }}>
-                                Media</option>
-                            <option value="Edukasi"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'Edukasi' ? 'selected' : '' }}>
-                                Edukasi</option>
-                            <option value="Hiburan dan Entertainment"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'Hiburan dan Entertainment' ? 'selected' : '' }}>
-                                Hiburan dan Entertainment</option>
-                            <option value="Kesehatan"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'Kesehatan' ? 'selected' : '' }}>
-                                Kesehatan</option>
-                            <option value="Perbankan dan Jasa Keuangan"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'Perbankan dan Jasa Keuangan' ? 'selected' : '' }}>
-                                Perbankan dan Jasa Keuangan</option>
-                            <option value="Real Estate"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'Real Estate' ? 'selected' : '' }}>
-                                Real Estate</option>
-                            <option value="Teknologi Informasi"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'Teknologi Informasi' ? 'selected' : '' }}>
-                                Teknologi Informasi</option>
-                            <option value="Infrastruktur (Telekomunikasi, Konstruksi, Alat Berat, dll)"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'Infrastruktur (Telekomunikasi, Konstruksi, Alat Berat, dll)' ? 'selected' : '' }}>
-                                Infrastruktur (Telekomunikasi, Konstruksi, Alat Berat, dll)</option>
-                            <option value="Logistik dan Transportasi"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'Logistik dan Transportasi' ? 'selected' : '' }}>
-                                Logistik dan Transportasi</option>
-                            <option value="Lainnya"
-                                {{ isset($data->tipe_industri) && $data->tipe_industri == 'Lainnya' ? 'selected' : '' }}>
-                                Lainnya</option>
+                        <select data-testid="partner-category" class="form-control form-control-sm" id="jenis_magang_id"
+                            name="jenis_magang_id"
+                            value="{{ isset($data->jenis_magang_id) ? $data->jenis_magang_id : '' }}">
+                            <option disabled selected value="">Pilih opsi</option>
+                            @foreach ($jenises as $jenis)
+                                <option value="{{ $jenis->jenis_magang_id }}"
+                                    {{ isset($data->jenis_magang_id) ? ($data->jenis_magang_id == $jenis->jenis_magang_id ? 'selected' : '') : '' }}>
+                                    {{ $jenis->nama_magang }}
+                                </option>
+                            @endforeach
                         </select>
 
                     </div>
                 </div>
                 <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Alamat</label>
+                    <label class="col-sm-3 control-label col-form-label">Periode</label>
                     <div class="col-sm-9">
-                        <textarea type="text" class="form-control form-control-sm" id="alamat" name="alamat">{{ isset($data->alamat) ? $data->alamat : '' }}</textarea>
+                        <select data-testid="partner-category" class="form-control form-control-sm" id="periode_id"
+                            name="periode_id" value="{{ isset($data->periode_id) ? $data->periode_id : '' }}">
+                            <option disabled selected value="">Pilih opsi</option>
+                            @foreach ($periodes as $periode)
+                                <option value="{{ $periode->periode_id }}"
+                                    {{ isset($data->periode_id) ? ($periode->periode_id == $data->periode_id ? 'selected' : '') : '' }}>
+                                    {{ $periode->semester }} - {{ $periode->tahun_ajar }}
+                                </option>
+                            @endforeach
+                        </select>
+
                     </div>
                 </div>
                 <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Provinsi</label>
+                    <label class="col-sm-3 control-label col-form-label">Kode Kegiatan</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control form-control-sm" id="provinsi_id" name="provinsi_id"
-                            value="{{ isset($data->provinsi_id) ? $data->provinsi_id : '' }}" />
+                        <input type="text" class="form-control form-control-sm" id="kode_kegiatan"
+                            name="kode_kegiatan"
+                            value="{{ isset($data->kode_kegiatan) ? $data->kode_kegiatan : 'diisi otomatis' }}"
+                            readonly />
                     </div>
                 </div>
                 <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Kota</label>
+                    <label class="col-sm-3 control-label col-form-label">Posisi Lowongan</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control form-control-sm" id="kota_id" name="kota_id"
-                            value="{{ isset($data->kota_id) ? $data->kota_id : '' }}" />
+                        <input type="text" class="form-control form-control-sm" id="posisi_lowongan"
+                            name="posisi_lowongan"
+                            value="{{ isset($data->posisi_lowongan) ? $data->posisi_lowongan : '' }}" />
                     </div>
                 </div>
                 <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Profil Perusahaan</label>
+                    <label class="col-sm-3 control-label col-form-label">Kuota</label>
                     <div class="col-sm-9">
-                        <textarea type="text" class="form-control form-control-sm" id="profil_perusahaan" name="profil_perusahaan">{{ isset($data->profil_perusahaan) ? $data->profil_perusahaan : '' }}</textarea>
+                        <input type="number" class="form-control form-control-sm" id="kuota" name="kuota"
+                            value="{{ isset($data->kuota) ? $data->kuota : '0' }}" />
                     </div>
                 </div>
                 <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Website</label>
+                    <label class="col-sm-3 control-label col-form-label">Deskripsi</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control form-control-sm" id="website" name="website"
-                            value="{{ isset($data->website) ? $data->website : '' }}" />
+                        <textarea type="text" class="form-control form-control-sm" id="deskripsi" name="deskripsi">{{ isset($data->deskripsi) ? $data->deskripsi : '' }}</textarea>
                     </div>
                 </div>
-                {{-- <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Status</label>
-                    <div class="col-sm-9 mt-2">
-                        <div class="icheck-success d-inline mr-3">
-                            <input type="radio" id="radioActive" name="is_active" value="1" <?php echo isset($data->is_active) ? ($data->is_active == 1 ? 'checked' : '') : 'checked'; ?>>
-                            <label for="radioActive">Aktif </label>
-                        </div>
-                        <div class="icheck-danger d-inline mr-3">
-                            <input type="radio" id="radioFailed" name="is_active" value="0" <?php echo isset($data->is_active) ? ($data->is_active == 0 ? 'checked' : '') : ''; ?>>
-                            <label for="radioFailed">non-aktif</label>
-                        </div>
+                <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Mulai Kegiatan</label>
+                    <div class="col-sm-9">
+                        <input type="date" class="form-control form-control-sm" id="mulai_kegiatan"
+                            name="mulai_kegiatan"
+                            value="{{ isset($data->mulai_kegiatan) ? $data->mulai_kegiatan : '' }}" />
                     </div>
-                </div> --}}
+                </div>
+                <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Akhir Kegiatan</label>
+                    <div class="col-sm-9">
+                        <input type="date" class="form-control form-control-sm" id="akhir_kegiatan"
+                            name="akhir_kegiatan"
+                            value="{{ isset($data->akhir_kegiatan) ? $data->akhir_kegiatan : '' }}" />
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
@@ -192,28 +127,28 @@ $is_edit = isset($data);
 
         $("#form-master").validate({
             rules: {
-                nama_perusahaan: {
+                tipe_kegiatan_id: {
                     required: true,
                 },
-                kategori: {
+                periode_id: {
                     required: true
                 },
-                tipe_industri: {
+                posisi_lowongan: {
                     required: true
                 },
-                alamat: {
+                deskripsi: {
                     required: true
                 },
-                provinsi_id: {
+                kuota: {
+                    required: true,
+                    number: true,
+                    //must not be zero
+                    min: 1
+                },
+                mulai_kegiatan: {
                     required: true
                 },
-                kota_id: {
-                    required: true
-                },
-                profil_perusahaan: {
-                    required: true
-                },
-                website: {
+                akhir_kegiatan: {
                     required: true
                 }
             },

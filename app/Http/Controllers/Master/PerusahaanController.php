@@ -110,10 +110,11 @@ class PerusahaanController extends Controller
                 ]);
             }
 
+            $random_username = 'per_' . rand(100000, 999999);
             $user = [
-                'username' => $request->email,
+                'username' => $random_username,
                 'name' => $request->nama_perusahaan,
-                'password' => Hash::make($request->email),
+                'password' => Hash::make($random_username),
                 'group_id' => 5,
                 'is_active' => 1,
                 'email' => $request->email,

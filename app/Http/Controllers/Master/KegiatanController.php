@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Models\Master\JenisMagangModel;
 use App\Models\Master\KegiatanPerusahaanModel;
+use App\Models\Master\PeriodeModel;
+use App\Models\Master\TipeKegiatanModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -64,18 +67,31 @@ class KegiatanController extends Controller
     }
 
 
-    public function create()
+    public function create($id)
     {
         $this->authAction('create', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         $page = [
-            'url' => $this->menuUrl,
+            'url' => $this->menuUrl . '/' . $id . '/kegiatan/store',
             'title' => 'Tambah ' . $this->menuTitle
         ];
 
+        $tipes = TipeKegiatanModel::selectRaw("tipe_kegiatan_id, nama_kegiatan")
+            ->get();
+
+        $jenises = JenisMagangModel::selectRaw("jenis_magang_id, nama_magang")
+            ->get();
+
+        $periodes = PeriodeModel::selectRaw("periode_id, semester, tahun_ajar")
+            ->get();
+
+
         return view($this->viewPath . 'action')
-            ->with('page', (object) $page);
+            ->with('page', (object) $page)
+            ->with('tipes', $tipes)
+            ->with('jenises', $jenises)
+            ->with('periodes', $periodes);
     }
 
 
@@ -88,7 +104,6 @@ class KegiatanController extends Controller
 
             $rules = [
                 'tipe_kegiatan_id' => 'required',
-                'jenis_magang_id' => 'required',
                 'periode_id' => 'required',
                 'posisi_lowongan' => 'required|string',
                 'deskripsi' => 'required|string',
@@ -109,6 +124,9 @@ class KegiatanController extends Controller
             }
 
             $request['perusahaan_id'] = $id;
+            $request['status'] = 0;
+            $kode_kegiatan = 'K' . rand(100000, 999999);
+            $request['kode_kegiatan'] = $kode_kegiatan;
             $res = KegiatanPerusahaanModel::insertData($request);
 
             return response()->json([
@@ -127,17 +145,29 @@ class KegiatanController extends Controller
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         $page = [
-            'url' => $this->menuUrl . '/' . $id,
+            'url' => $this->menuUrl . '/' . $id . '/kegiatan/' . $kegiatan_id . '/update',
             'title' => 'Edit ' . $this->menuTitle
         ];
 
         $data = KegiatanPerusahaanModel::find($kegiatan_id);
 
+        $tipes = TipeKegiatanModel::selectRaw("tipe_kegiatan_id, nama_kegiatan")
+            ->get();
+
+        $jenises = JenisMagangModel::selectRaw("jenis_magang_id, nama_magang")
+            ->get();
+
+        $periodes = PeriodeModel::selectRaw("periode_id, semester, tahun_ajar")
+            ->get();
+
         return (!$data) ? $this->showModalError() :
             view($this->viewPath . 'action')
             ->with('page', (object) $page)
             ->with('id', $id)
-            ->with('data', $data);
+            ->with('data', $data)
+            ->with('tipes', $tipes)
+            ->with('jenises', $jenises)
+            ->with('periodes', $periodes);
     }
 
 
@@ -150,7 +180,6 @@ class KegiatanController extends Controller
 
             $rules = [
                 'tipe_kegiatan_id' => 'required',
-                'jenis_magang_id' => 'required',
                 'periode_id' => 'required',
                 'posisi_lowongan' => 'required|string',
                 'deskripsi' => 'required|string',

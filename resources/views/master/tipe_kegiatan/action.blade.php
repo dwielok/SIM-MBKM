@@ -16,7 +16,39 @@ $is_edit = isset($data);
             </div>
             <div class="modal-body">
                 <div class="form-message text-center"></div>
+                <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Tipe Kegiatan</label>
+                    <div class="col-sm-9">
+                        <select data-testid="partner-category" class="form-control form-control-sm"
+                            id="tipe_kegiatan_id" name="tipe_kegiatan_id"
+                            value="{{ isset($data->tipe_kegiatan_id) ? $data->tipe_kegiatan_id : '' }}">
+                            <option disabled selected value="">Pilih opsi</option>
+                            @foreach ($tipes as $tipe)
+                                <option value="{{ $tipe->tipe_kegiatan_id }}"
+                                    {{ isset($data->tipe_kegiatan_id) ? ($data->tipe_kegiatan_id == $tipe->tipe_kegiatan_id ? 'selected' : '') : '' }}>
+                                    {{ $tipe->nama_kegiatan }}
+                                </option>
+                            @endforeach
+                        </select>
 
+                    </div>
+                </div>
+                <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Periode</label>
+                    <div class="col-sm-9">
+                        <select data-testid="partner-category" class="form-control form-control-sm" id="periode_id"
+                            name="periode_id" value="{{ isset($data->periode_id) ? $data->periode_id : '' }}">
+                            <option disabled selected value="">Pilih opsi</option>
+                            @foreach ($periodes as $periode)
+                                <option value="{{ $periode->periode_id }}"
+                                    {{ isset($data->periode_id) ? ($periode->periode_id == $data->periode_id ? 'selected' : '') : '' }}>
+                                    {{ $periode->semester }} - {{ $periode->tahun_ajar }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                    </div>
+                </div>
                 <div class="form-group required row mb-2">
                     <label class="col-sm-3 control-label col-form-label">Tipe Kegiatan</label>
                     <div class="col-sm-9">

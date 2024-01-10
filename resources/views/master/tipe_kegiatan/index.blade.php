@@ -25,6 +25,8 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Tipe Kegiatan</th>
+                                        <th>Prodi</th>
+                                        <th>Periode</td>
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -64,6 +66,23 @@
                         "sWidth": "20%",
                         "bSortable": true,
                         "bSearchable": true
+                    },
+                    {
+                        "mData": "prodi.prodi_name",
+                        "sClass": "",
+                        "sWidth": "20%",
+                        "bSortable": true,
+                        "bSearchable": true
+                    },
+                    {
+                        "mData": "periode.tahun_ajar",
+                        "sClass": "",
+                        "sWidth": "20%",
+                        "bSortable": true,
+                        "bSearchable": true,
+                        "mRender": function(data, type, row, meta) {
+                            return row.periode.semester + ' - ' + data;
+                        }
                     },
                     {
                         "mData": "tipe_kegiatan_id",

@@ -28,8 +28,8 @@
                                         <th>Kategori</th>
                                         <th>Tipe Industri</th>
                                         <th>Alamat</th>
-                                        <th>Status</th>
-                                        <th>Keterangan</th>
+                                        {{-- <th>Status</th> --}}
+                                        {{-- <th>Keterangan</th> --}}
                                         <th>Menu</th>
                                         <th>#</th>
                                     </tr>
@@ -92,36 +92,36 @@
                         "bSortable": true,
                         "bSearchable": true
                     },
-                    {
-                        "mData": "status",
-                        "sClass": "",
-                        "sWidth": "10%",
-                        "bSortable": true,
-                        "bSearchable": false,
-                        "mRender": function(data, type, row, meta) {
-                            switch (data) {
-                                case 2:
-                                    return '<span class="badge badge-danger">Ditolak</span>';
-                                    break;
-                                case 1:
-                                    return '<span class="badge badge-success">Diterima</span>';
-                                    break;
-                                case 0:
-                                    return '<span class="badge badge-info">Menunggu</span>';
-                                    break;
-                                default:
-                                    return '<span class="badge badge-danger">-</span>';
-                                    break;
-                            }
-                        }
-                    },
-                    {
-                        "mData": "keterangan",
-                        "sClass": "",
-                        "sWidth": "15%",
-                        "bSortable": true,
-                        "bSearchable": true
-                    },
+                    // {
+                    //     "mData": "status",
+                    //     "sClass": "",
+                    //     "sWidth": "10%",
+                    //     "bSortable": true,
+                    //     "bSearchable": false,
+                    //     "mRender": function(data, type, row, meta) {
+                    //         switch (data) {
+                    //             case 2:
+                    //                 return '<span class="badge badge-danger">Ditolak</span>';
+                    //                 break;
+                    //             case 1:
+                    //                 return '<span class="badge badge-success">Diterima</span>';
+                    //                 break;
+                    //             case 0:
+                    //                 return '<span class="badge badge-info">Menunggu</span>';
+                    //                 break;
+                    //             default:
+                    //                 return '<span class="badge badge-danger">-</span>';
+                    //                 break;
+                    //         }
+                    //     }
+                    // },
+                    // {
+                    //     "mData": "keterangan",
+                    //     "sClass": "",
+                    //     "sWidth": "15%",
+                    //     "bSortable": true,
+                    //     "bSearchable": true
+                    // },
                     {
                         "mData": "perusahaan_id",
                         "sClass": "pr-2",
@@ -131,10 +131,10 @@
                         "mRender": function(data, type, row, meta) {
                             var buttons = '';
                             @if ($allowAccess->update)
-                                if (row.status == 1) {
-                                    buttons +=
-                                        `<a href="{{ $page->url }}/${data}/kegiatan" class="btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat Kegiatan" ><i class="fa fa-th"></i> Kegiatan</a> `
-                                }
+                                // if (row.status == 1) {
+                                buttons +=
+                                    `<a href="{{ $page->url }}/${data}/kegiatan" class="btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat Kegiatan" ><i class="fa fa-th"></i> Kegiatan</a> `
+                                // }
                             @endif
                             return buttons;
                         }
@@ -149,11 +149,11 @@
                             console.log(row);
                             var buttons = '';
                             @if ($allowAccess->update)
-                                if (row.status == 0) {
-                                    buttons +=
-                                        `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
-                                        `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_reject" class="ajax_modal btn btn-xs btn-danger tooltips text-white" data-placement="left" data-original-title="Reject" ><i class="fa fa-times"></i></a> `;
-                                }
+                                // if (row.status == 0) {
+                                //     buttons +=
+                                //         `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
+                                //         `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_reject" class="ajax_modal btn btn-xs btn-danger tooltips text-white" data-placement="left" data-original-title="Reject" ><i class="fa fa-times"></i></a> `;
+                                // }
                                 buttons +=
                                     `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/edit" class="ajax_modal btn btn-xs btn-warning tooltips text-secondary" data-placement="left" data-original-title="Edit Data" ><i class="fa fa-edit"></i></a> `;
                             @endif

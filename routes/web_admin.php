@@ -92,4 +92,9 @@ Route::group(['prefix' => 'setting', 'middleware' => ['auth']], function () {
     Route::resource('menu', MenuController::class)->parameter('menu', 'id');
     Route::post('menu/list', [MenuController::class, 'list']);
     Route::get('menu/{id}/delete', [MenuController::class, 'confirm']);
+
+    //user
+    Route::resource('user', UserController::class)->parameter('user', 'id');
+    Route::post('user/list', [UserController::class, 'list']);
+    Route::get('user/{id}/delete', [UserController::class, 'confirm']);
 });

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Google;
 use App\Models\History\LogActivityModel;
 use App\Models\Master\PeriodeModel;
+use App\Models\Master\PerusahaanModel;
 use App\Models\Proposal\ProposalSemproModel;
 use App\Models\Setting\UserModel;
 use App\Models\View\MahasiswaProposalView;
@@ -79,6 +80,15 @@ class LoginController extends Controller
     {
         $db = UserModel::where('username', '=', $request->input('username'))->first();
         if ($db) {
+
+            //cek akun perusahaan, jika status 2 (ditolak), maka tampilkan keterangan
+            $perusahaan = PerusahaanModel::where('user_id', $db->user_id)->first();
+            if ($perusahaan) {
+                if ($perusahaan->status == 2) {
+                    return "Perusahaan Anda ditolak dikarenakan $perusahaan->keterangan. Silahkan hubungi admin.";
+                }
+            }
+
             if (!$db->is_active) {
                 return 'Akun Anda tidak aktif.';
             }

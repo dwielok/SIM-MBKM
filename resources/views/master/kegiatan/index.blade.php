@@ -24,6 +24,7 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
+                                        <th>Kode</th>
                                         <th>Nama Posisi</th>
                                         <th>Deskripsi</th>
                                         <th>Kuota</th>
@@ -64,6 +65,13 @@
                         "bSearchable": false
                     },
                     {
+                        "mData": "kode_kegiatan",
+                        "sClass": "",
+                        "sWidth": "10%",
+                        "bSortable": true,
+                        "bSearchable": true
+                    },
+                    {
                         "mData": "posisi_lowongan",
                         "sClass": "",
                         "sWidth": "10%",
@@ -80,7 +88,7 @@
                     {
                         "mData": "kuota",
                         "sClass": "",
-                        "sWidth": "10%",
+                        "sWidth": "5%",
                         "bSortable": true,
                         "bSearchable": true
                     },

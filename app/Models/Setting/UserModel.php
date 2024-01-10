@@ -5,6 +5,7 @@ namespace App\Models\Setting;
 
 use App\Models\Master\DosenModel;
 use App\Models\Master\MahasiswaModel;
+use App\Models\Master\PerusahaanModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;

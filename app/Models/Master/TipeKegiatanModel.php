@@ -32,4 +32,15 @@ class TipeKegiatanModel extends AppModel
         //  Model => columnFK
         //'App\Models\Master\EmployeeModel' => 'jabatan_id'
     ];
+
+    //relation to periode and prodi
+    public function periode()
+    {
+        return $this->belongsTo(PeriodeModel::class, 'periode_id');
+    }
+
+    public function prodi()
+    {
+        return $this->belongsTo(ProdiModel::class, 'prodi_id');
+    }
 }
