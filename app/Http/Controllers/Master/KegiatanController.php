@@ -124,7 +124,8 @@ class KegiatanController extends Controller
             }
 
             $request['perusahaan_id'] = $id;
-            $request['status'] = 0;
+            $role = auth()->user()->group_id;
+            $request['status'] = $role == 1 ? 1 : 0;
             $kode_kegiatan = 'K' . rand(100000, 999999);
             $request['kode_kegiatan'] = $kode_kegiatan;
             $res = KegiatanPerusahaanModel::insertData($request);

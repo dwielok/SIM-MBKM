@@ -15,6 +15,8 @@ Route::pattern('date', '[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])'); /
 
 Auth::routes(['register' => false, 'confirm' => false, 'email' => false, 'reset' => false]);
 Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout']);
+Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register_perusahaan']);
+Route::post('/register_perusahaan', [App\Http\Controllers\Auth\RegisterController::class, 'register_perusahaan_store'])->name('register.perusahaan');
 Route::get('/login-sso', [App\Http\Controllers\Auth\LoginController::class, 'showLoginSSO']);
 Route::get('/attempt-sso', [App\Http\Controllers\Auth\LoginController::class, 'attemptLoginSSO']);
 
@@ -24,7 +26,7 @@ Route::get('/home', [DashboardController::class, 'index'])->middleware('auth');
 // theme
 Route::get('/theme/{theme}', [\App\Http\Controllers\Setting\ThemeController::class, 'index']);
 
-Route::group(['prefix' => 'setting', 'middleware' => ['auth']], function(){
+Route::group(['prefix' => 'setting', 'middleware' => ['auth']], function () {
     // profile
     Route::get('account', [AccountController::class, 'index']);
     Route::put('account', [AccountController::class, 'update']);

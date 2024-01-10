@@ -82,12 +82,12 @@ class LoginController extends Controller
         if ($db) {
 
             //cek akun perusahaan, jika status 2 (ditolak), maka tampilkan keterangan
-            $perusahaan = PerusahaanModel::where('user_id', $db->user_id)->first();
-            if ($perusahaan) {
-                if ($perusahaan->status == 2) {
-                    return "Perusahaan Anda ditolak dikarenakan $perusahaan->keterangan. Silahkan hubungi admin.";
-                }
-            }
+            // $perusahaan = PerusahaanModel::where('user_id', $db->user_id)->first();
+            // if ($perusahaan) {
+            //     if ($perusahaan->status == 2) {
+            //         return "Perusahaan Anda ditolak dikarenakan $perusahaan->keterangan. Silahkan hubungi admin.";
+            //     }
+            // }
 
             if (!$db->is_active) {
                 return 'Akun Anda tidak aktif.';
