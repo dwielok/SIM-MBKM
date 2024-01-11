@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Setting;
 use App\Http\Controllers\Controller;
 use App\Models\KategoriUsaha;
 use App\Models\Master\PerusahaanModel;
+use App\Models\Setting\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -258,8 +259,16 @@ class ProfileController extends Controller
             'title' => 'Profile Perusahaan'
         ];
 
+        $role = Auth::user()->group_id;
+
+        if ($role == 5) {
+            $view = 'perusahaan';
+        } else {
+            $view = 'mahasiswa';
+        }
+
         $perusahaan = PerusahaanModel::where('user_id', Auth::user()->user_id)->first();
-        return view($this->viewPath . 'perusahaan')
+        return view($this->viewPath . $view)
             ->with('breadcrumb', (object) $breadcrumb)
             ->with('activeMenu', (object) $activeMenu)
             ->with('page', (object) $page)
@@ -302,6 +311,10 @@ class ProfileController extends Controller
             unset($request['id']);
             $request['status'] = 1;
             $res = PerusahaanModel::updateData($perusahaan_id, $request);
+
+            $user = UserModel::where('user_id', Auth::user()->user_id)->first();
+            $user->name = $request->nama_perusahaan;
+            $user->save();
 
             return response()->json([
                 'stat' => $res,
