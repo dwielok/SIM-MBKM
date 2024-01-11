@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Master\PerusahaanModel;
 use App\Models\View\BeritaView;
 use App\Models\View\DosenProposalView;
 use App\Models\View\DosenQuotaProdiView;
@@ -91,7 +92,13 @@ class DashboardController extends Controller
 
     private function index_perusahaan($breadcrumb, $activeMenu, $page)
     {
-        return $this->index_default($breadcrumb, $activeMenu, $page);
+        $perusahaan = PerusahaanModel::where('user_id', Auth::user()->user_id)->first();
+
+        return view('dashboard.perusahaan')
+        ->with('breadcrumb', (object) $breadcrumb)
+        ->with('activeMenu', (object) $activeMenu)
+        ->with('page', (object) $page)
+        ->with('perusahaan', $perusahaan);
     }
 
     public function quota_dosen(Request $request)

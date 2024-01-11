@@ -19,6 +19,7 @@ class PerusahaanModel extends AppModel
 
     protected $fillable = [
         'nama_perusahaan',
+        'email',
         'user_id',
         'status',
         'logo',

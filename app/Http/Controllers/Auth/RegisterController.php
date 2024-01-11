@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Master\PeriodeModel;
+use App\Models\Master\PerusahaanModel;
 use App\Models\Setting\UserModel;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -122,7 +123,23 @@ class RegisterController extends Controller
             'is_active' => 1,
         ]);
 
-        if ($user) {
+        $user = [
+            'nama_perusahaan' => $request->input('name'),
+            'email' => $request->input('email'),
+            'user_id' => $user->user_id,
+            'status' => 0,
+            'kategori' => '',
+            'tipe_industri' => '',
+            'alamat' => '',
+            'provinsi_id' => 0,
+            'kota_id' => 0,
+            'profil_perusahaan' => '',
+            'website' => '',
+        ];
+
+        $res = PerusahaanModel::insert($user);
+
+        if ($user && $res) {
             $check = $this->attemptLogin($request);
             if ($check === true) {
                 return $this->sendLoginResponse($request);
