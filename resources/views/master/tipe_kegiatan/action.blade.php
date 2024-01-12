@@ -16,17 +16,16 @@ $is_edit = isset($data);
             </div>
             <div class="modal-body">
                 <div class="form-message text-center"></div>
-                <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Tipe Kegiatan</label>
+                {{-- <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Prodi</label>
                     <div class="col-sm-9">
-                        <select data-testid="partner-category" class="form-control form-control-sm"
-                            id="tipe_kegiatan_id" name="tipe_kegiatan_id"
-                            value="{{ isset($data->tipe_kegiatan_id) ? $data->tipe_kegiatan_id : '' }}">
+                        <select data-testid="partner-category" class="form-control form-control-sm" id="prodi_id"
+                            name="prodi_id" value="{{ isset($data->prodi_id) ? $data->prodi_id : '' }}">
                             <option disabled selected value="">Pilih opsi</option>
-                            @foreach ($tipes as $tipe)
-                                <option value="{{ $tipe->tipe_kegiatan_id }}"
-                                    {{ isset($data->tipe_kegiatan_id) ? ($data->tipe_kegiatan_id == $tipe->tipe_kegiatan_id ? 'selected' : '') : '' }}>
-                                    {{ $tipe->nama_kegiatan }}
+                            @foreach ($prodis as $prodi)
+                                <option value="{{ $prodi->prodi_id }}"
+                                    {{ isset($data->prodi_id) ? ($data->prodi_id == $prodi->prodi_id ? 'selected' : '') : '' }}>
+                                    {{ $prodi->prodi_name }}
                                 </option>
                             @endforeach
                         </select>
@@ -48,7 +47,7 @@ $is_edit = isset($data);
                         </select>
 
                     </div>
-                </div>
+                </div> --}}
                 <div class="form-group required row mb-2">
                     <label class="col-sm-3 control-label col-form-label">Tipe Kegiatan</label>
                     <div class="col-sm-9">

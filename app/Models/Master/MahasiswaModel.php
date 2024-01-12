@@ -27,7 +27,7 @@ class MahasiswaModel extends AppModel
         'jenis_kelamin',
         'kelas',
         'nama_ortu',
-    'hp_ortu',
+        'hp_ortu',
         'created_at',
         'created_by',
         'updated_at',

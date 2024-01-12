@@ -3,19 +3,22 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
-use App\Models\Master\PeriodeModel;
+use App\Models\Master\MahasiswaModel;
+use App\Models\Setting\UserModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
-class PeriodeController extends Controller
+class MahasiswaController extends Controller
 {
     public function __construct()
     {
-        $this->menuCode  = 'MASTER.PERIODE';
-        $this->menuUrl   = url('master/periode');     // set URL untuk menu ini
-        $this->menuTitle = 'Periode';                       // set nama menu
-        $this->viewPath  = 'master.periode.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
+        $this->menuCode  = 'MASTER.MAHASISWA';
+        $this->menuUrl   = url('master/mahasiswa');     // set URL untuk menu ini
+        $this->menuTitle = 'Mahasiswa';                       // set nama menu
+        $this->viewPath  = 'master.mahasiswa.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
     }
 
     public function index()
@@ -25,12 +28,12 @@ class PeriodeController extends Controller
 
         $breadcrumb = [
             'title' => $this->menuTitle,
-            'list'  => ['Data Master', 'Periode']
+            'list'  => ['Data Master', 'Mahasiswa']
         ];
 
         $activeMenu = [
             'l1' => 'master',
-            'l2' => 'master-periode',
+            'l2' => 'master-mahasiswa',
             'l3' => null
         ];
 
@@ -51,7 +54,8 @@ class PeriodeController extends Controller
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data  = PeriodeModel::selectRaw("periode_id, semester, tahun_ajar, is_active, is_current");
+        $data  = MahasiswaModel::selectRaw("prodi_id, user_id, nim, nama_mahasiswa, email_mahasiswa, no_hp, jenis_kelamin, kelas, nama_ortu, hp_ortu");
+        //append provinsi and kota to $data with value "dummy"
 
         return DataTables::of($data)
             ->addIndexColumn()
@@ -82,8 +86,16 @@ class PeriodeController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
 
             $rules = [
-                'semester' => 'required|string',
-                'tahun_ajar' => 'required|string'
+                'prodi_id' => 'required',
+                'user_id' => 'required',
+                'nim'  => 'required',
+                'nama_mahasiswa' => 'required',
+                'email_mahasiswa' => 'required',
+                'no_hp' => 'required',
+                'jenis_kelamin' => 'required',
+                'kelas' => 'required',
+                'nama_ortu' => 'required',
+                'hp_ortu' => 'required',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -97,7 +109,21 @@ class PeriodeController extends Controller
                 ]);
             }
 
-            $res = PeriodeModel::insertData($request);
+            $user = [
+                'username' => $request->nim,
+                'name' => $request->nama_mahasiswa,
+                'password' => Hash::make($request->nim),
+                'group_id' => 4,
+                'is_active' => 1,
+                'email' => $request->email,
+            ];
+            $insert = UserModel::create($user);
+
+            $request['user_id'] = $insert->user_id;
+
+            $res = MahasiswaModel::insertData($request);
+
+
 
             return response()->json([
                 'stat' => $res,
@@ -119,7 +145,7 @@ class PeriodeController extends Controller
             'title' => 'Edit ' . $this->menuTitle
         ];
 
-        $data = PeriodeModel::find($id);
+        $data = MahasiswaModel::find($id);
 
         return (!$data) ? $this->showModalError() :
             view($this->viewPath . 'action')
@@ -137,8 +163,16 @@ class PeriodeController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
 
             $rules = [
-                'semester' => 'required|string',
-                'tahun_ajar' => 'required|string'
+                'prodi_id' => 'required',
+                'user_id' => 'required',
+                'nim'  => 'required',
+                'nama_mahasiswa' => 'required',
+                'email_mahasiswa' => 'required',
+                'no_hp' => 'required',
+                'jenis_kelamin' => 'required',
+                'kelas' => 'required',
+                'nama_ortu' => 'required',
+                'hp_ortu' => 'required',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -152,7 +186,7 @@ class PeriodeController extends Controller
                 ]);
             }
 
-            $res = PeriodeModel::updateData($id, $request);
+            $res = MahasiswaModel::updateData($id, $request);
 
             return response()->json([
                 'stat' => $res,
@@ -169,7 +203,7 @@ class PeriodeController extends Controller
         $this->authAction('read', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = PeriodeModel::find($id);
+        $data = MahasiswaModel::find($id);
         $page = [
             'title' => 'Detail ' . $this->menuTitle
         ];
@@ -187,12 +221,11 @@ class PeriodeController extends Controller
         $this->authAction('delete', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = PeriodeModel::find($id);
+        $data = MahasiswaModel::find($id);
 
         return (!$data) ? $this->showModalError() :
             $this->showModalConfirm($this->menuUrl . '/' . $id, [
-                'Semester' => $data->semester,
-                'Tahun Ajar' => $data->tahun_ajar
+                'Nama' => $data->nama_mahasiswa,
             ]);
     }
 
@@ -203,68 +236,12 @@ class PeriodeController extends Controller
 
         if ($request->ajax() || $request->wantsJson()) {
 
-            $res = PeriodeModel::deleteData($id);
+            $res = MahasiswaModel::deleteData($id);
 
             return response()->json([
                 'stat' => $res,
                 'mc' => $res, // close modal
-                'msg' => PeriodeModel::getDeleteMessage()
-            ]);
-        }
-
-        return redirect('/');
-    }
-
-    public function confirm_active($id)
-    {
-        $this->authAction('update', 'modal');
-        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
-
-        $data = PeriodeModel::find($id);
-
-        return (!$data) ? $this->showModalError() :
-            $this->showModalConfirm($this->menuUrl . '/' . $id . '/active', [
-                'Periode' => "$data->semester $data->tahun_ajar",
-            ], 'Konfirmasi Aktif Periode', 'Apakah anda yakin ingin mengset periode berikut:', 'Ya, Set', 'PUT');
-    }
-
-    public function set_active(Request $request, $id)
-    {
-        $this->authAction('update', 'json');
-        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
-
-        // cek untuk Insert/Update/Delete harus via AJAX
-        if ($request->ajax() || $request->wantsJson()) {
-
-            // Mengambil semua data dengan is_active = 1
-            $check = PeriodeModel::where('is_current', 1)->get();
-
-            // Memperbarui semua entri yang memiliki is_active = 1 menjadi 0
-            foreach ($check as $entry) {
-                $entry->is_current = 0;
-                $entry->save();
-            }
-
-            // update data via function yg ada di model
-            $request['is_current'] = 1;
-            $res = PeriodeModel::updateData($id, $request);
-
-            if ($res) {
-
-                $periode_active = PeriodeModel::where('is_current', 1)
-                    ->selectRaw('periode_id, semester, tahun_ajar')
-                    ->first();
-
-                session()->put('periode_active', $periode_active);
-
-                $periode = PeriodeModel::all();
-                session()->put('periode', $periode);
-            }
-
-            return response()->json([
-                'stat' => $res,
-                'mc' => $res, // close modal
-                'msg' => ($res) ? 'Periode berhasil di set' : $this->getMessage('update.failed')
+                'msg' => MahasiswaModel::getDeleteMessage()
             ]);
         }
 

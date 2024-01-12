@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Master\JenisMagangModel;
 use App\Models\Master\KegiatanPerusahaanModel;
 use App\Models\Master\PeriodeModel;
+use App\Models\Master\ProdiModel;
 use App\Models\Master\TipeKegiatanModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use stdClass;
 use Yajra\DataTables\Facades\DataTables;
 
 class KegiatanController extends Controller
@@ -159,34 +161,42 @@ class KegiatanController extends Controller
             ->get();
 
         $periodes = PeriodeModel::selectRaw("periode_id, semester, tahun_ajar")
+            ->where('is_active', 1)
+            ->get();
+
+        $prodis = ProdiModel::selectRaw("prodi_id, prodi_name, prodi_code")
             ->get();
 
         return (!$data) ? $this->showModalError() :
-            view($this->viewPath . 'action')
+            view($this->viewPath . 'edit')
             ->with('page', (object) $page)
             ->with('id', $id)
             ->with('data', $data)
             ->with('tipes', $tipes)
             ->with('jenises', $jenises)
-            ->with('periodes', $periodes);
+            ->with('periodes', $periodes)
+            ->with('prodis', $prodis);
     }
 
 
     public function update(Request $request, $id, $kegiatan_id)
     {
+        // dd($request->all());
         $this->authAction('update', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         if ($request->ajax() || $request->wantsJson()) {
 
             $rules = [
-                'tipe_kegiatan_id' => 'required',
-                'periode_id' => 'required',
-                'posisi_lowongan' => 'required|string',
-                'deskripsi' => 'required|string',
-                'kuota' => 'required|numeric',
-                'mulai_kegiatan' => 'required|date',
-                'akhir_kegiatan' => 'required|date',
+                // 'tipe_kegiatan_id' => 'required',
+                // 'periode_id' => 'required',
+                // 'posisi_lowongan' => 'required|string',
+                // 'deskripsi' => 'required|string',
+                // 'kuota' => 'required|numeric',
+                // 'mulai_kegiatan' => 'required|date',
+                // 'akhir_kegiatan' => 'required|date',
+                'periode_arr' => 'required',
+                'prodi_arr' => 'required',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -200,6 +210,10 @@ class KegiatanController extends Controller
                 ]);
             }
 
+            $request['periode_id'] = json_encode($request->periode_arr);
+            $request['prodi_id'] = json_encode($request->prodi_arr);
+            unset($request['periode_arr']);
+            unset($request['prodi_arr']);
             $res = KegiatanPerusahaanModel::updateData($kegiatan_id, $request);
 
             return response()->json([
@@ -217,16 +231,112 @@ class KegiatanController extends Controller
         $this->authAction('read', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = KegiatanPerusahaanModel::find($kegiatan_id);
+        $kegiatan = KegiatanPerusahaanModel::where('kegiatan_perusahaan_id', $kegiatan_id)
+            ->with('tipe_kegiatan')
+            ->first();
+
         $page = [
             'title' => 'Detail ' . $this->menuTitle
         ];
 
-        return (!$data) ? $this->showModalError() :
+        $datas = [];
+
+        $kegiatan->durasi = (strtotime($kegiatan->akhir_kegiatan) - strtotime($kegiatan->mulai_kegiatan)) / (60 * 60 * 24 * 30);
+        //change to 3.4 bulan example
+        $kegiatan->durasi = number_format($kegiatan->durasi, 1) . ' bulan';
+
+        $datas = [
+            [
+                "title" => "Kode Kegiatan",
+                "value" => $kegiatan->kode_kegiatan,
+                "bold" => true
+            ],
+            [
+                "title" => "Tipe Kegiatan",
+                "value" => $kegiatan->tipe_kegiatan->nama_kegiatan,
+                "bold" => false
+            ],
+            [
+                "title" => "Jenis Magang",
+                "value" => $kegiatan->jenis_magang->nama_magang,
+                "bold" => false
+            ],
+            [
+                "title" => "Prodi",
+                "value" => $kegiatan->prodi_id,
+                "bold" => false
+            ],
+            [
+                "title" => "Periode",
+                "value" => $kegiatan->periode_id,
+                "bold" => false
+            ],
+            [
+                "title" => "Posisi Lowongan",
+                "value" => $kegiatan->posisi_lowongan,
+                "bold" => true
+            ],
+            [
+                "title" => "Deskripsi",
+                "value" => $kegiatan->deskripsi,
+                "bold" => false
+            ],
+            [
+                "title" => "Kuota",
+                "value" => $kegiatan->kuota,
+                "bold" => false
+            ],
+            [
+                "title" => "Mulai Kegiatan",
+                "value" => $kegiatan->mulai_kegiatan,
+                "bold" => false
+            ],
+            [
+                "title" => "Akhir Kegiatan",
+                "value" => $kegiatan->akhir_kegiatan,
+                "bold" => false
+            ],
+            [
+                "title" => "Durasi",
+                "value" => $kegiatan->durasi,
+                "bold" => true
+            ],
+            [
+                "title" => "Status",
+                "value" => $kegiatan->status == 0 ? 'Pending' : ($kegiatan->status == 1 ? 'Diterima' : 'Ditolak'),
+                "bold" => false,
+                "color" => $kegiatan->status == 0 ? 'warning' : ($kegiatan->status == 1 ? 'success' : 'danger')
+            ],
+            [
+                "title" => "Keterangan Ditolak",
+                "value" => $kegiatan->keterangan ?? '-',
+                "bold" => false
+            ]
+        ];
+
+        // if status != 2 then remove last index
+        if ($kegiatan->status != 2) {
+            array_pop($datas);
+        }
+
+        //change to stdClass loop
+        $datas = array_map(function ($item) {
+            $obj = new stdClass;
+            $obj->title = $item['title'];
+            $obj->value = $item['value'];
+            $obj->bold = $item['bold'];
+            $obj->color = $item['color'] ?? null;
+            return $obj;
+        }, $datas);
+
+        // dd($datas);
+
+
+        return (!$datas) ? $this->showModalError() :
             view($this->viewPath . 'detail')
             ->with('page', (object) $page)
             ->with('id', $id)
-            ->with('data', $data);
+            ->with('datas', $datas);
     }
 
 

@@ -24,9 +24,15 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Tipe Kegiatan</th>
-                                        {{-- <th>Prodi</th>
-                                        <th>Periode</td> --}}
+                                        <th>Prodi</th>
+                                        <th>Nim</th>
+                                        <th>Nama Mahasiswa</th>
+                                        <th>Email</th>
+                                        <th>No HP</th>
+                                        <th>Jenis Kelamin</th>
+                                        <th>Kelas</th>
+                                        {{-- <th>Nama Orang Tua</th>
+                                        <th>No HP Orang Tua</th> --}}
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -61,47 +67,69 @@
                         "bSearchable": false
                     },
                     {
-                        "mData": "nama_kegiatan",
+                        "mData": "prodi",
+                        "sClass": "",
+                        "sWidth": "10%",
+                        "bSortable": true,
+                        "bSearchable": true
+                    },
+                    {
+                        "mData": "nim",
+                        "sClass": "",
+                        "sWidth": "5%",
+                        "bSortable": true,
+                        "bSearchable": true
+                    },
+                    {
+                        "mData": "nama_mahasiswa",
                         "sClass": "",
                         "sWidth": "20%",
                         "bSortable": true,
                         "bSearchable": true
                     },
+                    {
+                        "mData": "email_mahasiswa",
+                        "sClass": "",
+                        "sWidth": "15%",
+                        "bSortable": true,
+                        "bSearchable": true
+                    },
+                    {
+                        "mData": "no_hp",
+                        "sClass": "",
+                        "sWidth": "15%",
+                        "bSortable": true,
+                        "bSearchable": true
+                    },
+                    {
+                        "mData": "jenis_kelamin",
+                        "sClass": "",
+                        "sWidth": "20%",
+                        "bSortable": true,
+                        "bSearchable": true
+                    },
+                    {
+                        "mData": "kelas",
+                        "sClass": "",
+                        "sWidth": "15%",
+                        "bSortable": true,
+                        "bSearchable": true
+                    // },
                     // {
-                    //     "mData": "prodi.prodi_name",
+                    //     "mData": "nama_ortu",
                     //     "sClass": "",
-                    //     "sWidth": "20%",
+                    //     "sWidth": "30%",
                     //     "bSortable": true,
                     //     "bSearchable": true
                     // },
                     // {
-                    //     "mData": "periode.tahun_ajar",
+                    //     "mData": "hp_ortu",
                     //     "sClass": "",
-                    //     "sWidth": "20%",
+                    //     "sWidth": "30%",
                     //     "bSortable": true,
-                    //     "bSearchable": true,
-                    //     "mRender": function(data, type, row, meta) {
-                    //         return row.periode.semester + ' - ' + data;
-                    //     }
+                    //     "bSearchable": true
                     // },
-                    {
-                        "mData": "tipe_kegiatan_id",
-                        "sClass": "text-center pr-2",
-                        "sWidth": "10%",
-                        "bSortable": false,
-                        "bSearchable": false,
-                        "mRender": function(data, type, row, meta) {
-                            return ''
-                            @if ($allowAccess->update)
-                                +
-                                `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/edit" class="ajax_modal btn btn-xs btn-warning tooltips text-secondary" data-placement="left" data-original-title="Edit Data" ><i class="fa fa-edit"></i></a> `
-                            @endif
-                            @if ($allowAccess->delete)
-                                +
-                                `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/delete" class="ajax_modal btn btn-xs btn-danger tooltips text-light" data-placement="left" data-original-title="Hapus Data" ><i class="fa fa-trash"></i></a> `
-                            @endif ;
-                        }
-                    }
+
                 ],
                 "fnDrawCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     $('a', this.fnGetNodes()).tooltip();

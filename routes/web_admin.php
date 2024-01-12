@@ -79,6 +79,12 @@ Route::group(['prefix' => 'master', 'middleware' => ['auth']], function () {
     Route::get('perusahaan/{id}/kegiatan/{kegiatan_id}/confirm_reject', [KegiatanController::class, 'confirm_reject']);
     Route::put('perusahaan/{id}/kegiatan/{kegiatan_id}/approve', [KegiatanController::class, 'approve']);
     Route::put('perusahaan/{id}/kegiatan/{kegiatan_id}/reject', [KegiatanController::class, 'reject']);
+
+    // Mahasiswa
+    Route::resource('mahasiswa', MahasiswaController::class)->parameter('mahasiswa', 'id');
+    Route::post('mahasiswa/list', [MahasiswaController::class, 'list']);
+    Route::get('mahasiswa/{id}/delete', [MahasiswaController::class, 'confirm']);
+    
 });
 
 Route::group(['prefix' => 'setting', 'middleware' => ['auth']], function () {

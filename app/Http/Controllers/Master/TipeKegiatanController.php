@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
 use App\Models\Master\PeriodeModel;
+use App\Models\Master\ProdiModel;
 use App\Models\Master\TipeKegiatanModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -80,7 +81,7 @@ class TipeKegiatanController extends Controller
             'title' => 'Tambah ' . $this->menuTitle
         ];
 
-        $tipes = TipeKegiatanModel::selectRaw("tipe_kegiatan_id, nama_kegiatan")
+        $prodis = ProdiModel::selectRaw("prodi_id, prodi_name")
             ->get();
 
         $periodes = PeriodeModel::selectRaw("periode_id, semester, tahun_ajar")
@@ -88,7 +89,7 @@ class TipeKegiatanController extends Controller
 
         return view($this->viewPath . 'action')
             ->with('page', (object) $page)
-            ->with('tipes', $tipes)
+            ->with('prodis', $prodis)
             ->with('periodes', $periodes);
     }
 
@@ -139,7 +140,7 @@ class TipeKegiatanController extends Controller
 
         $data = TipeKegiatanModel::find($id);
 
-        $tipes = TipeKegiatanModel::selectRaw("tipe_kegiatan_id, nama_kegiatan")
+        $prodis = ProdiModel::selectRaw("prodi_id, prodi_name")
             ->get();
 
         $periodes = PeriodeModel::selectRaw("periode_id, semester, tahun_ajar")
@@ -150,7 +151,7 @@ class TipeKegiatanController extends Controller
             ->with('page', (object) $page)
             ->with('id', $id)
             ->with('data', $data)
-            ->with('tipes', $tipes)
+            ->with('prodis', $prodis)
             ->with('periodes', $periodes);
     }
 

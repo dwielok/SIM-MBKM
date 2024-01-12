@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class TKegiatan extends Migration
+class TKegiatanPerusahaan extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class TKegiatan extends Migration
      */
     public function up()
     {
-        //add periode_id in m_kegiatan_perusahaan reference periode_id
         Schema::table('m_kegiatan_perusahaan', function (Blueprint $table) {
-            $table->text('periode_id')->after('jenis_magang_id');
+            $table->text('prodi_id')->nullable()->after('jenis_magang_id');
         });
     }
 
@@ -26,9 +25,9 @@ class TKegiatan extends Migration
      */
     public function down()
     {
-        //remove periode_id in m_kegiatan_perusahaan
+        //drop prodi_id from m_kegiatan_perusahaan
         Schema::table('m_kegiatan_perusahaan', function (Blueprint $table) {
-            $table->dropColumn('periode_id');
+            $table->dropColumn('prodi_id');
         });
     }
 }

@@ -30,7 +30,7 @@ $is_edit = isset($data);
                             value="{{ isset($data->tahun_ajar) ? $data->tahun_ajar : '' }}" />
                     </div>
                 </div>
-                {{-- <div class="form-group required row mb-2">
+                <div class="form-group required row mb-2">
                     <label class="col-sm-3 control-label col-form-label">Status</label>
                     <div class="col-sm-9 mt-2">
                         <div class="icheck-success d-inline mr-3">
@@ -42,7 +42,7 @@ $is_edit = isset($data);
                             <label for="radioFailed">non-aktif</label>
                         </div>
                     </div>
-                </div> --}}
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>

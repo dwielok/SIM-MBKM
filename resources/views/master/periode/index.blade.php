@@ -27,6 +27,7 @@
                                         <th>Semester</th>
                                         <th>Tahun Ajar</th>
                                         <th>Status</th>
+                                        <th>Periode Aktif</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -86,6 +87,17 @@
                         }
                     },
                     {
+                        "mData": "is_current",
+                        "sClass": "",
+                        "sWidth": "25%",
+                        "bSortable": true,
+                        "bSearchable": false,
+                        "mRender": function(data, type, row, meta) {
+                            return data == 1 ? '<span class="badge badge-success">Ya</span>' :
+                                '<span class="badge badge-danger">Tidak</span>';
+                        }
+                    },
+                    {
                         "mData": "periode_id",
                         "sClass": "text-center pr-2",
                         "sWidth": "10%",
@@ -95,7 +107,7 @@
                             console.log(row);
                             var buttons = '';
                             @if ($allowAccess->update)
-                                if (row.is_active != 1) {
+                                if (row.is_current != 1 && row.is_active == 1) {
                                     buttons +=
                                         `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_active" class="ajax_modal btn btn-xs btn-info tooltips text-white" data-placement="left" data-original-title="Set Active" ><i class="fa fa-check"></i></a> `;
                                 }

@@ -42,4 +42,19 @@ class KegiatanPerusahaanModel extends AppModel
         //  Model => columnFK
         // 'App\Models\Master\DosenModel' => 'jurusan_id'
     ];
+
+    public function perusahaan()
+    {
+        return $this->belongsTo(PerusahaanModel::class, 'perusahaan_id', 'perusahaan_id');
+    }
+
+    public function tipe_kegiatan()
+    {
+        return $this->belongsTo(TipeKegiatanModel::class, 'tipe_kegiatan_id', 'tipe_kegiatan_id');
+    }
+
+    public function jenis_magang()
+    {
+        return $this->belongsTo(JenisMagangModel::class, 'jenis_magang_id', 'jenis_magang_id');
+    }
 }

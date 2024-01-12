@@ -107,7 +107,7 @@ class LoginController extends Controller
             // LogActivityModel::setLog($db->user_id, 'login', 'Login ke sistem');
 
             $this->_getUserMenu($db->group_id);
-            $periode = PeriodeModel::where('is_active', 1)->selectRaw('periode_id, semester, tahun_ajar')->first();
+            $periode = PeriodeModel::where('is_current', 1)->selectRaw('periode_id, semester, tahun_ajar')->first();
 
             $this->redirectTo = url('/');
 
