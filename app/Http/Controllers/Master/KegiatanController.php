@@ -245,6 +245,18 @@ class KegiatanController extends Controller
         //change to 3.4 bulan example
         $kegiatan->durasi = number_format($kegiatan->durasi, 1) . ' bulan';
 
+        $kegiatan->prodi = ProdiModel::whereIn('prodi_id', json_decode($kegiatan->prodi_id))
+            ->pluck('prodi_name')
+            ->implode(', ');
+
+        //periode semester - tahun_ajar
+        $kegiatan->periode = PeriodeModel::whereIn('periode_id', json_decode($kegiatan->periode_id))
+            ->get();
+
+        $kegiatan->periode = $kegiatan->periode->map(function ($item) {
+            return $item->semester . ' - ' . $item->tahun_ajar;
+        })->implode(', ');
+
         $datas = [
             [
                 "title" => "Kode Kegiatan",
@@ -263,12 +275,12 @@ class KegiatanController extends Controller
             ],
             [
                 "title" => "Prodi",
-                "value" => $kegiatan->prodi_id,
+                "value" => $kegiatan->prodi,
                 "bold" => false
             ],
             [
                 "title" => "Periode",
-                "value" => $kegiatan->periode_id,
+                "value" => $kegiatan->periode,
                 "bold" => false
             ],
             [
@@ -303,9 +315,9 @@ class KegiatanController extends Controller
             ],
             [
                 "title" => "Status",
-                "value" => $kegiatan->status == 0 ? 'Pending' : ($kegiatan->status == 1 ? 'Diterima' : 'Ditolak'),
+                "value" => $kegiatan->status == 0 ? 'Menunggu' : ($kegiatan->status == 1 ? 'Diterima' : 'Ditolak'),
                 "bold" => false,
-                "color" => $kegiatan->status == 0 ? 'warning' : ($kegiatan->status == 1 ? 'success' : 'danger')
+                "color" => $kegiatan->status == 0 ? 'info' : ($kegiatan->status == 1 ? 'success' : 'danger')
             ],
             [
                 "title" => "Keterangan Ditolak",
