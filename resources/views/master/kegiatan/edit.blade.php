@@ -50,53 +50,67 @@ $is_edit = isset($data);
 
                     </div>
                 </div> --}}
-                <div class="form-group required row flex-column mb-2">
-                    <label class="col-sm-3 control-label col-form-label text-left">Prodi</label>
-                    <tr>
-                        <th class="text-center pr-0">
-                            @foreach ($prodis as $prodi)
-                                @php
-                                    $prodi_value = json_decode($data->prodi_id);
-                                @endphp
-                                <div class="icheck-success d-inline">
-                                    <input name="prodi_arr[]" value={{ $prodi->prodi_id }} type="checkbox"
-                                        onchange="updateCheck(this,'.r_act')" class="r_act"
-                                        id="prodi_{{ $prodi->prodi_id }}"
-                                        @if (isset($data->prodi_id)) @if (in_array($prodi->prodi_id, $prodi_value))
-                                                checked @endif
-                                        @endif
-                                    />
-                                    <label for="prodi_{{ $prodi->prodi_id }}" class="mr-2">
-                                        {{ $prodi->prodi_code }} - {{ $prodi->prodi_name }}
-                                    </label>
-                                </div>
-                            @endforeach
-                        </th>
-                    </tr>
+                <div class="form-group row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Kode Kegiatan</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control form-control-sm" id="kode_kegiatan"
+                            name="kode_kegiatan"
+                            value="{{ isset($data->kode_kegiatan) ? $data->kode_kegiatan : 'diisi otomatis' }}"
+                            readonly />
+                    </div>
                 </div>
-                <div class="form-group required row flex-column mb-2">
-                    <label class="col-sm-3 control-label col-form-label text-left">Periode</label>
-                    <tr>
-                        <th class="text-center pr-0">
-                            @foreach ($periodes as $periode)
-                                @php
-                                    $periode_value = json_decode($data->periode_id);
-                                @endphp
-                                <div class="icheck-success d-inline">
-                                    <input name="periode_arr[]" value={{ $periode->periode_id }} type="checkbox"
-                                        onchange="updateCheck(this,'.r_act')" class="r_act"
-                                        id="periode_{{ $periode->periode_id }}"
-                                        @if (isset($data->periode_id)) @if (in_array($periode->periode_id, $periode_value))
+                <div class="form-group row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Posisi Lowongan</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control form-control-sm" id="posisi_lowongan"
+                            name="posisi_lowongan"
+                            value="{{ isset($data->posisi_lowongan) ? $data->posisi_lowongan : 'diisi otomatis' }}"
+                            readonly />
+                    </div>
+                </div>
+                <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Prodi</label>
+                    <div class="col-sm-9 d-flex flex-column text-left pr-0">
+                        @foreach ($prodis as $prodi)
+                            @php
+                                $prodi_value = json_decode($data->prodi_id);
+                            @endphp
+                            <div class="icheck-success d-inline">
+                                <input name="prodi_arr[]" value={{ $prodi->prodi_id }} type="checkbox"
+                                    onchange="updateCheck(this,'.r_act')" class="r_act"
+                                    id="prodi_{{ $prodi->prodi_id }}"
+                                    @if (isset($data->prodi_id)) @if (in_array($prodi->prodi_id, $prodi_value))
                                                 checked @endif
-                                        @endif
-                                    />
-                                    <label for="periode_{{ $periode->periode_id }}" class="mr-2">
-                                        {{ $periode->semester }} - {{ $periode->tahun_ajar }}
-                                    </label>
-                                </div>
-                            @endforeach
-                        </th>
-                    </tr>
+                                    @endif
+                                />
+                                <label for="prodi_{{ $prodi->prodi_id }}" class="mr-2">
+                                    {{ $prodi->prodi_code }} - {{ $prodi->prodi_name }}
+                                </label>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label ">Periode</label>
+                    <div class="col-sm-9 d-flex flex-column text-left pr-0">
+                        @foreach ($periodes as $periode)
+                            @php
+                                $periode_value = json_decode($data->periode_id);
+                            @endphp
+                            <div class="icheck-success d-inline">
+                                <input name="periode_arr[]" value={{ $periode->periode_id }} type="checkbox"
+                                    onchange="updateCheck(this,'.r_act')" class="r_act"
+                                    id="periode_{{ $periode->periode_id }}"
+                                    @if (isset($data->periode_id)) @if (in_array($periode->periode_id, $periode_value))
+                                                checked @endif
+                                    @endif
+                                />
+                                <label for="periode_{{ $periode->periode_id }}" class="mr-2">
+                                    {{ $periode->semester }} - {{ $periode->tahun_ajar }}
+                                </label>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
                 {{-- <div class="form-group required row mb-2">
                     <label class="col-sm-3 control-label col-form-label">Kode Kegiatan</label>
