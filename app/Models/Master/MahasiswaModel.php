@@ -41,4 +41,9 @@ class MahasiswaModel extends AppModel
         //  Model => columnFK
         // 'App\Models\Master\DosenModel' => 'jurusan_id'
     ];
+
+    public function prodi()
+    {
+        return $this->belongsTo(ProdiModel::class, 'prodi_id', 'prodi_id');
+    }
 }

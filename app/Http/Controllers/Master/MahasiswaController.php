@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
 use App\Models\Master\MahasiswaModel;
+use App\Models\Master\ProdiModel;
 use App\Models\Setting\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -54,8 +55,11 @@ class MahasiswaController extends Controller
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data  = MahasiswaModel::selectRaw("prodi_id, user_id, nim, nama_mahasiswa, email_mahasiswa, no_hp, jenis_kelamin, kelas, nama_ortu, hp_ortu");
+        $data  = MahasiswaModel::selectRaw("mahasiswa_id, prodi_id, user_id, nim, nama_mahasiswa, email_mahasiswa, no_hp, jenis_kelamin, kelas, nama_ortu, hp_ortu")
+            ->with('prodi:prodi_id,prodi_id,prodi_name,prodi_code');
         //append provinsi and kota to $data with value "dummy"
+
+        // dd($data);
 
         return DataTables::of($data)
             ->addIndexColumn()
@@ -73,8 +77,11 @@ class MahasiswaController extends Controller
             'title' => 'Tambah ' . $this->menuTitle
         ];
 
+        $prodis = ProdiModel::select('prodi_id', 'prodi_name', 'prodi_code')->get();
+
         return view($this->viewPath . 'action')
-            ->with('page', (object) $page);
+            ->with('page', (object) $page)
+            ->with('prodis', $prodis);
     }
 
 
@@ -87,15 +94,12 @@ class MahasiswaController extends Controller
 
             $rules = [
                 'prodi_id' => 'required',
-                'user_id' => 'required',
                 'nim'  => 'required',
                 'nama_mahasiswa' => 'required',
                 'email_mahasiswa' => 'required',
                 'no_hp' => 'required',
                 'jenis_kelamin' => 'required',
                 'kelas' => 'required',
-                'nama_ortu' => 'required',
-                'hp_ortu' => 'required',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -115,7 +119,7 @@ class MahasiswaController extends Controller
                 'password' => Hash::make($request->nim),
                 'group_id' => 4,
                 'is_active' => 1,
-                'email' => $request->email,
+                'email' => $request->email_mahasiswa,
             ];
             $insert = UserModel::create($user);
 
@@ -147,11 +151,14 @@ class MahasiswaController extends Controller
 
         $data = MahasiswaModel::find($id);
 
+        $prodis = ProdiModel::select('prodi_id', 'prodi_name', 'prodi_code')->get();
+
         return (!$data) ? $this->showModalError() :
             view($this->viewPath . 'action')
             ->with('page', (object) $page)
             ->with('id', $id)
-            ->with('data', $data);
+            ->with('data', $data)
+            ->with('prodis', $prodis);
     }
 
 
@@ -164,15 +171,12 @@ class MahasiswaController extends Controller
 
             $rules = [
                 'prodi_id' => 'required',
-                'user_id' => 'required',
                 'nim'  => 'required',
                 'nama_mahasiswa' => 'required',
                 'email_mahasiswa' => 'required',
                 'no_hp' => 'required',
                 'jenis_kelamin' => 'required',
                 'kelas' => 'required',
-                'nama_ortu' => 'required',
-                'hp_ortu' => 'required',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -187,6 +191,15 @@ class MahasiswaController extends Controller
             }
 
             $res = MahasiswaModel::updateData($id, $request);
+
+            $id_mahasiswa = MahasiswaModel::where('mahasiswa_id', $id)->first();
+
+            $res_user = UserModel::where('user_id', $id_mahasiswa->user_id)->update([
+                'username' => $request->nim,
+                'name' => $request->nama_mahasiswa,
+                'email' => $request->email_mahasiswa,
+                'password' => Hash::make($request->nim),
+            ]);
 
             return response()->json([
                 'stat' => $res,

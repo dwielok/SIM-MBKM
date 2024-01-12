@@ -97,6 +97,7 @@ class PerusahaanController extends Controller
                 'kota_id' => 'required',
                 'profil_perusahaan' => 'required',
                 'website' => 'required',
+                'email' => 'required|email|unique:m_perusahaan,email',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -173,6 +174,7 @@ class PerusahaanController extends Controller
                 'kota_id' => 'required',
                 'profil_perusahaan' => 'required',
                 'website' => 'required',
+                'email' => 'required'
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -187,6 +189,13 @@ class PerusahaanController extends Controller
             }
 
             $res = PerusahaanModel::updateData($id, $request);
+
+            $id_perusahaan = PerusahaanModel::where('perusahaan_id', $id)->first();
+
+            $res_user = UserModel::where('user_id', $id_perusahaan->user_id)->update([
+                'name' => $request->nama_perusahaan,
+                'email' => $request->email,
+            ]);
 
             return response()->json([
                 'stat' => $res,

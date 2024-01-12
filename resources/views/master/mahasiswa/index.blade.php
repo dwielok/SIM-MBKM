@@ -67,7 +67,7 @@
                         "bSearchable": false
                     },
                     {
-                        "mData": "prodi",
+                        "mData": "prodi.prodi_name",
                         "sClass": "",
                         "sWidth": "10%",
                         "bSortable": true,
@@ -114,7 +114,7 @@
                         "sWidth": "15%",
                         "bSortable": true,
                         "bSearchable": true
-                    // },
+                    },
                     // {
                     //     "mData": "nama_ortu",
                     //     "sClass": "",
@@ -129,7 +129,32 @@
                     //     "bSortable": true,
                     //     "bSearchable": true
                     // },
+                    {
+                        "mData": "mahasiswa_id",
+                        "sClass": "text-center pr-2",
+                        "sWidth": "10%",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mRender": function(data, type, row, meta) {
+                            console.log(row);
+                            var buttons = '';
+                            @if ($allowAccess->update)
+                                // if (row.status == 0) {
+                                //     buttons +=
+                                //         `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
+                                //         `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_reject" class="ajax_modal btn btn-xs btn-danger tooltips text-white" data-placement="left" data-original-title="Reject" ><i class="fa fa-times"></i></a> `;
+                                // }
+                                buttons +=
+                                    `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/edit" class="ajax_modal btn btn-xs btn-warning tooltips text-secondary" data-placement="left" data-original-title="Edit Data" ><i class="fa fa-edit"></i></a> `;
+                            @endif
+                            @if ($allowAccess->delete)
+                                buttons +=
+                                    `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/delete" class="ajax_modal btn btn-xs btn-danger tooltips text-light" data-placement="left" data-original-title="Hapus Data" ><i class="fa fa-trash"></i></a> `;
+                            @endif
 
+                            return buttons;
+                        }
+                    }
                 ],
                 "fnDrawCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     $('a', this.fnGetNodes()).tooltip();
