@@ -104,9 +104,12 @@
                     {
                         "mData": "jenis_kelamin",
                         "sClass": "",
-                        "sWidth": "20%",
+                        "sWidth": "15%",
                         "bSortable": true,
-                        "bSearchable": true
+                        "bSearchable": true,
+                        "mRender": function(data, type, row, meta) {
+                            return data == 1 ? 'Laki-laki' : 'Perempuan';
+                        }
                     },
                     {
                         "mData": "kelas",
