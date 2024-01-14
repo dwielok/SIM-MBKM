@@ -390,7 +390,7 @@ class KegiatanController extends Controller
         $this->authAction('update', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = KegiatanPerusahaanModel::find($id);
+        $data = KegiatanPerusahaanModel::find($kegiatan_id);
 
         return (!$data) ? $this->showModalError() :
             $this->showModalConfirm($this->menuUrl . '/' . $id . '/kegiatan/' . $kegiatan_id . '/approve', [
@@ -403,7 +403,7 @@ class KegiatanController extends Controller
         $this->authAction('update', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = KegiatanPerusahaanModel::find($id);
+        $data = KegiatanPerusahaanModel::find($kegiatan_id);
 
         return (!$data) ? $this->showModalError() :
             $this->showModalReject($this->menuUrl . '/' . $id . '/kegiatan/' . $kegiatan_id . '/reject', [
