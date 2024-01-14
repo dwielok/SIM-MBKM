@@ -365,27 +365,27 @@ class KegiatanController extends Controller
     }
 
 
-    public function confirm($id, $kegiatan_id)
+    public function confirm($id)
     {
         $this->authAction('delete', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = KegiatanPerusahaanModel::find($kegiatan_id);
+        $data = KegiatanPerusahaanModel::find($id);
 
         return (!$data) ? $this->showModalError() :
-            $this->showModalConfirm($this->menuUrl . '/destroy', [
+            $this->showModalConfirm($this->menuUrl  . '/' . $id, [
                 'Nama Kegiatan' => $data->posisi_lowongan,
             ]);
     }
 
-    public function destroy(Request $request, $id, $kegiatan_id)
+    public function destroy(Request $request, $id)
     {
         $this->authAction('delete', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         if ($request->ajax() || $request->wantsJson()) {
 
-            $res = KegiatanPerusahaanModel::deleteData($kegiatan_id);
+            $res = KegiatanPerusahaanModel::deleteData($id);
 
             return response()->json([
                 'stat' => $res,
