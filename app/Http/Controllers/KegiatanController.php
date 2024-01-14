@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Master;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Master\JenisMagangModel;
 use App\Models\Master\KegiatanPerusahaanModel;
 use App\Models\Master\PeriodeModel;
+use App\Models\Master\PerusahaanModel;
 use App\Models\Master\ProdiModel;
 use App\Models\Master\TipeKegiatanModel;
 use Illuminate\Http\Request;
@@ -18,30 +18,30 @@ class KegiatanController extends Controller
 {
     public function __construct()
     {
-        $this->menuCode  = 'MASTER.PERUSAHAAN';
-        $this->menuUrl   = url('master/perusahaan');     // set URL untuk menu ini
+        $this->menuCode  = 'KEGIATAN';
+        $this->menuUrl   = url('kegiatan');     // set URL untuk menu ini
         $this->menuTitle = 'Kegiatan';                       // set nama menu
         $this->viewPath  = 'master.kegiatan.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
     }
 
-    public function index($id)
+    public function index()
     {
         $this->authAction('read');
         $this->authCheckDetailAccess();
 
         $breadcrumb = [
             'title' => $this->menuTitle,
-            'list'  => ['Data Master', 'Perusahaan', 'Kegiatan']
+            'list'  => ['Data Master', 'Kegiatan']
         ];
 
         $activeMenu = [
-            'l1' => 'master',
-            'l2' => 'master-perusahaan',
+            'l1' => 'kegiatan',
+            'l2' => null,
             'l3' => null
         ];
 
         $page = [
-            'url' => $this->menuUrl . '/' . $id . '/kegiatan',
+            'url' => $this->menuUrl,
             'title' => 'Daftar ' . $this->menuTitle
         ];
 
@@ -50,17 +50,19 @@ class KegiatanController extends Controller
             ->with('activeMenu', (object) $activeMenu)
             ->with('page', (object) $page)
             ->with('allowAccess', $this->authAccessKey())
-            ->with('id', $id)
-            ->with('koordinator', true);
+            ->with('koordinator', false);
     }
 
-    public function list(Request $request, $id)
+    public function list(Request $request)
     {
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
+        $auth = auth()->user();
+        $id_perusahaan = PerusahaanModel::where('user_id', $auth->user_id)->first()->perusahaan_id;
+
         $data  = KegiatanPerusahaanModel::selectRaw("kegiatan_perusahaan_id, kode_kegiatan, posisi_lowongan, deskripsi, kuota, mulai_kegiatan, akhir_kegiatan, status, keterangan")
-            ->where('perusahaan_id', $id);
+            ->where('perusahaan_id', $id_perusahaan);
         //combine mulai_kegiatan and akhir_kegiatan, and calculate to (x bulan) to periode_kegiatan
         $data->addSelect(DB::raw("CONCAT(mulai_kegiatan, ' - ', akhir_kegiatan, ' (', TIMESTAMPDIFF(MONTH, mulai_kegiatan, akhir_kegiatan), ' bulan)') as periode_kegiatan"));
 
@@ -70,13 +72,13 @@ class KegiatanController extends Controller
     }
 
 
-    public function create($id)
+    public function create()
     {
         $this->authAction('create', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         $page = [
-            'url' => $this->menuUrl . '/' . $id . '/kegiatan/store',
+            'url' => $this->menuUrl,
             'title' => 'Tambah ' . $this->menuTitle
         ];
 
@@ -95,11 +97,11 @@ class KegiatanController extends Controller
             ->with('tipes', $tipes)
             ->with('jenises', $jenises)
             ->with('periodes', $periodes)
-            ->with('koordinator', true);
+            ->with('koordinator', false);
     }
 
 
-    public function store(Request $request, $id)
+    public function store(Request $request)
     {
         $this->authAction('create', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
@@ -126,7 +128,10 @@ class KegiatanController extends Controller
                 ]);
             }
 
-            $request['perusahaan_id'] = $id;
+            $auth = auth()->user();
+            $id_perusahaan = PerusahaanModel::where('user_id', $auth->user_id)->first()->perusahaan_id;
+
+            $request['perusahaan_id'] = $id_perusahaan;
             $role = auth()->user()->group_id;
             $request['status'] = $role == 1 ? 1 : 0;
             $kode_kegiatan = 'K' . rand(100000, 999999);
@@ -143,17 +148,17 @@ class KegiatanController extends Controller
         return redirect('/');
     }
 
-    public function edit($id, $kegiatan_id)
+    public function edit($id)
     {
         $this->authAction('update', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         $page = [
-            'url' => $this->menuUrl . '/' . $id . '/kegiatan/' . $kegiatan_id . '/update',
+            'url' => $this->menuUrl . '/update',
             'title' => 'Edit ' . $this->menuTitle
         ];
 
-        $data = KegiatanPerusahaanModel::find($kegiatan_id);
+        $data = KegiatanPerusahaanModel::find($id);
 
         $tipes = TipeKegiatanModel::selectRaw("tipe_kegiatan_id, nama_kegiatan")
             ->get();
@@ -169,7 +174,7 @@ class KegiatanController extends Controller
             ->get();
 
         return (!$data) ? $this->showModalError() :
-            view($this->viewPath . 'edit')
+            view($this->viewPath . 'action')
             ->with('page', (object) $page)
             ->with('id', $id)
             ->with('data', $data)
@@ -177,11 +182,11 @@ class KegiatanController extends Controller
             ->with('jenises', $jenises)
             ->with('periodes', $periodes)
             ->with('prodis', $prodis)
-            ->with('koordinator', true);
+            ->with('koordinator', false);
     }
 
 
-    public function update(Request $request, $id, $kegiatan_id)
+    public function update(Request $request, $id)
     {
         // dd($request->all());
         $this->authAction('update', 'json');
@@ -190,15 +195,14 @@ class KegiatanController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
 
             $rules = [
-                // 'tipe_kegiatan_id' => 'required',
-                // 'periode_id' => 'required',
-                // 'posisi_lowongan' => 'required|string',
-                // 'deskripsi' => 'required|string',
-                // 'kuota' => 'required|numeric',
-                // 'mulai_kegiatan' => 'required|date',
-                // 'akhir_kegiatan' => 'required|date',
-                'periode_arr' => 'required',
-                'prodi_arr' => 'required',
+                'tipe_kegiatan_id' => 'required',
+                'posisi_lowongan' => 'required|string',
+                'deskripsi' => 'required|string',
+                'kuota' => 'required|numeric',
+                'mulai_kegiatan' => 'required|date',
+                'akhir_kegiatan' => 'required|date',
+                // 'periode_arr' => 'required',
+                // 'prodi_arr' => 'required',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -212,11 +216,7 @@ class KegiatanController extends Controller
                 ]);
             }
 
-            $request['periode_id'] = json_encode($request->periode_arr);
-            $request['prodi_id'] = json_encode($request->prodi_arr);
-            unset($request['periode_arr']);
-            unset($request['prodi_arr']);
-            $res = KegiatanPerusahaanModel::updateData($kegiatan_id, $request);
+            $res = KegiatanPerusahaanModel::updateData($id, $request);
 
             return response()->json([
                 'stat' => $res,
@@ -228,12 +228,12 @@ class KegiatanController extends Controller
         return redirect('/');
     }
 
-    public function show($id, $kegiatan_id)
+    public function show($id)
     {
         $this->authAction('read', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $kegiatan = KegiatanPerusahaanModel::where('kegiatan_perusahaan_id', $kegiatan_id)
+        $kegiatan = KegiatanPerusahaanModel::where('kegiatan_perusahaan_id', $id)
             ->with('tipe_kegiatan')
             ->first();
 
@@ -247,17 +247,28 @@ class KegiatanController extends Controller
         //change to 3.4 bulan example
         $kegiatan->durasi = number_format($kegiatan->durasi, 1) . ' bulan';
 
-        $kegiatan->prodi = ProdiModel::whereIn('prodi_id', json_decode($kegiatan->prodi_id))
-            ->pluck('prodi_name')
-            ->implode(', ');
+        //if is array prodi_id
+        if (is_array(json_decode($kegiatan->prodi_id))) {
+            $kegiatan->prodi = ProdiModel::whereIn('prodi_id', json_decode($kegiatan->prodi_id))
+                ->pluck('prodi_name')
+                ->implode(', ');
+        } else {
+            $kegiatan->prodi = '-';
+        }
 
         //periode semester - tahun_ajar
-        $kegiatan->periode = PeriodeModel::whereIn('periode_id', json_decode($kegiatan->periode_id))
-            ->get();
 
-        $kegiatan->periode = $kegiatan->periode->map(function ($item) {
-            return $item->semester . ' - ' . $item->tahun_ajar;
-        })->implode(', ');
+        //if is array periode_id
+        if (is_array(json_decode($kegiatan->periode_id))) {
+            $kegiatan->periode = PeriodeModel::whereIn('periode_id', json_decode($kegiatan->periode_id))
+                ->get();
+
+            $kegiatan->periode = $kegiatan->periode->map(function ($item) {
+                return $item->semester . ' - ' . $item->tahun_ajar;
+            })->implode(', ');
+        } else {
+            $kegiatan->periode = '-';
+        }
 
         $datas = [
             [
@@ -272,7 +283,7 @@ class KegiatanController extends Controller
             ],
             [
                 "title" => "Jenis Magang",
-                "value" => $kegiatan->jenis_magang->nama_magang,
+                "value" => $kegiatan->jenis_magang->nama_magang ?? '-',
                 "bold" => false
             ],
             [
@@ -362,7 +373,7 @@ class KegiatanController extends Controller
         $data = KegiatanPerusahaanModel::find($kegiatan_id);
 
         return (!$data) ? $this->showModalError() :
-            $this->showModalConfirm($this->menuUrl . '/' . $id . '/kegiatan/' . $kegiatan_id . '/destroy', [
+            $this->showModalConfirm($this->menuUrl . '/destroy', [
                 'Nama Kegiatan' => $data->posisi_lowongan,
             ]);
     }
@@ -380,73 +391,6 @@ class KegiatanController extends Controller
                 'stat' => $res,
                 'mc' => $res, // close modal
                 'msg' => KegiatanPerusahaanModel::getDeleteMessage()
-            ]);
-        }
-
-        return redirect('/');
-    }
-    public function confirm_approve($id, $kegiatan_id)
-    {
-        $this->authAction('update', 'modal');
-        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
-
-        $data = KegiatanPerusahaanModel::find($id);
-
-        return (!$data) ? $this->showModalError() :
-            $this->showModalConfirm($this->menuUrl . '/' . $id . '/kegiatan/' . $kegiatan_id . '/approve', [
-                'Nama' => "$data->posisi_lowongan",
-            ], 'Konfirmasi Approve Kegiatan', 'Apakah anda yakin ingin approve kegiatan berikut:', 'Ya, Approve', 'PUT');
-    }
-
-    public function confirm_reject($id, $kegiatan_id)
-    {
-        $this->authAction('update', 'modal');
-        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
-
-        $data = KegiatanPerusahaanModel::find($id);
-
-        return (!$data) ? $this->showModalError() :
-            $this->showModalReject($this->menuUrl . '/' . $id . '/kegiatan/' . $kegiatan_id . '/reject', [
-                'Nama' => "$data->posisi_lowongan",
-            ], 'Konfirmasi Reject Kegiatan', 'Apakah anda yakin ingin reject kegiatan berikut:', 'Ya, Reject', 'PUT');
-    }
-
-    public function approve(Request $request, $id, $kegiatan_id)
-    {
-        $this->authAction('update', 'json');
-        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
-
-        if ($request->ajax() || $request->wantsJson()) {
-
-            $request['status'] = 1; // [0: pending, 1: approved, 2: rejected]
-            $res = KegiatanPerusahaanModel::updateData($kegiatan_id, $request);
-
-            return response()->json([
-                'stat' => $res,
-                'mc' => $res, // close modal
-                'msg' => ($res) ? 'Kegiatan berhasil diapprove.' : 'Kegiatan gagal diapprove.'
-            ]);
-        }
-
-        return redirect('/');
-    }
-
-    public function reject(Request $request, $id, $kegiatan_id)
-    {
-        $this->authAction('update', 'json');
-        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
-
-        if ($request->ajax() || $request->wantsJson()) {
-
-            $request['status'] = 2; // [0: pending, 1: approved, 2: rejected]
-            $request['keterangan'] = $request->reason;
-            unset($request['reason']);
-            $res = KegiatanPerusahaanModel::updateData($kegiatan_id, $request);
-
-            return response()->json([
-                'stat' => $res,
-                'mc' => $res, // close modal
-                'msg' => ($res) ? 'Kegiatan berhasil direject.' : 'Kegiatan gagal direject.'
             ]);
         }
 

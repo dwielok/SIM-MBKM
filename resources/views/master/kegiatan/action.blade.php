@@ -50,22 +50,24 @@ $is_edit = isset($data);
 
                     </div>
                 </div>
-                <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Periode</label>
-                    <div class="col-sm-9">
-                        <select data-testid="partner-category" class="form-control form-control-sm" id="periode_id"
-                            name="periode_id" value="{{ isset($data->periode_id) ? $data->periode_id : '' }}">
-                            <option disabled selected value="">Pilih opsi</option>
-                            @foreach ($periodes as $periode)
-                                <option value="{{ $periode->periode_id }}"
-                                    {{ isset($data->periode_id) ? ($periode->periode_id == $data->periode_id ? 'selected' : '') : '' }}>
-                                    {{ $periode->semester }} - {{ $periode->tahun_ajar }}
-                                </option>
-                            @endforeach
-                        </select>
+                {{-- @if ($koordinator)
+                    <div class="form-group required row mb-2">
+                        <label class="col-sm-3 control-label col-form-label">Periode</label>
+                        <div class="col-sm-9">
+                            <select data-testid="partner-category" class="form-control form-control-sm" id="periode_id"
+                                name="periode_id" value="{{ isset($data->periode_id) ? $data->periode_id : '' }}">
+                                <option disabled selected value="">Pilih opsi</option>
+                                @foreach ($periodes as $periode)
+                                    <option value="{{ $periode->periode_id }}"
+                                        {{ isset($data->periode_id) ? ($periode->periode_id == $data->periode_id ? 'selected' : '') : '' }}>
+                                        {{ $periode->semester }} - {{ $periode->tahun_ajar }}
+                                    </option>
+                                @endforeach
+                            </select>
 
+                        </div>
                     </div>
-                </div>
+                @endif --}}
                 <div class="form-group required row mb-2">
                     <label class="col-sm-3 control-label col-form-label">Kode Kegiatan</label>
                     <div class="col-sm-9">
