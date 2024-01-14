@@ -412,6 +412,7 @@ class KegiatanController extends Controller
                 "bold" => false
             ]
         ];
+        
 
         // if status != 2 then remove last index
         if ($kegiatan->status != 2) {

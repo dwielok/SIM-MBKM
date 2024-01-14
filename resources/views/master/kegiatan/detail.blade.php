@@ -17,6 +17,9 @@
                                 {!! $data->value !!}
                             @elseif (strpos($data->value, 'img') !== false)
                                 {!! $data->value !!}
+                                {{-- else if includes <br /> --}}
+                            @elseif (strpos($data->value, '<br />') !== false)
+                                {!! $data->value !!}
                             @else
                                 @if ($data->color)
                                     <span class="badge badge-{{ $data->color }}">{{ $data->value }}</span>
