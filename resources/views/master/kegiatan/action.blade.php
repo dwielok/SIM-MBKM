@@ -78,6 +78,32 @@ $is_edit = isset($data);
                     </div>
                 </div>
                 <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Prodi</label>
+                    <div class="col-sm-9 d-flex flex-column text-left pr-0">
+                        @foreach ($prodis as $prodi)
+                            @php
+                                if (isset($data->prodi_id)) {
+                                    $prodi_value = json_decode($data->prodi_id);
+                                } else {
+                                    $prodi_value = [];
+                                }
+                            @endphp
+                            <div class="icheck-success d-inline">
+                                <input name="prodi_arr[]" value={{ $prodi->prodi_id }} type="checkbox"
+                                    onchange="updateCheck(this,'.r_act')" class="r_act"
+                                    id="prodi_{{ $prodi->prodi_id }}"
+                                    @if (isset($data->prodi_id)) @if (in_array($prodi->prodi_id, $prodi_value))
+                                                checked @endif
+                                    @endif
+                                />
+                                <label for="prodi_{{ $prodi->prodi_id }}" class="mr-2">
+                                    {{ $prodi->prodi_code }} - {{ $prodi->prodi_name }}
+                                </label>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="form-group required row mb-2">
                     <label class="col-sm-3 control-label col-form-label">Posisi Lowongan</label>
                     <div class="col-sm-9">
                         <input type="text" class="form-control form-control-sm" id="posisi_lowongan"
@@ -99,6 +125,18 @@ $is_edit = isset($data);
                     </div>
                 </div>
                 <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Kualifikasi</label>
+                    <div class="col-sm-9">
+                        <textarea type="text" class="form-control form-control-sm" id="kualifikasi" name="kualifikasi">{{ isset($data->kualifikasi) ? $data->kualifikasi : '' }}</textarea>
+                    </div>
+                </div>
+                <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Fasilitas/Benefit</label>
+                    <div class="col-sm-9">
+                        <textarea type="text" class="form-control form-control-sm" id="fasilitas" name="fasilitas">{{ isset($data->fasilitas) ? $data->fasilitas : '' }}</textarea>
+                    </div>
+                </div>
+                <div class="form-group required row mb-2">
                     <label class="col-sm-3 control-label col-form-label">Mulai Kegiatan</label>
                     <div class="col-sm-9">
                         <input type="date" class="form-control form-control-sm" id="mulai_kegiatan"
@@ -113,6 +151,40 @@ $is_edit = isset($data);
                             name="akhir_kegiatan"
                             value="{{ isset($data->akhir_kegiatan) ? $data->akhir_kegiatan : '' }}" />
                     </div>
+                </div>
+                <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Batas Pendaftaran</label>
+                    <div class="col-sm-9">
+                        <input type="date" class="form-control form-control-sm" id="batas_pendaftaran"
+                            name="batas_pendaftaran"
+                            value="{{ isset($data->batas_pendaftaran) ? $data->batas_pendaftaran : '' }}" />
+                    </div>
+                </div>
+                <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Contact Person (Nama-No HP)</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control form-control-sm" id="contact_person"
+                            name="contact_person"
+                            value="{{ isset($data->contact_person) ? $data->contact_person : '' }}" />
+                    </div>
+                </div>
+                <div class="form-group row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Flyer</label>
+                    <div class="col-sm-9">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input form-control-sm" id="file"
+                                name="file" />
+                            <label class="custom-file-label" for="customFile">Choose file</label>
+                        </div>
+                        <div class="mt-2">
+                            @if (isset($data->flyer))
+                                <a href="{{ asset('assets/' . $data->flyer) }}" target="_blank">
+                                    <img src="{{ asset('assets/' . $data->flyer) }}" alt="flyer" width="100px">
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <div class="modal-footer">

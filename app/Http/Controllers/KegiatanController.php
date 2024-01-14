@@ -9,6 +9,7 @@ use App\Models\Master\PerusahaanModel;
 use App\Models\Master\ProdiModel;
 use App\Models\Master\TipeKegiatanModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use stdClass;
@@ -91,12 +92,15 @@ class KegiatanController extends Controller
         $periodes = PeriodeModel::selectRaw("periode_id, semester, tahun_ajar")
             ->get();
 
+        $prodis = ProdiModel::selectRaw("prodi_id, prodi_name, prodi_code")
+            ->get();
 
         return view($this->viewPath . 'action')
             ->with('page', (object) $page)
             ->with('tipes', $tipes)
             ->with('jenises', $jenises)
             ->with('periodes', $periodes)
+            ->with('prodis', $prodis)
             ->with('koordinator', false);
     }
 
@@ -115,6 +119,11 @@ class KegiatanController extends Controller
                 'kuota' => 'required|numeric',
                 'mulai_kegiatan' => 'required|date',
                 'akhir_kegiatan' => 'required|date',
+                'batas_pendaftaran' => 'required|date',
+                'contact_person' => 'required|string',
+                'kualifikasi' => 'required|string',
+                'fasilitas' => 'required|string',
+                'flyer' => 'nullable|file|mimes:pdf|max:2048',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -131,12 +140,32 @@ class KegiatanController extends Controller
             $auth = auth()->user();
             $id_perusahaan = PerusahaanModel::where('user_id', $auth->user_id)->first()->perusahaan_id;
 
+            // $request['periode_id'] = json_encode($request->periode_arr);
+            $request['prodi_id'] = json_encode($request->prodi_arr);
+            // unset($request['periode_arr']);
+            unset($request['prodi_arr']);
+
+            $file = $request->file('file');
+            if ($file) {
+                $fileName = 'flyer_' . time() . '.' . $file->getClientOriginalExtension();
+                //move to public/assets/
+                $file->move(public_path('assets/flyer'), $fileName);
+                $request['flyer'] = $fileName;
+            } else {
+                $request['flyer'] = null;
+            }
+
+            // unset($request['file']);
+
+            //remove file from request
+
+
             $request['perusahaan_id'] = $id_perusahaan;
             $role = auth()->user()->group_id;
             $request['status'] = $role == 1 ? 1 : 0;
             $kode_kegiatan = 'K' . rand(100000, 999999);
             $request['kode_kegiatan'] = $kode_kegiatan;
-            $res = KegiatanPerusahaanModel::insertData($request);
+            $res = KegiatanPerusahaanModel::insertData($request, ['file']);
 
             return response()->json([
                 'stat' => $res,
@@ -203,7 +232,17 @@ class KegiatanController extends Controller
                 'akhir_kegiatan' => 'required|date',
                 // 'periode_arr' => 'required',
                 // 'prodi_arr' => 'required',
+                'batas_pendaftaran' => 'required|date',
+                'contact_person' => 'required|string',
+                'kualifikasi' => 'required|string',
+                'fasilitas' => 'required|string',
+                'flyer' => 'nullable|file|mimes:pdf|max:2048',
             ];
+
+            // $request['periode_id'] = json_encode($request->periode_arr);
+            $request['prodi_id'] = json_encode($request->prodi_arr);
+            // unset($request['periode_arr']);
+            unset($request['prodi_arr']);
 
             $validator = Validator::make($request->all(), $rules);
 
@@ -307,8 +346,23 @@ class KegiatanController extends Controller
                 "bold" => false
             ],
             [
+                "title" => "Kualifikasi",
+                "value" => $kegiatan->kualifikasi ?? '-',
+                "bold" => false
+            ],
+            [
+                "title" => "Fasilitas/Benefit",
+                "value" => $kegiatan->fasilitas ?? '-',
+                "bold" => false
+            ],
+            [
                 "title" => "Kuota",
                 "value" => $kegiatan->kuota,
+                "bold" => false
+            ],
+            [
+                "title" => "Batas Pendaftaran",
+                "value" => $kegiatan->batas_pendaftaran,
                 "bold" => false
             ],
             [
@@ -324,6 +378,11 @@ class KegiatanController extends Controller
             [
                 "title" => "Durasi",
                 "value" => $kegiatan->durasi,
+                "bold" => true
+            ],
+            [
+                "title" => "Flyer",
+                "value" => $kegiatan->flyer ? '<a href="' . url('assets/flyer/' . $kegiatan->flyer) . '" target="_blank">Lihat</a>' : '-',
                 "bold" => true
             ],
             [

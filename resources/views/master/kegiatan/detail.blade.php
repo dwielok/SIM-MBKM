@@ -12,10 +12,17 @@
                         <th class="w-25 text-right">{{ $data->title }}</th>
                         <th class="w-1">:</th>
                         <td class="w-74 @if ($data->bold) font-weight-bold @endif">
-                            @if ($data->color)
-                                <span class="badge badge-{{ $data->color }}">{{ $data->value }}</span>
+                            {{-- //if $data->value has a href --}}
+                            @if (strpos($data->value, 'href') !== false)
+                                {!! $data->value !!}
+                            @elseif (strpos($data->value, 'img') !== false)
+                                {!! $data->value !!}
                             @else
-                                {{ $data->value }}
+                                @if ($data->color)
+                                    <span class="badge badge-{{ $data->color }}">{{ $data->value }}</span>
+                                @else
+                                    {{ $data->value }}
+                                @endif
                             @endif
                         </td>
                     </tr>

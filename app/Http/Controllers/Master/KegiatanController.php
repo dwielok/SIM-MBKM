@@ -89,12 +89,15 @@ class KegiatanController extends Controller
         $periodes = PeriodeModel::selectRaw("periode_id, semester, tahun_ajar")
             ->get();
 
+        $prodis = ProdiModel::selectRaw("prodi_id, prodi_name, prodi_code")
+            ->get();
 
         return view($this->viewPath . 'action')
             ->with('page', (object) $page)
             ->with('tipes', $tipes)
             ->with('jenises', $jenises)
             ->with('periodes', $periodes)
+            ->with('prodis', $prodis)
             ->with('koordinator', true);
     }
 
@@ -113,6 +116,11 @@ class KegiatanController extends Controller
                 'kuota' => 'required|numeric',
                 'mulai_kegiatan' => 'required|date',
                 'akhir_kegiatan' => 'required|date',
+                'batas_pendaftaran' => 'required|date',
+                'contact_person' => 'required|string',
+                'kualifikasi' => 'required|string',
+                'fasilitas' => 'required|string',
+                'flyer' => 'nullable|file|mimes:pdf|max:2048',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -126,12 +134,26 @@ class KegiatanController extends Controller
                 ]);
             }
 
+            $file = $request->file('file');
+            if ($file) {
+                $fileName = 'flyer_' . time() . '.' . $file->getClientOriginalExtension();
+                //move to public/assets/
+                $file->move(public_path('assets/flyer'), $fileName);
+                $request['flyer'] = $fileName;
+            } else {
+                $request['flyer'] = null;
+            }
+
+            // $request['periode_id'] = json_encode($request->periode_arr);
+            $request['prodi_id'] = json_encode($request->prodi_arr);
+            // unset($request['periode_arr']);
+            unset($request['prodi_arr']);
             $request['perusahaan_id'] = $id;
             $role = auth()->user()->group_id;
             $request['status'] = $role == 1 ? 1 : 0;
             $kode_kegiatan = 'K' . rand(100000, 999999);
             $request['kode_kegiatan'] = $kode_kegiatan;
-            $res = KegiatanPerusahaanModel::insertData($request);
+            $res = KegiatanPerusahaanModel::insertData($request, ['file']);
 
             return response()->json([
                 'stat' => $res,
@@ -272,7 +294,7 @@ class KegiatanController extends Controller
             ],
             [
                 "title" => "Jenis Magang",
-                "value" => $kegiatan->jenis_magang->nama_magang,
+                "value" => $kegiatan->jenis_magang->nama_magang ?? '-',
                 "bold" => false
             ],
             [
@@ -296,8 +318,23 @@ class KegiatanController extends Controller
                 "bold" => false
             ],
             [
+                "title" => "Kualifikasi",
+                "value" => $kegiatan->kualifikasi ?? '-',
+                "bold" => false
+            ],
+            [
+                "title" => "Fasilitas/Benefit",
+                "value" => $kegiatan->fasilitas ?? '-',
+                "bold" => false
+            ],
+            [
                 "title" => "Kuota",
                 "value" => $kegiatan->kuota,
+                "bold" => false
+            ],
+            [
+                "title" => "Batas Pendaftaran",
+                "value" => $kegiatan->batas_pendaftaran,
                 "bold" => false
             ],
             [
@@ -313,6 +350,11 @@ class KegiatanController extends Controller
             [
                 "title" => "Durasi",
                 "value" => $kegiatan->durasi,
+                "bold" => true
+            ],
+            [
+                "title" => "Flyer",
+                "value" => $kegiatan->flyer ? '<a href="' . url('assets/flyer/' . $kegiatan->flyer) . '" target="_blank">Download</a>' : '-',
                 "bold" => true
             ],
             [
