@@ -179,7 +179,7 @@ $is_edit = isset($data);
                         <div class="mt-2">
                             @if (isset($data->flyer))
                                 <a href="{{ asset('assets/' . $data->flyer) }}" target="_blank">
-                                    <img src="{{ asset('assets/' . $data->flyer) }}" alt="flyer" width="100px">
+                                    <img src="{{ asset('assets/flyer/' . $data->flyer) }}" alt="flyer" width="100px">
                                 </a>
                             @endif
                         </div>

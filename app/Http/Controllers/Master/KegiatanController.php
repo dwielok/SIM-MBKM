@@ -120,7 +120,6 @@ class KegiatanController extends Controller
                 'contact_person' => 'required|string',
                 'kualifikasi' => 'required|string',
                 'fasilitas' => 'required|string',
-                'flyer' => 'nullable|file|mimes:pdf|max:2048',
             ];
 
             $validator = Validator::make($request->all(), $rules);

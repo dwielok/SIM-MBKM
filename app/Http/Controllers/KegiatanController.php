@@ -123,7 +123,6 @@ class KegiatanController extends Controller
                 'contact_person' => 'required|string',
                 'kualifikasi' => 'required|string',
                 'fasilitas' => 'required|string',
-                'flyer' => 'nullable|file|mimes:pdf|max:2048',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -236,13 +235,29 @@ class KegiatanController extends Controller
                 'contact_person' => 'required|string',
                 'kualifikasi' => 'required|string',
                 'fasilitas' => 'required|string',
-                'flyer' => 'nullable|file|mimes:pdf|max:2048',
             ];
 
             // $request['periode_id'] = json_encode($request->periode_arr);
             $request['prodi_id'] = json_encode($request->prodi_arr);
             // unset($request['periode_arr']);
             unset($request['prodi_arr']);
+
+            // if $request->file is not null then upload and delete the old one
+            $file = $request->file('file');
+            $kegiatan = KegiatanPerusahaanModel::find($id);
+            if ($file) {
+                $fileName = 'flyer_' . time() . '.' . $file->getClientOriginalExtension();
+                //move to public/assets/
+                $file->move(public_path('assets/flyer'), $fileName);
+                $request['flyer'] = $fileName;
+                //delete old file
+                if ($kegiatan->flyer) {
+                    unlink(public_path('assets/flyer/' . $kegiatan->flyer));
+                }
+            } else {
+                $request['flyer'] = $kegiatan->flyer;
+            }
+
 
             $validator = Validator::make($request->all(), $rules);
 
@@ -255,7 +270,7 @@ class KegiatanController extends Controller
                 ]);
             }
 
-            $res = KegiatanPerusahaanModel::updateData($id, $request);
+            $res = KegiatanPerusahaanModel::updateData($id, $request, ['file']);
 
             return response()->json([
                 'stat' => $res,
