@@ -154,7 +154,7 @@ class KegiatanController extends Controller
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         $page = [
-            'url' => $this->menuUrl . '/update',
+            'url' => $this->menuUrl . '/' . $id,
             'title' => 'Edit ' . $this->menuTitle
         ];
 
