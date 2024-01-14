@@ -268,17 +268,26 @@ class KegiatanController extends Controller
         //change to 3.4 bulan example
         $kegiatan->durasi = number_format($kegiatan->durasi, 1) . ' bulan';
 
-        $kegiatan->prodi = ProdiModel::whereIn('prodi_id', json_decode($kegiatan->prodi_id))
-            ->pluck('prodi_name')
-            ->implode(', ');
+        //if is array prodi_id
+        if (is_array(json_decode($kegiatan->prodi_id))) {
+            $kegiatan->prodi = ProdiModel::whereIn('prodi_id', json_decode($kegiatan->prodi_id))
+                ->pluck('prodi_name')
+                ->implode(', ');
+        } else {
+            $kegiatan->prodi = '-';
+        }
 
-        //periode semester - tahun_ajar
-        $kegiatan->periode = PeriodeModel::whereIn('periode_id', json_decode($kegiatan->periode_id))
-            ->get();
+        //if is array periode_id
+        if (is_array(json_decode($kegiatan->periode_id))) {
+            $kegiatan->periode = PeriodeModel::whereIn('periode_id', json_decode($kegiatan->periode_id))
+                ->get();
 
-        $kegiatan->periode = $kegiatan->periode->map(function ($item) {
-            return $item->semester . ' - ' . $item->tahun_ajar;
-        })->implode(', ');
+            $kegiatan->periode = $kegiatan->periode->map(function ($item) {
+                return $item->semester . ' - ' . $item->tahun_ajar;
+            })->implode(', ');
+        } else {
+            $kegiatan->periode = '-';
+        }
 
         $datas = [
             [
