@@ -71,6 +71,8 @@ class KegiatanController extends Controller
             $item->periode_kegiatan = (strtotime($item->akhir_kegiatan) - strtotime($item->mulai_kegiatan)) / (60 * 60 * 24 * 30);
             //change to 3.4 bulan example
             $item->periode_kegiatan = number_format($item->periode_kegiatan, 1) . ' bulan';
+            //item = mulai_kegiatan - akhir_kegiatan (x bulan)
+            $item->periode_kegiatan = $item->mulai_kegiatan . ' - ' . $item->akhir_kegiatan . ' (' . $item->periode_kegiatan . ')';
 
             //if is array prodi_id
             if (is_array(json_decode($item->prodi_id))) {
@@ -83,6 +85,7 @@ class KegiatanController extends Controller
 
             return $item;
         });
+
         return DataTables::of($data)
             ->addIndexColumn()
             ->make(true);

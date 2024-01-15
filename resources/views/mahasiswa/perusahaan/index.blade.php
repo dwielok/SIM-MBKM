@@ -23,9 +23,10 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Nama Perusahaan</th>
-                                        <th>Kategori</th>
-                                        <th>Tipe Industri</th>
-                                        <th>Alamat</th>
+                                        <th>Tipe Kegiatan</th>
+                                        <th>Posisi</th>
+                                        <th>Kuota</th>
+                                        <th>Durasi</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -60,52 +61,42 @@
                         "bSearchable": false
                     },
                     {
-                        "mData": "nama_perusahaan",
+                        "mData": "perusahaan.nama_perusahaan",
                         "sClass": "",
                         "sWidth": "10%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
-                        "mData": "kategori",
+                        "mData": "tipe_kegiatan.nama_kegiatan",
                         "sClass": "",
                         "sWidth": "5%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
-                        "mData": "tipe_industri",
+                        "mData": "posisi_lowongan",
                         "sClass": "",
                         "sWidth": "10%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
-                        "mData": "alamat_lengkap",
+                        "mData": "kuota",
                         "sClass": "",
                         "sWidth": "25%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
-                        "mData": "perusahaan_id",
-                        "sClass": "pr-2",
-                        "sWidth": "8%",
-                        "bSortable": false,
-                        "bSearchable": false,
-                        "mRender": function(data, type, row, meta) {
-                            var buttons = '';
-                            @if ($allowAccess->update)
-                                // if (row.status == 1) {
-                                buttons +=
-                                    `<a href="{{ $page->url }}/${data}/kegiatan" class="btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat Kegiatan" ><i class="fa fa-th"></i> Kegiatan</a> `
-                                // }
-                            @endif
-                            return buttons;
-                        }
+                        "mData": "periode_kegiatan",
+                        "sClass": "",
+                        "sWidth": "25%",
+                        "bSortable": true,
+                        "bSearchable": true
                     },
                     {
-                        "mData": "perusahaan_id",
+                        "mData": "kegiatan_perusahaan_id",
                         "sClass": "text-center pr-2",
                         "sWidth": "10%",
                         "bSortable": false,
@@ -126,6 +117,8 @@
                                 buttons +=
                                     `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/delete" class="ajax_modal btn btn-xs btn-danger tooltips text-light" data-placement="left" data-original-title="Hapus Data" ><i class="fa fa-trash"></i></a> `;
                             @endif
+                            buttons +=
+                                `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Detail Kegiatan" ><i class="fa fa-eye"></i></a> `
 
                             return buttons;
                         }
