@@ -11,6 +11,10 @@ class KegiatanPerusahaanModel extends AppModel
 {
     use SoftDeletes;
 
+    // protected $casts = [
+    //     'prodi_id' => 'array',
+    // ];
+
     protected $table = 'm_kegiatan_perusahaan';
     protected $primaryKey = 'kegiatan_perusahaan_id';
 
@@ -23,6 +27,7 @@ class KegiatanPerusahaanModel extends AppModel
         'tipe_kegiatan_id',
         'jenis_magang_id',
         'periode_id',
+        'prodi_id',
         'posisi_lowongan',
         'deskripsi',
         'kuota',

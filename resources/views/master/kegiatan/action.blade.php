@@ -33,7 +33,7 @@ $is_edit = isset($data);
 
                     </div>
                 </div>
-                <div class="form-group required row mb-2">
+                <div class="form-group row mb-2 d-none" id="jenis_magang_form">
                     <label class="col-sm-3 control-label col-form-label">Jenis Magang</label>
                     <div class="col-sm-9">
                         <select data-testid="partner-category" class="form-control form-control-sm" id="jenis_magang_id"
@@ -179,7 +179,8 @@ $is_edit = isset($data);
                         <div class="mt-2">
                             @if (isset($data->flyer))
                                 <a href="{{ asset('assets/' . $data->flyer) }}" target="_blank">
-                                    <img src="{{ asset('assets/flyer/' . $data->flyer) }}" alt="flyer" width="100px">
+                                    <img src="{{ asset('assets/flyer/' . $data->flyer) }}" alt="flyer"
+                                        width="100px">
                                 </a>
                             @endif
                         </div>
@@ -198,6 +199,15 @@ $is_edit = isset($data);
 <script>
     $(document).ready(function() {
         unblockUI();
+
+        $('#tipe_kegiatan_id').on('change', function() {
+            var value = $(this).val()
+            if (value == 1) {
+                $('#jenis_magang_form').removeClass('d-none');
+            } else {
+                $('#jenis_magang_form').addClass('d-none');
+            }
+        })
 
         $("#form-master").validate({
             rules: {

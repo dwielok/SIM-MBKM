@@ -26,7 +26,8 @@
                                         <th>No</th>
                                         <th>Kode</th>
                                         <th>Nama Posisi</th>
-                                        <th>Deskripsi</th>
+                                        <th>Tipe Kegiatan</th>
+                                        <th>Prodi</th>
                                         <th>Kuota</th>
                                         <th>Durasi</th>
                                         <th>Status</th>
@@ -79,11 +80,27 @@
                         "bSearchable": true
                     },
                     {
-                        "mData": "deskripsi",
+                        "mData": "tipe_kegiatan.nama_kegiatan",
                         "sClass": "",
-                        "sWidth": "15%",
+                        "sWidth": "10%",
                         "bSortable": true,
                         "bSearchable": true
+                    },
+                    {
+                        "mData": "prodi",
+                        "sClass": "",
+                        "sWidth": "10%",
+                        "bSortable": true,
+                        "bSearchable": true,
+                        "mRender": function(data, type, row, meta) {
+                            //split by comma
+                            var datas = data.split(",");
+                            var html = '';
+                            for (var i = 0; i < datas.length; i++) {
+                                html += '<span class="badge badge-info">' + datas[i] + '</span> ';
+                            }
+                            return html;
+                        }
                     },
                     {
                         "mData": "kuota",

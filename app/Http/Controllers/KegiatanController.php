@@ -62,11 +62,27 @@ class KegiatanController extends Controller
         $auth = auth()->user();
         $id_perusahaan = PerusahaanModel::where('user_id', $auth->user_id)->first()->perusahaan_id;
 
-        $data  = KegiatanPerusahaanModel::selectRaw("kegiatan_perusahaan_id, kode_kegiatan, posisi_lowongan, deskripsi, kuota, mulai_kegiatan, akhir_kegiatan, status, keterangan")
-            ->where('perusahaan_id', $id_perusahaan);
-        //combine mulai_kegiatan and akhir_kegiatan, and calculate to (x bulan) to periode_kegiatan
-        $data->addSelect(DB::raw("CONCAT(mulai_kegiatan, ' - ', akhir_kegiatan, ' (', TIMESTAMPDIFF(MONTH, mulai_kegiatan, akhir_kegiatan), ' bulan)') as periode_kegiatan"));
+        $data = KegiatanPerusahaanModel::with('tipe_kegiatan')
+            ->where('perusahaan_id', $id_perusahaan)
+            ->get();
 
+        //durasi = (akhir_kegiatan - mulai_kegiatan) / (60 * 60 * 24 * 30)
+        $data = $data->map(function ($item) {
+            $item->periode_kegiatan = (strtotime($item->akhir_kegiatan) - strtotime($item->mulai_kegiatan)) / (60 * 60 * 24 * 30);
+            //change to 3.4 bulan example
+            $item->periode_kegiatan = number_format($item->periode_kegiatan, 1) . ' bulan';
+
+            //if is array prodi_id
+            if (is_array(json_decode($item->prodi_id))) {
+                $item->prodi = ProdiModel::whereIn('prodi_id', json_decode($item->prodi_id))
+                    ->pluck('prodi_name')
+                    ->implode(', ');
+            } else {
+                $item->prodi = '-';
+            }
+
+            return $item;
+        });
         return DataTables::of($data)
             ->addIndexColumn()
             ->make(true);
@@ -412,7 +428,7 @@ class KegiatanController extends Controller
                 "bold" => false
             ]
         ];
-        
+
 
         // if status != 2 then remove last index
         if ($kegiatan->status != 2) {

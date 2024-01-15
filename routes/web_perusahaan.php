@@ -15,5 +15,5 @@ Route::group(['prefix' => 'setting', 'middleware' => ['auth']], function () {
 });
 
 Route::resource('kegiatan', KegiatanController::class)->parameter('kegiatan', 'id');
-    Route::post('kegiatan/list', [KegiatanController::class, 'list']);
-    Route::get('kegiatan/{id}/delete', [KegiatanController::class, 'confirm']);
+Route::post('kegiatan/list', [KegiatanController::class, 'list']);
+Route::get('kegiatan/{id}/delete', [KegiatanController::class, 'confirm']);

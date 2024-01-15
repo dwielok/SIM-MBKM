@@ -59,10 +59,35 @@ class KegiatanController extends Controller
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data  = KegiatanPerusahaanModel::selectRaw("kegiatan_perusahaan_id, kode_kegiatan, posisi_lowongan, deskripsi, kuota, mulai_kegiatan, akhir_kegiatan, status, keterangan")
-            ->where('perusahaan_id', $id);
-        //combine mulai_kegiatan and akhir_kegiatan, and calculate to (x bulan) to periode_kegiatan
-        $data->addSelect(DB::raw("CONCAT(mulai_kegiatan, ' - ', akhir_kegiatan, ' (', TIMESTAMPDIFF(MONTH, mulai_kegiatan, akhir_kegiatan), ' bulan)') as periode_kegiatan"));
+        // $data  = KegiatanPerusahaanModel::selectRaw("m_kegiatan_perusahaan.prodi_id, nama_kegiatan, kegiatan_perusahaan_id, kode_kegiatan, posisi_lowongan, deskripsi, kuota, mulai_kegiatan, akhir_kegiatan, status, keterangan")
+        //     ->leftjoin('m_tipe_kegiatan', 'm_tipe_kegiatan.tipe_kegiatan_id', '=', 'm_kegiatan_perusahaan.tipe_kegiatan_id')
+        //     ->where('m_kegiatan_perusahaan.perusahaan_id', $id);
+        // //combine mulai_kegiatan and akhir_kegiatan, and calculate to (x bulan) to periode_kegiatan
+        // $data->addSelect(DB::raw("CONCAT(mulai_kegiatan, ' - ', akhir_kegiatan, ' (', TIMESTAMPDIFF(MONTH, mulai_kegiatan, akhir_kegiatan), ' bulan)') as periode_kegiatan"));
+        //add object to Builder
+        // $data->a = 'b';
+
+        $data = KegiatanPerusahaanModel::with('tipe_kegiatan')
+            ->where('perusahaan_id', $id)
+            ->get();
+
+        //durasi = (akhir_kegiatan - mulai_kegiatan) / (60 * 60 * 24 * 30)
+        $data = $data->map(function ($item) {
+            $item->periode_kegiatan = (strtotime($item->akhir_kegiatan) - strtotime($item->mulai_kegiatan)) / (60 * 60 * 24 * 30);
+            //change to 3.4 bulan example
+            $item->periode_kegiatan = number_format($item->periode_kegiatan, 1) . ' bulan';
+
+            //if is array prodi_id
+            if (is_array(json_decode($item->prodi_id))) {
+                $item->prodi = ProdiModel::whereIn('prodi_id', json_decode($item->prodi_id))
+                    ->pluck('prodi_name')
+                    ->implode(', ');
+            } else {
+                $item->prodi = '-';
+            }
+
+            return $item;
+        });
 
         return DataTables::of($data)
             ->addIndexColumn()
