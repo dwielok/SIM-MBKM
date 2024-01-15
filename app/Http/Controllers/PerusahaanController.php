@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Master\KegiatanPerusahaanModel;
+use App\Models\Master\MahasiswaModel;
 use App\Models\Master\PeriodeModel;
 use App\Models\Master\PerusahaanModel;
 use App\Models\Master\ProdiModel;
@@ -85,6 +86,14 @@ class PerusahaanController extends Controller
         //filter periode_active only by periode_id in array example ["1","2","3", ...]
         $data = $data->filter(function ($item) use ($periode_active) {
             return in_array($periode_active->periode_id, json_decode($item->periode_id));
+        });
+
+        $id_user = auth()->user()->user_id;
+        $mahasiswa_prodi_id = MahasiswaModel::where('user_id', $id_user)->first()->prodi_id;
+
+        //filter prodi_id only by prodi_id in array example ["1","2","3", ...]
+        $data = $data->filter(function ($item) use ($mahasiswa_prodi_id) {
+            return in_array($mahasiswa_prodi_id, json_decode($item->prodi_id));
         });
 
         return DataTables::of($data)
