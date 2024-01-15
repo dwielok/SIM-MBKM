@@ -16,10 +16,10 @@ class PerusahaanController extends Controller
 {
     public function __construct()
     {
-        $this->menuCode  = 'PERUSAHAAN';
-        $this->menuUrl   = url('perusahaan');     // set URL untuk menu ini
-        $this->menuTitle = 'Perusahaan';                       // set nama menu
-        $this->viewPath  = 'mahasiswa.perusahaan.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
+        $this->menuCode  = 'MAHASISWA.KEGIATAN';
+        $this->menuUrl   = url('m/kegiatan');     // set URL untuk menu ini
+        $this->menuTitle = 'Kegiatan';                       // set nama menu
+        $this->viewPath  = 'mahasiswa.kegiatan.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
     }
 
     public function index()
@@ -216,12 +216,6 @@ class PerusahaanController extends Controller
                 "title" => "Flyer",
                 "value" => $kegiatan->flyer ? '<a href="' . url('assets/flyer/' . $kegiatan->flyer) . '" target="_blank">Download</a>' : '-',
                 "bold" => true
-            ],
-            [
-                "title" => "Status",
-                "value" => $kegiatan->status == 0 ? 'Menunggu' : ($kegiatan->status == 1 ? 'Diterima' : 'Ditolak'),
-                "bold" => false,
-                "color" => $kegiatan->status == 0 ? 'info' : ($kegiatan->status == 1 ? 'success' : 'danger')
             ],
             [
                 "title" => "Keterangan Ditolak",
