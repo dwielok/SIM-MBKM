@@ -120,8 +120,11 @@
                             buttons +=
                                 `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Detail Kegiatan" ><i class="fa fa-eye"></i></a> `
 
-                            buttons +=
-                                `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-success tooltips text-light text-xs" data-placement="left" data-original-title="Daftar Kegiatan" >Daftar</a> `
+                            if (!row.is_daftar) {
+
+                                buttons +=
+                                    `<a href="#" data-block="body" data-url="{{ $page->url }}/daftar/${data}" class="ajax_modal btn btn-xs btn-success tooltips text-light text-xs" data-placement="left" data-original-title="Daftar Kegiatan" >Daftar</a> `
+                            }
                             return buttons;
                         }
                     }

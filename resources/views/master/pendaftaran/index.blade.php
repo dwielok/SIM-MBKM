@@ -24,10 +24,12 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Semester</th>
-                                        <th>Tahun Ajar</th>
+                                        <th>Nama Perusahaan</th>
+                                        <th>Posisi</th>
+                                        <th>Tipe Kegiatan</th>
+                                        <th>Nama Mahasiswa</th>
+                                        <th>Periode</th>
                                         <th>Status</th>
-                                        <th>Periode Aktif</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -62,39 +64,59 @@
                         "bSearchable": false
                     },
                     {
-                        "mData": "semester",
+                        "mData": "kegiatan_perusahaan.perusahaan.nama_perusahaan",
+                        "sClass": "",
+                        "sWidth": "30%",
+                        "bSortable": true,
+                        "bSearchable": true
+                    },
+                    {
+                        "mData": "kegiatan_perusahaan.posisi_lowongan",
+                        "sClass": "",
+                        "sWidth": "10%",
+                        "bSortable": true,
+                        "bSearchable": true
+                    },
+                    {
+                        "mData": "kegiatan_perusahaan.tipe_kegiatan.nama_kegiatan",
                         "sClass": "",
                         "sWidth": "20%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
-                        "mData": "tahun_ajar",
+                        "mData": "mahasiswa.nama_mahasiswa",
                         "sClass": "",
-                        "sWidth": "40%",
+                        "sWidth": "20%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
-                        "mData": "is_active",
+                        "mData": "periode.semester",
                         "sClass": "",
-                        "sWidth": "25%",
+                        "sWidth": "10%",
                         "bSortable": true,
-                        "bSearchable": false,
+                        "bSearchable": true,
                         "mRender": function(data, type, row, meta) {
-                            return data == 1 ? '<span class="badge badge-success">Aktif</span>' :
-                                '<span class="badge badge-danger">Non-Aktif</span>';
+                            return data + ' - ' + row.periode.tahun_ajar;
                         }
                     },
                     {
-                        "mData": "is_current",
+                        "mData": "status",
                         "sClass": "",
-                        "sWidth": "25%",
+                        "sWidth": "5%",
                         "bSortable": true,
                         "bSearchable": false,
                         "mRender": function(data, type, row, meta) {
-                            return data == 1 ? '<span class="badge badge-success">Ya</span>' :
-                                '<span class="badge badge-danger">Tidak</span>';
+                            var status = '';
+                            if (data == 0) {
+                                status = '<span class="badge badge-info">Menunggu</span>';
+                            } else if (data == 1) {
+                                status = '<span class="badge badge-success">Diterima</span>';
+                            } else if (data == 2) {
+                                status = '<span class="badge badge-danger">Ditolak</span>';
+                            }
+                            return status;
                         }
                     },
                     {

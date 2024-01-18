@@ -51,7 +51,12 @@ class PendaftaranController extends Controller
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data  = PendaftaranModel::all();
+        $data  = PendaftaranModel::with('mahasiswa')
+            ->with('kegiatan_perusahaan')
+            ->with('kegiatan_perusahaan.perusahaan')
+            ->with('kegiatan_perusahaan.tipe_kegiatan')
+            ->with('periode')
+            ->get();
 
         return DataTables::of($data)
             ->addIndexColumn()

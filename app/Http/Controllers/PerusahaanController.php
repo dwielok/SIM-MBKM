@@ -82,6 +82,14 @@ class PerusahaanController extends Controller
             $item->sisa_kuota = $item->kuota - $pendaftaran;
             $item->kuota = "$item->sisa_kuota/$item->kuota";
 
+            $mahasiswa_id = MahasiswaModel::where('user_id', auth()->user()->user_id)->first()->mahasiswa_id;
+            $item->is_daftar = PendaftaranModel::where('periode_id', $periode_active->periode_id)
+                ->where('kegiatan_perusahaan_id', $item->kegiatan_perusahaan_id)
+                ->where('mahasiswa_id', $mahasiswa_id)
+                ->count();
+
+            $item->is_daftar = ($item->is_daftar > 0) ? true : false;
+
 
             return $item;
         });

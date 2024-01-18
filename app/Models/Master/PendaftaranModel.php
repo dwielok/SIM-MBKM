@@ -47,7 +47,7 @@ class PendaftaranModel extends AppModel
         return $this->belongsTo('App\Models\Master\MahasiswaModel', 'mahasiswa_id', 'mahasiswa_id');
     }
 
-    public function kegiatanPerusahaan()
+    public function kegiatan_perusahaan()
     {
         return $this->belongsTo('App\Models\Master\KegiatanPerusahaanModel', 'kegiatan_perusahaan_id', 'kegiatan_perusahaan_id');
     }

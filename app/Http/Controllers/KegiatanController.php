@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Master\JenisMagangModel;
 use App\Models\Master\KegiatanPerusahaanModel;
+use App\Models\Master\MahasiswaModel;
+use App\Models\Master\PendaftaranModel;
 use App\Models\Master\PeriodeModel;
 use App\Models\Master\PerusahaanModel;
 use App\Models\Master\ProdiModel;
@@ -485,6 +487,66 @@ class KegiatanController extends Controller
                 'stat' => $res,
                 'mc' => $res, // close modal
                 'msg' => KegiatanPerusahaanModel::getDeleteMessage()
+            ]);
+        }
+
+        return redirect('/');
+    }
+
+    public function daftar(Request $request, $id)
+    {
+
+        $data = KegiatanPerusahaanModel::find($id);
+        $mahasiswa = MahasiswaModel::where('user_id', auth()->user()->user_id)->first();
+        $mahasiswa_id = $mahasiswa->mahasiswa_id;
+        $mahasiswa_prodi = $mahasiswa->prodi_id;
+
+        //list mahasiswa by prodi_id
+        $mahasiswas = MahasiswaModel::where('prodi_id', $mahasiswa_prodi)
+            ->get();
+
+        return (!$data) ? $this->showModalError() : $this->showModalConfirmCustom('mahasiswa.kegiatan.daftar', $this->menuUrl . '/daftar' . '/' . $id , [
+            'kegiatan' => $data,
+            'mahasiswa_id' => $mahasiswa_id,
+            'mahasiswas' => $mahasiswas
+        ], 'Daftar Kegiatan', 'Apakah anda yakin ingin daftar kegiatan berikut:', 'Ya, Daftar', 'PUT');
+    }
+
+    public function daftar_store(Request $request, $id)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+
+            $rules = [
+                'tipe_pendaftar',
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'stat'     => false,
+                    'mc'       => false,
+                    'msg'      => 'Terjadi kesalahan.',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            $type = $request->tipe_pendaftar;
+            $periode_id = PeriodeModel::where('is_current', 1)->first()->periode_id;
+            if ($type == 2) {
+                $mahasiswa_id = $request->mahasiswa_id;
+                $request['kode_pendaftaran'] = 'P' . rand(100000, 999999);
+                $request['mahasiswa_id'] = $mahasiswa_id;
+                $request['kegiatan_perusahaan_id'] = $id;
+                $request['periode_id'] = $periode_id;
+                $request['status'] = 0;
+                $res = PendaftaranModel::insertData($request, ['mahasiswa']);
+            }
+
+            return response()->json([
+                'stat' => $res,
+                'mc' => $res, // close modal
+                'msg' => ($res) ? 'Berhasil mendaftar kegiatan.' : 'Gagal mendaftar kegiatan.'
             ]);
         }
 
