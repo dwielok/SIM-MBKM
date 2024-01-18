@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Models\KabupatenModel;
 use App\Models\Master\PerusahaanModel;
+use App\Models\ProvinsiModel;
 use App\Models\Setting\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -76,8 +78,14 @@ class PerusahaanController extends Controller
             'title' => 'Tambah ' . $this->menuTitle
         ];
 
+
+        $provinsis = ProvinsiModel::all();
+        $kabupatens = [];
+
         return view($this->viewPath . 'action')
-            ->with('page', (object) $page);
+            ->with('page', (object) $page)
+            ->with('provinsis', $provinsis)
+            ->with('kabupatens', $kabupatens);
     }
 
 
@@ -150,10 +158,15 @@ class PerusahaanController extends Controller
 
         $data = PerusahaanModel::find($id);
 
+        $provinsis = ProvinsiModel::all();
+        $kabupatens = KabupatenModel::where('d_provinsi_id', $data->provinsi_id)->get();
+
         return (!$data) ? $this->showModalError() :
             view($this->viewPath . 'action')
             ->with('page', (object) $page)
             ->with('id', $id)
+            ->with('provinsis', $provinsis)
+            ->with('kabupatens', $kabupatens)
             ->with('data', $data);
     }
 

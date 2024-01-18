@@ -11,9 +11,11 @@
                             {!! $page->title !!}
                         </h3>
                         <div class="card-tools">
-                            <button type="button" data-block="body"
-                                class="btn btn-sm btn-{{ $theme->button }} mt-1 ajax_modal"
-                                data-url="{{ $page->url }}/create"><i class="fas fa-plus"></i> Ajukan</button>
+                            @if ($allowAccess->create)
+                                <button type="button" data-block="body"
+                                    class="btn btn-sm btn-{{ $theme->button }} mt-1 ajax_modal"
+                                    data-url="{{ $page->url }}/create"><i class="fas fa-plus"></i> Tambah</button>
+                            @endif
                         </div>
                     </div>
                     <div class="card-body p-0">
@@ -22,11 +24,10 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Nama Perusahaan</th>
-                                        <th>Tipe Kegiatan</th>
-                                        <th>Posisi</th>
-                                        <th>Kuota</th>
-                                        <th>Durasi</th>
+                                        <th>Semester</th>
+                                        <th>Tahun Ajar</th>
+                                        <th>Status</th>
+                                        <th>Periode Aktif</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -61,42 +62,43 @@
                         "bSearchable": false
                     },
                     {
-                        "mData": "perusahaan.nama_perusahaan",
+                        "mData": "semester",
                         "sClass": "",
-                        "sWidth": "10%",
+                        "sWidth": "20%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
-                        "mData": "tipe_kegiatan.nama_kegiatan",
+                        "mData": "tahun_ajar",
                         "sClass": "",
-                        "sWidth": "5%",
+                        "sWidth": "40%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
-                        "mData": "posisi_lowongan",
-                        "sClass": "",
-                        "sWidth": "10%",
-                        "bSortable": true,
-                        "bSearchable": true
-                    },
-                    {
-                        "mData": "kuota",
+                        "mData": "is_active",
                         "sClass": "",
                         "sWidth": "25%",
                         "bSortable": true,
-                        "bSearchable": true
+                        "bSearchable": false,
+                        "mRender": function(data, type, row, meta) {
+                            return data == 1 ? '<span class="badge badge-success">Aktif</span>' :
+                                '<span class="badge badge-danger">Non-Aktif</span>';
+                        }
                     },
                     {
-                        "mData": "periode_kegiatan",
+                        "mData": "is_current",
                         "sClass": "",
                         "sWidth": "25%",
                         "bSortable": true,
-                        "bSearchable": true
+                        "bSearchable": false,
+                        "mRender": function(data, type, row, meta) {
+                            return data == 1 ? '<span class="badge badge-success">Ya</span>' :
+                                '<span class="badge badge-danger">Tidak</span>';
+                        }
                     },
                     {
-                        "mData": "kegiatan_perusahaan_id",
+                        "mData": "periode_id",
                         "sClass": "text-center pr-2",
                         "sWidth": "10%",
                         "bSortable": false,
@@ -105,11 +107,10 @@
                             console.log(row);
                             var buttons = '';
                             @if ($allowAccess->update)
-                                // if (row.status == 0) {
-                                //     buttons +=
-                                //         `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
-                                //         `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_reject" class="ajax_modal btn btn-xs btn-danger tooltips text-white" data-placement="left" data-original-title="Reject" ><i class="fa fa-times"></i></a> `;
-                                // }
+                                if (row.is_current != 1 && row.is_active == 1) {
+                                    buttons +=
+                                        `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_active" class="ajax_modal btn btn-xs btn-info tooltips text-white" data-placement="left" data-original-title="Set Active" ><i class="fa fa-check"></i></a> `;
+                                }
                                 buttons +=
                                     `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/edit" class="ajax_modal btn btn-xs btn-warning tooltips text-secondary" data-placement="left" data-original-title="Edit Data" ><i class="fa fa-edit"></i></a> `;
                             @endif
@@ -117,11 +118,7 @@
                                 buttons +=
                                     `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/delete" class="ajax_modal btn btn-xs btn-danger tooltips text-light" data-placement="left" data-original-title="Hapus Data" ><i class="fa fa-trash"></i></a> `;
                             @endif
-                            buttons +=
-                                `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Detail Kegiatan" ><i class="fa fa-eye"></i></a> `
 
-                            buttons +=
-                                `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-success tooltips text-light text-xs" data-placement="left" data-original-title="Daftar Kegiatan" >Daftar</a> `
                             return buttons;
                         }
                     }

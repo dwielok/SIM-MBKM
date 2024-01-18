@@ -8,6 +8,7 @@ use App\Http\Controllers\Master\JurusanController;
 use App\Http\Controllers\Master\KategoriController;
 use App\Http\Controllers\Master\KegiatanController;
 use App\Http\Controllers\Master\MahasiswaController;
+use App\Http\Controllers\Master\PendaftaranController;
 use App\Http\Controllers\Master\PeriodeController;
 use App\Http\Controllers\Master\PerusahaanController;
 use App\Http\Controllers\Master\ProdiController;
@@ -84,7 +85,12 @@ Route::group(['prefix' => 'master', 'middleware' => ['auth']], function () {
     Route::resource('mahasiswa', MahasiswaController::class)->parameter('mahasiswa', 'id');
     Route::post('mahasiswa/list', [MahasiswaController::class, 'list']);
     Route::get('mahasiswa/{id}/delete', [MahasiswaController::class, 'confirm']);
-    
+
+
+    //pendaftaran
+    Route::resource('pendaftaran', PendaftaranController::class)->parameter('pendaftaran', 'id');
+    Route::post('pendaftaran/list', [PendaftaranController::class, 'list']);
+    Route::get('pendaftaran/{id}/delete', [PendaftaranController::class, 'confirm']);
 });
 
 Route::group(['prefix' => 'setting', 'middleware' => ['auth']], function () {
@@ -103,4 +109,5 @@ Route::group(['prefix' => 'setting', 'middleware' => ['auth']], function () {
     Route::resource('user', UserController::class)->parameter('user', 'id');
     Route::post('user/list', [UserController::class, 'list']);
     Route::get('user/{id}/delete', [UserController::class, 'confirm']);
+
 });

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KabupatenController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -39,3 +40,5 @@ Route::group(['prefix' => 'setting', 'middleware' => ['auth']], function () {
     Route::put('profile/avatar', [ProfileController::class, 'update_avatar']);
     Route::put('profile/password', [ProfileController::class, 'update_password']);
 });
+
+Route::get('kota', [KabupatenController::class, 'getKota']);

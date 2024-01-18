@@ -156,17 +156,29 @@
                                     <div class="form-group required row mb-2">
                                         <label class="col-sm-3 control-label col-form-label">Provinsi</label>
                                         <div class="col-sm-9">
-                                            <input type="text" class="form-control form-control-sm" id="provinsi_id"
-                                                name="provinsi_id"
-                                                value="{{ isset($perusahaan->provinsi_id) ? $perusahaan->provinsi_id : '' }}" />
+                                            <select data-testid="partner-category" class="form-control form-control-sm"
+                                                id="provinsi_id" name="provinsi_id">
+                                                <option disabled selected value="">Pilih provinsi</option>
+                                                @foreach ($provinsis as $provinsi)
+                                                    <option value="{{ $provinsi->id }}"
+                                                        {{ isset($perusahaan->provinsi_id) && $perusahaan->provinsi_id == $provinsi->id ? 'selected' : '' }}>
+                                                        {{ $provinsi->nama_provinsi }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group required row mb-2">
-                                        <label class="col-sm-3 control-label col-form-label">Kota</label>
+                                        <label class="col-sm-3 control-label col-form-label">Kabupaten/Kota</label>
                                         <div class="col-sm-9">
-                                            <input type="text" class="form-control form-control-sm" id="kota_id"
-                                                name="kota_id"
-                                                value="{{ isset($perusahaan->kota_id) ? $perusahaan->kota_id : '' }}" />
+                                            <select data-testid="partner-category" class="form-control form-control-sm"
+                                                id="kota_id" name="kota_id">
+                                                <option disabled selected value="">Pilih kabupaten/kota</option>
+                                                @foreach ($kabupatens as $kabupaten)
+                                                    <option value="{{ $kabupaten->id }}"
+                                                        {{ isset($perusahaan->kota_id) && $perusahaan->kota_id == $kabupaten->id ? 'selected' : '' }}>
+                                                        {{ $kabupaten->nama_kab_kota }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group required row mb-2">
@@ -206,6 +218,32 @@
         $(document).ready(function() {
 
             $('.select2_combobox').select2();
+
+            $('#provinsi_id').change(function() {
+                var provinsi_id = $(this).val();
+                if (provinsi_id) {
+                    $.ajax({
+                        url: "{{ url('kota') }}?provinsi_id=" + provinsi_id,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            $('#kota_id').empty();
+                            $('#kota_id').append(
+                                '<option disabled selected value="">Pilih kabupaten/kota</option>'
+                            );
+                            $.each(data, function(key, value) {
+                                $('#kota_id').append('<option value="' + value.id +
+                                    '">' + value.nama_kab_kota +
+                                    '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('#kota_id').empty();
+                    $('#kota_id').append(
+                        '<option disabled selected value="">Pilih kabupaten/kota</option>');
+                }
+            });
 
 
             $("#form-profile").validate({

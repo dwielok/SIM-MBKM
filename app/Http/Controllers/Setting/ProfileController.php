@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Setting;
 
 use App\Http\Controllers\Controller;
+use App\Models\KabupatenModel;
 use App\Models\KategoriUsaha;
 use App\Models\Master\PerusahaanModel;
+use App\Models\ProvinsiModel;
 use App\Models\Setting\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -267,14 +269,20 @@ class ProfileController extends Controller
             $view = 'mahasiswa';
         }
 
+
         $perusahaan = PerusahaanModel::where('user_id', Auth::user()->user_id)->first();
+        $provinsis = ProvinsiModel::all();
+        $kabupatens = KabupatenModel::where('d_provinsi_id', $perusahaan->provinsi_id)->get();
+
         return view($this->viewPath . $view)
             ->with('breadcrumb', (object) $breadcrumb)
             ->with('activeMenu', (object) $activeMenu)
             ->with('page', (object) $page)
             ->with('allowAccess', $this->authAccessKey())
             ->with('user', Auth::user())
-            ->with('perusahaan', $perusahaan);
+            ->with('perusahaan', $perusahaan)
+            ->with('provinsis', $provinsis)
+            ->with('kabupatens', $kabupatens);
     }
 
 

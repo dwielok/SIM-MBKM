@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Master\KegiatanPerusahaanModel;
 use App\Models\Master\MahasiswaModel;
+use App\Models\Master\PendaftaranModel;
 use App\Models\Master\PeriodeModel;
 use App\Models\Master\PerusahaanModel;
 use App\Models\Master\ProdiModel;
@@ -64,7 +65,7 @@ class PerusahaanController extends Controller
             ->get();
 
         //durasi = (akhir_kegiatan - mulai_kegiatan) / (60 * 60 * 24 * 30)
-        $data = $data->map(function ($item) {
+        $data = $data->map(function ($item) use ($periode_active) {
             $item->periode_kegiatan = (strtotime($item->akhir_kegiatan) - strtotime($item->mulai_kegiatan)) / (60 * 60 * 24 * 30);
             //change to 3.4 bulan example
             $item->periode_kegiatan = number_format($item->periode_kegiatan, 1) . ' bulan';
@@ -72,13 +73,15 @@ class PerusahaanController extends Controller
             $item->periode_kegiatan = $item->mulai_kegiatan . ' - ' . $item->akhir_kegiatan . ' (' . $item->periode_kegiatan . ')';
 
             //if is array prodi_id
-            if (is_array(json_decode($item->prodi_id))) {
-                $item->prodi = ProdiModel::whereIn('prodi_id', json_decode($item->prodi_id))
-                    ->pluck('prodi_name')
-                    ->implode(', ');
-            } else {
-                $item->prodi = '-';
-            }
+
+            $pendaftaran = PendaftaranModel::where('periode_id', $periode_active->periode_id)
+                ->where('kegiatan_perusahaan_id', $item->kegiatan_perusahaan_id)
+                ->where('status', 1)
+                ->count();
+            $item->jumlah_pendaftar = $pendaftaran;
+            $item->sisa_kuota = $item->kuota - $pendaftaran;
+            $item->kuota = "$item->sisa_kuota/$item->kuota";
+
 
             return $item;
         });
@@ -140,6 +143,16 @@ class PerusahaanController extends Controller
         } else {
             $kegiatan->periode = '-';
         }
+
+        $periode_active = PeriodeModel::where('is_current', 1)->first();
+
+        $pendaftaran = PendaftaranModel::where('periode_id', $periode_active->periode_id)
+            ->where('kegiatan_perusahaan_id', $kegiatan->kegiatan_perusahaan_id)
+            ->where('status', 1)
+            ->count();
+        $kegiatan->jumlah_pendaftar = $pendaftaran;
+        $kegiatan->sisa_kuota = $kegiatan->kuota - $pendaftaran;
+        $kegiatan->kuota = "$kegiatan->sisa_kuota/$kegiatan->kuota";
 
         $datas = [
             [
