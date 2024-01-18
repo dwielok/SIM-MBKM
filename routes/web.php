@@ -24,6 +24,7 @@ Route::get('/', [DashboardController::class, 'index'])->middleware('auth');
 Route::get('/home', [DashboardController::class, 'index'])->middleware('auth');
 
 // theme
+
 Route::get('/theme/{theme}', [\App\Http\Controllers\Setting\ThemeController::class, 'index']);
 
 Route::group(['prefix' => 'setting', 'middleware' => ['auth']], function () {
@@ -33,9 +34,9 @@ Route::group(['prefix' => 'setting', 'middleware' => ['auth']], function () {
     Route::put('account/avatar', [AccountController::class, 'update_avatar']);
     Route::put('account/password', [AccountController::class, 'update_password']);
 
-    // profile
-    Route::get('profile', [ProfileController::class, 'index']);
-    Route::put('profile', [ProfileController::class, 'update']);
-    Route::put('profile/avatar', [ProfileController::class, 'update_avatar']);
-    Route::put('profile/password', [ProfileController::class, 'update_password']);
+    // // profile
+    // Route::get('profile', [ProfileController::class, 'index']);
+    // Route::put('profile', [ProfileController::class, 'update']);
+    // Route::put('profile/avatar', [ProfileController::class, 'update_avatar']);
+    // Route::put('profile/password', [ProfileController::class, 'update_password']);
 });

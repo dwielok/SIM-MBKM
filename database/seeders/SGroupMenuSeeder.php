@@ -16,7 +16,7 @@ class SGroupMenuSeeder extends Seeder
     {
         $menu_super = [];
         $menu_admin = [];
-        for($i = 1; $i <= 7; $i++){
+        for($i = 1; $i <= 11; $i++){
             $menu_super[] = ['group_id'  => 1, 'menu_id'   => $i, 'c'   => 1, 'r'    => 1, 'u'   => 1, 'd' => 1];
             $menu_admin[] = ['group_id'  => 2, 'menu_id'   => $i, 'c'   => 0, 'r'    => 1, 'u'   => 0, 'd' => 0];
         }

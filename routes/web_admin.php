@@ -39,6 +39,11 @@ Route::group(['prefix' => 'master', 'middleware' => ['auth']], function () {
     Route::post('prodi/list', [ProdiController::class, 'list']);
     Route::get('prodi/{id}/delete', [ProdiController::class, 'confirm']);
 
+    // Dosen
+    Route::resource('dosen', DosenController::class)->parameter('dosen', 'id');
+    Route::post('dosen/list', [DosenController::class, 'list']);
+    Route::get('dosen/{id}/delete', [DosenController::class, 'confirm']);
+
     // Tipe Kegiatan
     Route::resource('tipe_kegiatan', TipeKegiatanController::class)->parameter('tipe_kegiatan', 'id');
     Route::post('tipe_kegiatan/list', [TipeKegiatanController::class, 'list']);
