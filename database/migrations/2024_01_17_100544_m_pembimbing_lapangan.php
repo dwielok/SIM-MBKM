@@ -16,13 +16,11 @@ class MPembimbingLapangan extends Migration
         Schema::create('m_pembimbing_lapangan', function (Blueprint $table) {
             $table->id('pembimbing_lapangan_id');
             // isi tabel pembimbinglapangan
-            
-            // nama pembimbinglapangan
-            // jabatan pembimbinglapangan
-            // tempat industri
-            // no hp 
-            // email
-            
+            $table->string('name_pembimbing_lapangan');
+            $table->string('jabatan_pembimbing_lapangan');
+            $table->string('tempat_industri_pembimbing_lapangan');
+            $table->string('phone_pembimbing_lapangan');
+            $table->string('email_pembimbing_lapangan')->unique();
             $table->unsignedBigInteger('user_id')->index();
             $table->dateTime('created_at')->nullable()->useCurrent();
             $table->integer('created_by')->nullable()->index();

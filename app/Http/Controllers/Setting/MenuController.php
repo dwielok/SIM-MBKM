@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Setting;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\Rule;
 use App\Models\Master\PeriodeModel;
 use App\Models\Setting\MenuModel;
 use App\Models\View\MenuView;
@@ -81,6 +82,129 @@ class MenuController extends Controller
             ->make(true);
     }
 
+    public function create()
+    {
+        $this->authAction('create', 'modal');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        // untuk set konten halaman web
+        $page = [
+            'url' => $this->menuUrl,
+            'title' => 'Tambah ' . $this->menuTitle
+        ];
+
+        $menu = MenuModel::whereNull('parent_id')
+            ->orderBy('order_no')
+            ->get();
+
+        return view($this->viewPath . 'action')
+            ->with('page', (object) $page)
+            ->with('menu', $menu);
+    }
+
+
+    public function store(Request $request)
+    {
+        $this->authAction('create', 'json');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        // cek untuk Insert/Update/Delete harus via AJAX
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'menu_code' => ['required', 'string', 'min:3', 'max:20', MenuModel::setUniqueInsert()],
+                'menu_name' => ['required', 'string', 'min:3', 'max:50'],
+                'menu_level' => ['required', 'integer', 'between:1,3'],
+                'order_no' => ['required', 'integer', 'between:1,100'],
+                'class_tag' => ['required', 'string', 'min:4', 'max:20'],
+                'icon' => ['required', 'string', 'min:5', 'max:50'],
+                'is_active' => ['required'],
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'stat'     => false,                    // respon json, true: berhasil, false: gagal
+                    'mc'       => false,                    // jika diset true, maka respon json akan membuat popup modal menutup/close
+                    'msg'      => 'Terjadi kesalahan.',
+                    'msgField' => $validator->errors()      // menunjukkan field mana yang error
+                ]);
+            }
+
+            $res = MenuModel::InsertData($request);
+
+            return response()->json([
+                'stat' => $res,
+                'mc' => $res, // close modal
+                'msg' => ($res) ? $this->getMessage('insert.success') : $this->getMessage('insert.failed')
+            ]);
+        }
+
+        return redirect('/');
+    }
+
+    public function edit($id)
+    {
+        $this->authAction('update', 'modal');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        $menu = MenuModel::whereNull('parent_id')
+            ->orderBy('order_no')
+            ->get();
+
+        $data = MenuModel::find($id);
+
+        // untuk set konten halaman web
+        $page = [
+            'url' => $this->menuUrl . '/' . $id,
+            'title' => 'Ubah ' . $this->menuTitle
+        ];
+
+        return view($this->viewPath . 'action')
+            ->with('page', (object) $page)
+            ->with('menu', $menu)
+            ->with('data', $data);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $this->authAction('update', 'json');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        if ($request->ajax() || $request->wantsJson()) {
+
+            $rules = [
+                'menu_code' => ['required', 'string', 'min:3', 'max:20', Rule::unique('s_menu')->ignore($id, 'menu_id')],
+                'menu_name' => ['required', 'string', 'min:3', 'max:50'],
+                'menu_level' => ['required', 'integer', 'between:1,3'],
+                'order_no' => ['required', 'integer', 'between:1,100'],
+                'class_tag' => ['required', 'string', 'min:4', 'max:20'],
+                'icon' => ['required', 'string', 'min:5', 'max:50'],
+                'is_active' => ['required'],
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'stat'     => false,
+                    'mc'       => false,
+                    'msg'      => 'Terjadi kesalahan.',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            $res = MenuModel::updateData($id, $request);
+
+            return response()->json([
+                'stat' => $res,
+                'mc' => $res, // close modal
+                'msg' => ($res) ? $this->getMessage('update.success') : $this->getMessage('update.failed')
+            ]);
+        }
+
+        return redirect('/');
+    }
 
     public function set_active(Request $request, $id)
     {
@@ -124,6 +248,26 @@ class MenuController extends Controller
             return response()->json([
                 'stat' => $res->status,
                 'msg' => $res->message
+            ]);
+        }
+
+        return redirect('/');
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $this->authAction('delete', 'json');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        // cek untuk Insert/Update/Delete harus via AJAX
+        if ($request->ajax() || $request->wantsJson()) {
+
+            $res = MenuModel::deleteData($id);
+
+            return response()->json([
+                'stat' => $res,
+                'mc' => $res, // close modal
+                'msg' => ($res) ? $this->getMessage('delete.success') : $this->getMessage('delete.failed')
             ]);
         }
 

@@ -166,7 +166,7 @@ class UserController extends Controller
         $data  = UserView::where('user_id', $id)->first();
         if(!$data) return $this->showModalError();
 
-        if($data->group_id == 1) return $this->showModalError('Kesalahan', 'Terjadi Kesalahan!!!', 'Data level Admin tidak bisa diedit.');
+        if($data->group_id != 1) return $this->showModalError('Kesalahan', 'Terjadi Kesalahan!!!', 'Data level Admin tidak bisa diedit.');
 
         $group = GroupModel::selectRaw('group_id, group_code, group_name')->where('is_active', 1)->get();
 
@@ -206,7 +206,7 @@ class UserController extends Controller
             }
 
             $data  = UserView::where('user_id', $id)->first();
-            if(!$data OR $data->group_id == 1){
+            if(!$data OR $data->group_id != 1){
                 return response()->json([
                     'stat' => false,
                     'mc' => false, // close modal
@@ -234,7 +234,7 @@ class UserController extends Controller
         $data = UserView::where('user_id', $id)->first();
         if(!$data) return $this->showModalError();
 
-        if($data->group_id == 1) return $this->showModalError('Kesalahan', 'Terjadi Kesalahan!!!', 'Data level Admin tidak bisa dihapus.');
+        if($data->group_id != 1) return $this->showModalError('Kesalahan', 'Terjadi Kesalahan!!!', 'Data level Admin tidak bisa dihapus.');
 
 
         return $this->showModalConfirm($this->menuUrl.'/'.$id, [
@@ -253,7 +253,7 @@ class UserController extends Controller
         // cek untuk Insert/Update/Delete harus via AJAX
         if ($request->ajax() || $request->wantsJson()) {
             $data  = UserView::where('user_id', $id)->first();
-            if(!$data OR $data->group_id == 1){
+            if(!$data OR $data->group_id != 1){
                 return response()->json([
                     'stat' => false,
                     'mc' => false, // close modal

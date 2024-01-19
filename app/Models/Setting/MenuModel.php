@@ -37,6 +37,22 @@ class MenuModel extends AppModel
             'deleted_by'
         ];
 
+
+    protected static $cascadeDelete = false;   //  True: Force Delete from Parent (cascade)
+    protected static $childModel = [
+        //  Model => columnFK
+        //'App\Models\Master\EmployeeModel' => 'jabatan_id'
+    ];
+
+    public function parent()
+    {
+        return $this->belongsTo(MenuModel::class, 'parent_id', 'menu_id');
+    }
+
+    public function child()
+    {
+        return $this->hasMany(MenuModel::class, 'parent_id', 'menu_id');
+    }
     public static function insertData($request, $exception = []){
         $data = $request->except(['_token', '_method']);
         $data['created_by'] = Auth::user()->user_id;
