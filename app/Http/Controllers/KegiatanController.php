@@ -594,6 +594,16 @@ class KegiatanController extends Controller
                 ->with('periode')
                 ->orderBy('tipe_pendaftar', 'asc')
                 ->get();
+
+            $anggotas = $anggotas->map(function ($item) {
+                $item->periode_kegiatan = (strtotime($item->kegiatan_perusahaan->akhir_kegiatan) - strtotime($item->kegiatan_perusahaan->mulai_kegiatan)) / (60 * 60 * 24 * 30);
+                //change to 3.4 bulan example
+                $item->periode_kegiatan = number_format($item->periode_kegiatan, 1) . ' bulan';
+                //item = mulai_kegiatan - akhir_kegiatan (x bulan)
+                $item->periode_kegiatan = $item->kegiatan_perusahaan->mulai_kegiatan . ' - ' . $item->kegiatan_perusahaan->akhir_kegiatan . ' (' . $item->periode_kegiatan . ')';
+
+                return $item;
+            });
             return response()->json([
                 'stat' => true,
                 'mc' => true, // close modal

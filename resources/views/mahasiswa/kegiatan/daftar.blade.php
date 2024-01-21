@@ -214,9 +214,43 @@ $is_edit = isset($data);
                             `<div class="alert alert-danger">${data?.msg}</div>`)
                     } else {
                         let datas = ''
+                        datas += `<tr>
+                            <th class="w-25 text-right">Kode Kegiatan</th>
+                            <th class="w-1">:</th>
+                            <td class="w-74">
+                                <b>
+                                    ${data?.data[0]?.kegiatan_perusahaan?.kode_kegiatan}
+                                    </b>
+                            </td>
+                        </tr>`
+                        datas += `<tr>
+                            <th class="w-25 text-right">Nama Perusahaan</th>
+                            <th class="w-1">:</th>
+                            <td class="w-74">
+                                ${data?.data[0]?.kegiatan_perusahaan?.perusahaan?.nama_perusahaan}
+                            </td>
+                        </tr>`
+                        datas += `<tr>
+                            <th class="w-25 text-right">Posisi</th>
+                            <th class="w-1">:</th>
+                            <td class="w-74">
+                                <b>
+                                    ${data?.data[0]?.kegiatan_perusahaan?.posisi_lowongan}
+                                </b>
+                            </td>
+                        </tr>`
+                        datas += `<tr>
+                            <th class="w-25 text-right">Durasi</th>
+                            <th class="w-1">:</th>
+                            <td class="w-74">
+                                ${data?.data[0]?.periode_kegiatan}
+                            </td>
+                        </tr>`
                         for (let i = 0; i < data?.data?.length; i++) {
+                            const tipe_pendaftar = data?.data[i]?.tipe_pendaftar == 0 ? 'Ketua' :
+                                'Anggota #' + (i)
                             datas += `<tr>
-                                <th class="w-25 text-right">Anggota #${i+1}</th>
+                                <th class="w-25 text-right">${tipe_pendaftar}</th>
                                 <th class="w-1">:</th>
                                 <td class="w-74">
                                     ${data?.data[i]?.mahasiswa?.nama_mahasiswa} (${data?.data[i]?.mahasiswa?.nim})
