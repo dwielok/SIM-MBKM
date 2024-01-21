@@ -27,7 +27,7 @@ class MahasiswaModel extends AppModel
         'jenis_kelamin',
         'kelas',
         'nama_ortu',
-    'hp_ortu',
+        'hp_ortu',
         'created_at',
         'created_by',
         'updated_at',
@@ -41,4 +41,9 @@ class MahasiswaModel extends AppModel
         //  Model => columnFK
         // 'App\Models\Master\DosenModel' => 'jurusan_id'
     ];
+
+    public function prodi()
+    {
+        return $this->belongsTo(ProdiModel::class, 'prodi_id', 'prodi_id');
+    }
 }

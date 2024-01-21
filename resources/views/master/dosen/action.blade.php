@@ -17,71 +17,102 @@ $is_edit = isset($data);
             <div class="modal-body">
                 <div class="form-message text-center"></div>
 
-                <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">prodi</label>
-                    <div class="col-sm-9">
-                        <select id="prodi_id" name="prodi_id" class="form-control form-control-sm select2_combobox">
-                            <option value="">- Pilih -</option>
-                            @foreach ($prodi as $r)
-                                <option value="{{ $r->prodi_id }}">{{ $r->prodi_code . ' - ' . $r->prodi_name }}
-                                </option>
-                            @endforeach
-                        </select>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group required mb-2">
+                            <label class="control-label">Prodi</label>
+                            <select id="prodi_id" name="prodi_id"
+                                class="form-control form-control-sm select2_combobox">
+                                <option value="">- Pilih -</option>
+                                @foreach ($prodi as $r)
+                                    <option value="{{ $r->prodi_id }}">{{ $r->prodi_code . ' - ' . $r->prodi_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label class="control-label">NIP Dosen</label>
+                            <input type="text" class="form-control form-control-sm" id="dosen_nip" name="dosen_nip"
+                                value="{{ isset($data->dosen_nip) ? $data->dosen_nip : '' }}" />
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label class="control-label">NIDN Dosen</label>
+                            <input type="text" class="form-control form-control-sm" id="dosen_nidn" name="dosen_nidn"
+                                value="{{ isset($data->dosen_nidn) ? $data->dosen_nidn : '' }}" />
+                        </div>
+
+                        <div class="form-group required mb-2">
+                            <label class="control-label">Nama Dosen</label>
+                            <input type="text" class="form-control form-control-sm" id="dosen_name" name="dosen_name"
+                                value="{{ isset($data->dosen_name) ? $data->dosen_name : '' }}" />
+                        </div>
+
+                        <div class="form-group required mb-2">
+                            <label class="control-label">Email Dosen</label>
+                            <input type="email" class="form-control form-control-sm" id="dosen_email"
+                                name="dosen_email" value="{{ isset($data->dosen_email) ? $data->dosen_email : '' }}" />
+                        </div>
+
+                        <div class="form-group required mb-2">
+                            <label class="control-label">No Telephone Dosen</label>
+                            <input type="number" class="form-control form-control-sm" id="dosen_phone"
+                                name="dosen_phone" value="{{ isset($data->dosen_phone) ? $data->dosen_phone : '' }}" />
+                        </div>
+
+                        <div class="form-group required mb-2">
+                            <label class="control-label">Jenis Kelamin Dosen</label>
+                            <select class="form-control form-control-sm" id="dosen_gender" name="dosen_gender">
+                                <option disabled selected value="">Pilih opsi</option>
+                                <option value="L"
+                                    {{ isset($data->dosen_gender) && $data->dosen_gender === 'L' ? 'selected' : '' }}>
+                                    Laki-laki</option>
+                                <option value="P"
+                                    {{ isset($data->dosen_gender) && $data->dosen_gender === 'P' ? 'selected' : '' }}>
+                                    Perempuan</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                {{-- <div class="form-group row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Nip Dosen</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control form-control-sm" id="dosen_nip" name="dosen_nip"
-                            value="{{ isset($data->dosen_nip) ? $data->dosen_nip : '' }}" />
-                    </div>
-                </div>
-                <div class="form-group row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">NIDN Dosen</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control form-control-sm" id="dosen_nidn" name="dosen_nidn"
-                            value="{{ isset($data->dosen_nidn) ? $data->dosen_nidn : '' }}" />
-                    </div>
-                </div> --}}
-                <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Nama Dosen</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control form-control-sm" id="dosen_name" name="dosen_name"
-                            value="{{ isset($data->dosen_name) ? $data->dosen_name : '' }}" />
-                    </div>
-                </div>
-                <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Email Dosen</label>
-                    <div class="col-sm-9">
-                        <input type="email" class="form-control form-control-sm" id="dosen_email" name="dosen_email"
-                            value="{{ isset($data->dosen_email) ? $data->dosen_email : '' }}" />
-                    </div>
-                </div>
-                <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">No Telephone Dosen</label>
-                    <div class="col-sm-9">
-                        <input type="number" class="form-control form-control-sm" id="dosen_phone" name="dosen_phone"
-                            value="{{ isset($data->dosen_phone) ? $data->dosen_phone : '' }}" />
-                    </div>
-                </div>
-                <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Jenis Kelamin Dosen</label>
-                    <div class="col-sm-9">
-                        <select class="form-control form-control-sm" id="dosen_gender" name="dosen_gender">
-                            <option value="L"
-                                {{ isset($data->dosen_gender) && $data->dosen_gender === 'L' ? 'selected' : '' }}>
-                                Laki-laki</option>
-                            <option value="P"
-                                {{ isset($data->dosen_gender) && $data->dosen_gender === 'P' ? 'selected' : '' }}>
-                                Perempuan</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Tahun Dosen</label>
-                    <div class="col-sm-9">
-                        <input type="number" class="form-control form-control-sm" id="dosen_tahun" name="dosen_tahun"
-                            value="{{ isset($data->dosen_tahun) ? $data->dosen_tahun : '' }}" />
+
+                    <div class="col-md-6">
+
+                        <div class="form-group required mb-2">
+                            <label class="control-label">Tahun Dosen</label>
+                            <input type="number" class="form-control form-control-sm" id="dosen_tahun"
+                                name="dosen_tahun" value="{{ isset($data->dosen_tahun) ? $data->dosen_tahun : '' }}" />
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label class="control-label">Sinta Dosen</label>
+                            <input type="number" class="form-control form-control-sm" id="sinta_id" name="sinta_id"
+                                value="{{ isset($data->sinta_id) ? $data->sinta_id : '' }}" />
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label class="control-label">Scholar Dosen</label>
+                            <input type="number" class="form-control form-control-sm" id="scholar_id" name="scholar_id"
+                                value="{{ isset($data->scholar_id) ? $data->scholar_id : '' }}" />
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label class="control-label">Scopus Dosen</label>
+                            <input type="number" class="form-control form-control-sm" id="scopus_id" name="scopus_id"
+                                value="{{ isset($data->scopus_id) ? $data->scopus_id : '' }}" />
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label class="control-label">Researchgate Dosen</label>
+                            <input type="number" class="form-control form-control-sm" id="researchgate_id"
+                                name="researchgate_id"
+                                value="{{ isset($data->researchgate_id) ? $data->researchgate_id : '' }}" />
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label class="control-label">Orcid Dosen</label>
+                            <input type="number" class="form-control form-control-sm" id="orcid_id"
+                                name="orcid_id" value="{{ isset($data->orcid_id) ? $data->orcid_id : '' }}" />
+                        </div>
                     </div>
                 </div>
             </div>

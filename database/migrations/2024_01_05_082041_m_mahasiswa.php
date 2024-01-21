@@ -24,8 +24,8 @@ class MMahasiswa extends Migration
             $table->string('no_hp', 15);
             $table->integer('jenis_kelamin')->comment('0: Perempuan, 1: Laki-laki');
             $table->string('kelas');
-            $table->string('nama_ortu');
-            $table->string('hp_ortu', 15);
+            $table->string('nama_ortu')->nullable();
+            $table->string('hp_ortu', 15)->nullable();
             $table->dateTime('created_at')->nullable()->useCurrent();
             $table->integer('created_by')->nullable()->index();
             $table->dateTime('updated_at')->nullable();

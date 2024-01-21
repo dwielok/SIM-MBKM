@@ -3,23 +3,23 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
-use App\Models\Master\DosenModel;
-use App\Models\Setting\UserModel;
+use App\Models\Master\MahasiswaModel;
 use App\Models\Master\ProdiModel;
-use Yajra\DataTables\Facades\DataTables;
+use App\Models\Setting\UserModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
+use Yajra\DataTables\Facades\DataTables;
 
-class DosenController extends Controller
+class MahasiswaController extends Controller
 {
     public function __construct()
     {
-        $this->menuCode  = 'MASTER.DOSEN';
-        $this->menuUrl   = url('master/dosen');
-        $this->menuTitle = 'Dosen';
-        $this->viewPath  = 'master.dosen.';
+        $this->menuCode  = 'MASTER.MAHASISWA';
+        $this->menuUrl   = url('master/mahasiswa');     // set URL untuk menu ini
+        $this->menuTitle = 'Mahasiswa';                       // set nama menu
+        $this->viewPath  = 'master.mahasiswa.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
     }
 
     public function index()
@@ -29,12 +29,12 @@ class DosenController extends Controller
 
         $breadcrumb = [
             'title' => $this->menuTitle,
-            'list'  => ['Data Master', 'Dosen']
+            'list'  => ['Data Master', 'Mahasiswa']
         ];
 
         $activeMenu = [
             'l1' => 'master',
-            'l2' => 'master-dosen',
+            'l2' => 'master-mahasiswa',
             'l3' => null
         ];
 
@@ -55,12 +55,17 @@ class DosenController extends Controller
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data  = DosenModel::selectRaw("dosen_id, dosen_name, dosen_email");
+        $data  = MahasiswaModel::selectRaw("mahasiswa_id, prodi_id, user_id, nim, nama_mahasiswa, email_mahasiswa, no_hp, jenis_kelamin, kelas, nama_ortu, hp_ortu")
+            ->with('prodi:prodi_id,prodi_id,prodi_name,prodi_code');
+        //append provinsi and kota to $data with value "dummy"
+
+        // dd($data);
 
         return DataTables::of($data)
             ->addIndexColumn()
             ->make(true);
     }
+
 
     public function create()
     {
@@ -72,112 +77,29 @@ class DosenController extends Controller
             'title' => 'Tambah ' . $this->menuTitle
         ];
 
-        $prodi = ProdiModel::selectRaw("prodi_id, prodi_name, prodi_code")->get();
+        $prodis = ProdiModel::select('prodi_id', 'prodi_name', 'prodi_code')->get();
 
         return view($this->viewPath . 'action')
             ->with('page', (object) $page)
-            ->with('prodi', $prodi);
+            ->with('prodis', $prodis);
     }
+
 
     public function store(Request $request)
     {
         $this->authAction('create', 'json');
-
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         if ($request->ajax() || $request->wantsJson()) {
+
             $rules = [
-                'dosen_name' => 'required|string|max:50',
-                'dosen_email' => ['required', 'email:rfc,dns,filter', 'max:50', 'unique:m_dosen,dosen_email'],
-                'dosen_phone' => ['required', 'numeric', 'digits_between:8,15', 'unique:m_dosen,dosen_phone'],
-                'dosen_gender' => 'required|in:L,P',
-                'dosen_tahun' => 'required|integer',
-                'prodi_id' => 'required|integer',
-                // Add other rules for DosenModel fields
-            ];
-            $validator = Validator::make($request->all(), $rules);
-            if ($validator->fails()) {
-                return response()->json([
-                    'stat' => false,
-                    'mc' => false,
-                    'msg' => 'Terjadi kesalahan.',
-                    'msgField' => $validator->errors()
-                ]);
-            }
-
-            // Generate random username
-            $random_username = 'dos_' . rand(100000, 999999);
-
-            // Create user
-            $user = [
-                'username' => $random_username,
-                'name' => $request->input('dosen_name'),
-                'password' => Hash::make($random_username),
-                'group_id' => 3,
-                'is_active' => 1,
-                'email' => $request->input('dosen_email'),
-            ];
-            $insert = UserModel::create($user);
-            $request['user_id'] = $insert->user_id;
-            // Create DosenModel
-            $dosen = DosenModel::insertData($request);
-
-            return response()->json([
-                'stat' => $dosen,
-                'mc' => $dosen,
-                'msg' => ($dosen) ? $this->getMessage('insert.success') : $this->getMessage('insert.failed')
-            ]);
-        }
-
-        return redirect('/');
-    }
-
-
-    public function edit($id)
-    {
-        $this->authAction('update', 'modal');
-        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
-
-        $page = [
-            'url' => $this->menuUrl . '/' . $id,
-            'title' => 'Edit ' . $this->menuTitle
-        ];
-
-        $data = DosenModel::find($id);
-        $prodi = ProdiModel::selectRaw("prodi_id, prodi_name, prodi_code")->get();
-
-        return (!$data) ? $this->showModalError() :
-            view($this->viewPath . 'action')
-            ->with('page', (object) $page)
-            ->with('id', $id)
-            ->with('data', $data)
-            ->with('prodi', $prodi);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $this->authAction('update', 'json');
-        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
-
-        if ($request->ajax() || $request->wantsJson()) {
-            $rules = [
-                'dosen_name' => 'required|string|max:50',
-                'dosen_email' => [
-                    'sometimes',
-                    'email:rfc,dns,filter',
-                    'max:50',
-                    Rule::unique('m_dosen', 'dosen_email')->ignore($id, 'dosen_id'),
-                ],
-                'dosen_phone' => [
-                    'sometimes',
-                    'numeric',
-                    'digits_between:8,15',
-                    Rule::unique('m_dosen', 'dosen_phone')->ignore($id, 'dosen_id'),
-                ],
-                'dosen_gender' => 'required|in:L,P',
-                'dosen_tahun' => 'required|integer',
-                'prodi_id' => 'required|integer',
-                // Add other rules for DosenModel fields
+                'prodi_id' => 'required',
+                'nim'  => 'required',
+                'nama_mahasiswa' => 'required',
+                'email_mahasiswa' => 'required',
+                'no_hp' => 'required',
+                'jenis_kelamin' => 'required',
+                'kelas' => 'required',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -191,26 +113,93 @@ class DosenController extends Controller
                 ]);
             }
 
-            // Check if the email has changed
-            // Check if the email has changed
-            if ($request->has('dosen_email')) {
-                // Cek apakah pengguna dengan email tersebut sudah ada
-                $existingUser = UserModel::where('email', $request->input('dosen_email'))->first();
+            $user = [
+                'username' => $request->nim,
+                'name' => $request->nama_mahasiswa,
+                'password' => Hash::make($request->nim),
+                'group_id' => 4,
+                'is_active' => 1,
+                'email' => $request->email_mahasiswa,
+            ];
+            $insert = UserModel::create($user);
 
-                if ($existingUser) {
-                    // Jika email sudah ada, update data pengguna yang sudah ada
-                    $existingUser->update([
-                        'name' => $request->input('dosen_name'),
-                    ]);
-                    $request['user_id'] = $existingUser->user_id;
-                } else {
-                    // Jika email belum ada, abaikan pembuatan pengguna baru
-                    unset($request['user_id']);
-                }
+            $request['user_id'] = $insert->user_id;
+
+            $res = MahasiswaModel::insertData($request);
+
+
+
+            return response()->json([
+                'stat' => $res,
+                'mc' => $res, // close modal
+                'msg' => ($res) ? $this->getMessage('insert.success') : $this->getMessage('insert.failed')
+            ]);
+        }
+
+        return redirect('/');
+    }
+
+    public function edit($id)
+    {
+        $this->authAction('update', 'modal');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        $page = [
+            'url' => $this->menuUrl . '/' . $id,
+            'title' => 'Edit ' . $this->menuTitle
+        ];
+
+        $data = MahasiswaModel::find($id);
+
+        $prodis = ProdiModel::select('prodi_id', 'prodi_name', 'prodi_code')->get();
+
+        return (!$data) ? $this->showModalError() :
+            view($this->viewPath . 'action')
+            ->with('page', (object) $page)
+            ->with('id', $id)
+            ->with('data', $data)
+            ->with('prodis', $prodis);
+    }
+
+
+    public function update(Request $request, $id)
+    {
+        $this->authAction('update', 'json');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        if ($request->ajax() || $request->wantsJson()) {
+
+            $rules = [
+                'prodi_id' => 'required',
+                'nim'  => 'required',
+                'nama_mahasiswa' => 'required',
+                'email_mahasiswa' => 'required',
+                'no_hp' => 'required',
+                'jenis_kelamin' => 'required',
+                'kelas' => 'required',
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'stat'     => false,
+                    'mc'       => false,
+                    'msg'      => 'Terjadi kesalahan.',
+                    'msgField' => $validator->errors()
+                ]);
             }
 
-            // Update DosenModel data
-            $res = DosenModel::updateData($id, $request);
+            $res = MahasiswaModel::updateData($id, $request);
+
+            $id_mahasiswa = MahasiswaModel::where('mahasiswa_id', $id)->first();
+
+            $res_user = UserModel::where('user_id', $id_mahasiswa->user_id)->update([
+                'username' => $request->nim,
+                'name' => $request->nama_mahasiswa,
+                'email' => $request->email_mahasiswa,
+                'password' => Hash::make($request->nim),
+            ]);
 
             return response()->json([
                 'stat' => $res,
@@ -225,9 +214,9 @@ class DosenController extends Controller
     public function show($id)
     {
         $this->authAction('read', 'modal');
-        // if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = DosenModel::find($id);
+        $data = MahasiswaModel::find($id);
         $page = [
             'title' => 'Detail ' . $this->menuTitle
         ];
@@ -239,17 +228,17 @@ class DosenController extends Controller
             ->with('data', $data);
     }
 
+
     public function confirm($id)
     {
         $this->authAction('delete', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = DosenModel::find($id);
+        $data = MahasiswaModel::find($id);
 
         return (!$data) ? $this->showModalError() :
             $this->showModalConfirm($this->menuUrl . '/' . $id, [
-                'NIP' => $data->dosen_nip,
-                'Nama Dosen' => $data->dosen_name,
+                'Nama' => $data->nama_mahasiswa,
             ]);
     }
 
@@ -260,12 +249,12 @@ class DosenController extends Controller
 
         if ($request->ajax() || $request->wantsJson()) {
 
-            $res = DosenModel::deleteData($id);
+            $res = MahasiswaModel::deleteData($id);
 
             return response()->json([
                 'stat' => $res,
                 'mc' => $res, // close modal
-                'msg' => DosenModel::getDeleteMessage()
+                'msg' => MahasiswaModel::getDeleteMessage()
             ]);
         }
 
