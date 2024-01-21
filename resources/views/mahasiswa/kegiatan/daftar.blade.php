@@ -246,6 +246,9 @@ $is_edit = isset($data);
                                 ${data?.data[0]?.periode_kegiatan}
                             </td>
                         </tr>`
+                        datas += `<tr>
+                            <td colspan="3" class="text-center font-weight-bold">Daftar Anggota</td>
+                        </tr>`
                         for (let i = 0; i < data?.data?.length; i++) {
                             const tipe_pendaftar = data?.data[i]?.tipe_pendaftar == 0 ? 'Ketua' :
                                 'Anggota #' + (i)
