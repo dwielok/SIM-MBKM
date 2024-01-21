@@ -533,6 +533,20 @@ class KegiatanController extends Controller
 
             $type = $request->tipe_pendaftar;
             $periode_id = PeriodeModel::where('is_current', 1)->first()->periode_id;
+
+            $cek = PendaftaranModel::where('mahasiswa_id', $request->mahasiswa_id)
+                ->where('kegiatan_perusahaan_id', $id)
+                ->first();
+
+            if ($cek) {
+                return response()->json([
+                    'stat' => false,
+                    'mc' => false, // close modal
+                    'msg' => 'Anda sudah mendaftar kegiatan ini.'
+                ]);
+            }
+
+
             if ($type == 2) {
                 $mahasiswa_id = $request->mahasiswa_id;
                 $request['kode_pendaftaran'] = 'P' . rand(100000, 999999);

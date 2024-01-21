@@ -149,7 +149,7 @@ $is_edit = isset($data);
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-message text-center" id="undangan-message"></div>
+                    <div class="text-center" id="undangan-message"></div>
 
 
                     <table class="table table-sm mb-0" id="table_undangan">
