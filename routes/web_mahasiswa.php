@@ -19,3 +19,4 @@ Route::post('m/kegiatan/list', [PerusahaanController::class, 'list']);
 //daftar
 Route::get('m/kegiatan/daftar/{id}', [KegiatanController::class, 'daftar']);
 Route::post('kegiatan/daftar/{id}', [KegiatanController::class, 'daftar_store']);
+Route::post('kegiatan/daftar/{id}/undangan', [KegiatanController::class, 'undangan']);

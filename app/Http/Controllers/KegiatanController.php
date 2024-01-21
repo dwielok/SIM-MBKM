@@ -505,7 +505,7 @@ class KegiatanController extends Controller
         $mahasiswas = MahasiswaModel::where('prodi_id', $mahasiswa_prodi)
             ->get();
 
-        return (!$data) ? $this->showModalError() : $this->showModalConfirmCustom('mahasiswa.kegiatan.daftar', $this->menuUrl . '/daftar' . '/' . $id , [
+        return (!$data) ? $this->showModalError() : $this->showModalConfirmCustom('mahasiswa.kegiatan.daftar', $this->menuUrl . '/daftar' . '/' . $id, [
             'kegiatan' => $data,
             'mahasiswa_id' => $mahasiswa_id,
             'mahasiswas' => $mahasiswas
@@ -551,5 +551,26 @@ class KegiatanController extends Controller
         }
 
         return redirect('/');
+    }
+
+    public function undangan(Request $request, $id)
+    {
+        $mahasiswa = MahasiswaModel::where('user_id', auth()->user()->user_id)->first();
+        $mahasiswa_id = $mahasiswa->mahasiswa_id;
+
+        $cek = PendaftaranModel::where('mahasiswa_id', $mahasiswa_id)
+            ->where('kegiatan_perusahaan_id', $id)
+            ->first();
+
+        if (!$cek) {
+            return response()->json([
+                'stat' => false,
+                'mc' => false, // close modal
+                'msg' => 'Anda belum diundang untuk kegiatan ini.'
+            ]);
+        }
+
+
+        // dd($mahasiswas);
     }
 }
