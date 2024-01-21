@@ -592,6 +592,7 @@ class KegiatanController extends Controller
                 ->with('kegiatan_perusahaan')
                 ->with('kegiatan_perusahaan.perusahaan')
                 ->with('periode')
+                ->orderBy('tipe_pendaftar', 'asc')
                 ->get();
             return response()->json([
                 'stat' => true,

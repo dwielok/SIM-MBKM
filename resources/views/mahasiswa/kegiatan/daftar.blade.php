@@ -213,7 +213,18 @@ $is_edit = isset($data);
                         return $('#undangan-message').html(
                             `<div class="alert alert-danger">${data?.msg}</div>`)
                     } else {
-                        $('#table_undangan').html(data)
+                        let datas = ''
+                        for (let i = 0; i < data?.data?.length; i++) {
+                            datas += `<tr>
+                                <th class="w-25 text-right">Anggota #${i+1}</th>
+                                <th class="w-1">:</th>
+                                <td class="w-74">
+                                    ${data?.data[i]?.mahasiswa?.nama_mahasiswa} (${data?.data[i]?.mahasiswa?.nim})
+                                </td>
+                            </tr>`
+                        }
+                        console.log('datas', datas)
+                        $('#table_undangan').html(datas)
                     }
                 }
             })
