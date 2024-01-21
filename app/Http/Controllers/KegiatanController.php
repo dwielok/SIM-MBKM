@@ -541,6 +541,24 @@ class KegiatanController extends Controller
                 $request['periode_id'] = $periode_id;
                 $request['status'] = 0;
                 $res = PendaftaranModel::insertData($request, ['mahasiswa']);
+            } else {
+                $mahasiswa_array = $request->mahasiswa;
+                //push mahasiswa_id to array
+                $mahasiswa_array[] = $request->mahasiswa_id;
+                // dd($mahasiswa_array);
+                $kode = 'P' . rand(100000, 999999);
+
+                unset($request['mahasiswa_id']);
+                $m_id = MahasiswaModel::where('user_id', auth()->user()->user_id)->first();
+                foreach ($mahasiswa_array as $mahasiswa) {
+                    $request['kode_pendaftaran'] = $kode;
+                    $request['mahasiswa_id'] = $mahasiswa;
+                    $request['kegiatan_perusahaan_id'] = $id;
+                    $request['periode_id'] = $periode_id;
+                    $request['tipe_pendaftar'] = $mahasiswa == $m_id->mahasiswa_id ? 0 : 1;
+                    $request['status'] = 0;
+                    $res = PendaftaranModel::insertData($request, ['mahasiswa']);
+                }
             }
 
             return response()->json([
@@ -567,6 +585,19 @@ class KegiatanController extends Controller
                 'stat' => false,
                 'mc' => false, // close modal
                 'msg' => 'Anda belum diundang untuk kegiatan ini.'
+            ]);
+        } else {
+            $anggotas = PendaftaranModel::where('kegiatan_perusahaan_id', $id)
+                ->with('mahasiswa')
+                ->with('kegiatan_perusahaan')
+                ->with('kegiatan_perusahaan.perusahaan')
+                ->with('periode')
+                ->get();
+            return response()->json([
+                'stat' => true,
+                'mc' => true, // close modal
+                'msg' => 'Anda sudah diundang untuk kegiatan ini.',
+                'data' => $anggotas
             ]);
         }
 

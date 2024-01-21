@@ -88,6 +88,13 @@ class PerusahaanController extends Controller
                 ->where('mahasiswa_id', $mahasiswa_id)
                 ->count();
 
+            $item->is_undang = PendaftaranModel::where('periode_id', $periode_active->periode_id)
+                ->where('kegiatan_perusahaan_id', $item->kegiatan_perusahaan_id)
+                ->where('mahasiswa_id', $mahasiswa_id)
+                ->where('tipe_pendaftar', 1)
+                ->where('status', 0)
+                ->count();
+            $item->is_undang = ($item->is_undang > 0) ? true : false;
             $item->is_daftar = ($item->is_daftar > 0) ? true : false;
 
 

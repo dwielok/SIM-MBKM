@@ -18,7 +18,7 @@ class MPendaftaran extends Migration
             $table->unsignedBigInteger('mahasiswa_id')->index();
             $table->unsignedBigInteger('kegiatan_perusahaan_id')->index();
             $table->unsignedBigInteger('periode_id')->index();
-            $table->string('kode_pendaftaran', 10)->unique();
+            $table->string('kode_pendaftaran', 10);
             $table->integer('tipe_pendaftar')->comment('0: Ketua, 1: Anggota, 2: Individu');
             $table->integer('status')->comment('0: Menunggu, 1: Diterima, 2: Ditolak');
 

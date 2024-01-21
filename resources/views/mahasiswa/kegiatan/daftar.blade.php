@@ -12,7 +12,6 @@ $is_edit = isset($data);
             </button>
         </div>
         <div class="modal-body">
-            <div class="form-message text-center"></div>
             <div class="form-group row mb-2">
                 <label class="col-sm-3 control-label col-form-label">Pendaftaran</label>
                 <div class="col-sm-9">
