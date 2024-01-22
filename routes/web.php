@@ -17,6 +17,8 @@ Auth::routes(['register' => false, 'confirm' => false, 'email' => false, 'reset'
 Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout']);
 Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register_perusahaan']);
 Route::post('/register_perusahaan', [App\Http\Controllers\Auth\RegisterController::class, 'register_perusahaan_store'])->name('register.perusahaan');
+Route::get('/register/Pembimbing_lapangan', [App\Http\Controllers\Auth\RegisterController::class, 'register_pembimbing_lapangan']);
+Route::post('/register_Pembimbing_lapangan', [App\Http\Controllers\Auth\RegisterController::class, 'register_pembimbing_lapangan_store'])->name('register.pembimbing_lapangan');
 Route::get('/login-sso', [App\Http\Controllers\Auth\LoginController::class, 'showLoginSSO']);
 Route::get('/attempt-sso', [App\Http\Controllers\Auth\LoginController::class, 'attemptLoginSSO']);
 

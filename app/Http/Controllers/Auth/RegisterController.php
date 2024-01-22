@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Master\PeriodeModel;
 use App\Models\Master\PerusahaanModel;
+use App\Models\Master\PembimbingLapanganModel;
 use App\Models\Setting\UserModel;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -96,6 +97,38 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
     }
+
+    public function register_pembimbing_lapangan()
+    {
+        return view('auth.register_pembimbing_lapangan');
+    }
+
+    public function register_pembimbing_lapangan_store(Request $request)
+    {
+        // Create a new UserModel instance
+        $createdUser = UserModel::create([
+            'username' => $request->input('username'),
+            'name' => $request->input('name_pembimbing_lapangan'),
+            'group_id' => 6,
+            'email' => $request->input('email_pembimbing_lapangan'),
+            'password' => Hash::make($request->input('password')),
+            'is_active' => 0,
+        ]);
+
+        // Create a new PembimbingLapanganModel instance
+        $userPembimbingLapangan = PembimbingLapanganModel::create([
+            'name_pembimbing_lapangan' => $request->input('name_pembimbing_lapangan'),
+            'jabatan_pembimbing_lapangan' => $request->input('jabatan_pembimbing_lapangan'),
+            'tempat_industri_pembimbing_lapangan' => $request->input('tempat_industri_pembimbing_lapangan'),
+            'phone_pembimbing_lapangan' => $request->input('phone_pembimbing_lapangan'),
+            'email_pembimbing_lapangan' => $request->input('email_pembimbing_lapangan'),
+            'user_id' => $createdUser->user_id, // Set the 'user_id' in PembimbingLapanganModel
+        ]);
+
+        // Redirect to the login page with a success message
+        return redirect('/login')->with('success', 'Pendaftaran berhasil. Silahkan login setelah mendapatkan persetujuan.');
+    }
+
 
     public function register_perusahaan()
     {

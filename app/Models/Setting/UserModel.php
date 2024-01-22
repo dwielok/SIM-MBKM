@@ -6,6 +6,7 @@ namespace App\Models\Setting;
 use App\Models\Master\DosenModel;
 use App\Models\Master\MahasiswaModel;
 use App\Models\Master\PerusahaanModel;
+use App\Models\Master\PembimbingLapanganModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -108,6 +109,10 @@ class UserModel extends Authenticatable
     public function getUserPerusahaan()
     {
         return $this->hasOne(PerusahaanModel::class, 'user_id', 'user_id');
+    }
+    public function getUserPembimbingLapangan()
+    {
+        return $this->hasOne(PembimbingLapanganModel::class, 'user_id', 'user_id');
     }
 
 
