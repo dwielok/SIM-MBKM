@@ -7,7 +7,6 @@ use App\Models\Setting\GroupModel;
 use App\Models\Setting\UserModel;
 use App\Models\View\CustomerListView;
 use App\Models\View\UserView;
-use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -15,19 +14,22 @@ use function redirect;
 use function response;
 use function url;
 use function view;
+use Yajra\DataTables\DataTables;
 
 
 class UserController extends Controller
 {
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->menuCode  = 'SETTING.USER';                // kode menu, sesuai dengan code di DB
         $this->menuUrl   = url('setting/user');     // set URL untuk menu ini
         $this->menuTitle = 'Setting - Data Pengguna';                 // set nama menu
         $this->viewPath  = 'setting.user.';    // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
     }
 
-    public function index(){
+    public function index()
+    {
         $this->authAction('read');
         $this->authCheckDetailAccess();
 
@@ -60,13 +62,14 @@ class UserController extends Controller
             ->with('allowAccess', $this->authAccessKey());
     }
 
-    public function list(Request $request){
+    public function list(Request $request)
+    {
         $this->authAction('read', 'json');
-        if($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data  = UserView::selectRaw('user_id, username, name, group_name, is_active');    // wajib ada, karena pakai soft-delete harus di query yg deleted_at nya bernilai NULL
+        $data  = UserModel::with('group')->where('deleted_at', null);    // wajib ada, karena pakai soft-delete harus di query yg deleted_at nya bernilai NULL
 
-        if(!empty($request->input('filter_group'))){
+        if (!empty($request->input('filter_group'))) {
             $data->where('group_id', $request->input('filter_group'));
         }
 
@@ -76,9 +79,10 @@ class UserController extends Controller
     }
 
 
-    public function create(){
+    public function create()
+    {
         $this->authAction('create', 'modal');
-        if($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         // untuk set konten halaman web
         $page = [
@@ -94,9 +98,10 @@ class UserController extends Controller
     }
 
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $this->authAction('create', 'json');
-        if($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         // cek untuk Insert/Update/Delete harus via AJAX
         if ($request->ajax() || $request->wantsJson()) {
@@ -124,10 +129,9 @@ class UserController extends Controller
 
             return response()->json([
                 'stat' => $res,
-                'mc' => false, // close modal
-                'msg' => ($res)? $this->getMessage('insert.success') : $this->getMessage('insert.failed')
+                'mc' => $res, // close modal
+                'msg' => ($res) ? $this->getMessage('insert.success') : $this->getMessage('insert.failed')
             ]);
-
         }
 
         return redirect('/');
@@ -135,9 +139,10 @@ class UserController extends Controller
 
 
     // Fungsi show disini diabaikan dulu untuk setting, karena akan digunakan untuk detail data
-    public function show($id){
+    public function show($id)
+    {
         $this->authAction('read', 'modal');
-        if($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         // untuk set konten halaman web
         $page = [
@@ -146,27 +151,28 @@ class UserController extends Controller
 
         $data  = UserView::where('user_id', $id)->first();
 
-        return (!$data)? $this->showModalError() :
+        return (!$data) ? $this->showModalError() :
             view($this->viewPath . 'detail')
-                ->with('page', (object) $page)
-                ->with('data', $data);
+            ->with('page', (object) $page)
+            ->with('data', $data);
     }
 
 
-    public function edit($id){
+    public function edit($id)
+    {
         $this->authAction('update', 'modal');
-        if($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         // untuk set konten halaman web
         $page = [
-            'url' => $this->menuUrl . '/'.$id,
+            'url' => $this->menuUrl . '/' . $id,
             'title' => 'Edit ' . $this->menuTitle
         ];
 
         $data  = UserView::where('user_id', $id)->first();
-        if(!$data) return $this->showModalError();
+        if (!$data) return $this->showModalError();
 
-        if($data->group_id != 1) return $this->showModalError('Kesalahan', 'Terjadi Kesalahan!!!', 'Data level Admin tidak bisa diedit.');
+        if ($data->group_id == 1) return $this->showModalError('Kesalahan', 'Terjadi Kesalahan!!!', 'Data level Admin tidak bisa diedit.');
 
         $group = GroupModel::selectRaw('group_id, group_code, group_name')->where('is_active', 1)->get();
 
@@ -178,15 +184,16 @@ class UserController extends Controller
     }
 
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
         $this->authAction('update', 'json');
-        if($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         // cek untuk Insert/Update/Delete harus via AJAX
         if ($request->ajax() || $request->wantsJson()) {
 
             $rules = [
-                'username' => ['required','min:4','max:20',Rule::unique('s_user')->ignore($id, 'user_id')],
+                'username' => ['required', 'min:4', 'max:20', Rule::unique('s_user')->ignore($id, 'user_id')],
                 'name' => 'required|max:50',
                 'group_id' => 'required|integer',
                 'email' => 'nullable|email|max:50',
@@ -206,7 +213,7 @@ class UserController extends Controller
             }
 
             $data  = UserView::where('user_id', $id)->first();
-            if(!$data OR $data->group_id != 1){
+            if (!$data or $data->group_id == 1) {
                 return response()->json([
                     'stat' => false,
                     'mc' => false, // close modal
@@ -219,7 +226,7 @@ class UserController extends Controller
             return response()->json([
                 'stat' => $res,
                 'mc' => $res, // close modal
-                'msg' => ($res)? $this->getMessage('insert.success') : $this->getMessage('insert.failed')
+                'msg' => ($res) ? $this->getMessage('insert.success') : $this->getMessage('insert.failed')
             ]);
         }
 
@@ -227,33 +234,35 @@ class UserController extends Controller
     }
 
 
-    public function confirm($id){
+    public function confirm($id)
+    {
         $this->authAction('delete', 'modal');
-        if($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         $data = UserView::where('user_id', $id)->first();
-        if(!$data) return $this->showModalError();
+        if (!$data) return $this->showModalError();
 
-        if($data->group_id != 1) return $this->showModalError('Kesalahan', 'Terjadi Kesalahan!!!', 'Data level Admin tidak bisa dihapus.');
+        if ($data->group_id == 1) return $this->showModalError('Kesalahan', 'Terjadi Kesalahan!!!', 'Data level Admin tidak bisa dihapus.');
 
 
-        return $this->showModalConfirm($this->menuUrl.'/'.$id, [
-                'Username' => $data->username,      // tampilkan data-data yang ditampilkan (untuk dihapus)
-                'Name' => $data->name,
-                'Group' => $data->group_name,
-                'Email' => $data->email,
-                'HP' => $data->hp,
-            ]);
+        return $this->showModalConfirm($this->menuUrl . '/' . $id, [
+            'Username' => $data->username,      // tampilkan data-data yang ditampilkan (untuk dihapus)
+            'Name' => $data->name,
+            'Group' => $data->group_name,
+            'Email' => $data->email,
+            'HP' => $data->hp,
+        ]);
     }
 
-    public function destroy(Request $request, $id){
+    public function destroy(Request $request, $id)
+    {
         $this->authAction('delete', 'json');
-        if($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         // cek untuk Insert/Update/Delete harus via AJAX
         if ($request->ajax() || $request->wantsJson()) {
             $data  = UserView::where('user_id', $id)->first();
-            if(!$data OR $data->group_id != 1){
+            if (!$data or $data->group_id == 1) {
                 return response()->json([
                     'stat' => false,
                     'mc' => false, // close modal
@@ -266,7 +275,7 @@ class UserController extends Controller
             return response()->json([
                 'stat' => $res,
                 'mc' => $res, // close modal
-                'msg' => ($res)? $this->getMessage('delete.success') : $this->getMessage('delete.failed')
+                'msg' => ($res) ? $this->getMessage('delete.success') : $this->getMessage('delete.failed')
             ]);
         }
 

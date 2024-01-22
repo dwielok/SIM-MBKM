@@ -40,7 +40,10 @@ class UserModel extends Authenticatable
         'deleted_by'
     ];
 
-
+    public function group()
+    {
+        return $this->belongsTo(GroupModel::class, 'group_id', 'group_id');
+    }
 
     public function role()
     {
