@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Models\Master\MahasiswaModel;
 use App\Models\Master\PendaftaranModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -20,6 +22,13 @@ class PendaftaranController extends Controller
 
     public function index()
     {
+        $role = Auth::user()->group_id;
+        if ($role == 4) {
+            $this->menuCode = 'MASTER.PENDAFTARAN.SAYA';
+        } else {
+            $this->menuCode  = 'MASTER.PENDAFTARAN';
+        }
+
         $this->authAction('read');
         $this->authCheckDetailAccess();
 
@@ -48,15 +57,31 @@ class PendaftaranController extends Controller
 
     public function list(Request $request)
     {
+        $role = Auth::user()->group_id;
+        if ($role == 4) {
+            $this->menuCode = 'MASTER.PENDAFTARAN.SAYA';
+        } else {
+            $this->menuCode  = 'MASTER.PENDAFTARAN';
+        }
+
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        $role = Auth::user()->group_id;
 
         $data  = PendaftaranModel::with('mahasiswa')
             ->with('kegiatan_perusahaan')
             ->with('kegiatan_perusahaan.perusahaan')
             ->with('kegiatan_perusahaan.tipe_kegiatan')
-            ->with('periode')
-            ->get();
+            ->with('periode');
+
+        if ($role == 4) {
+            $mahasiswa_id = MahasiswaModel::where('user_id', Auth::user()->user_id)->first()->mahasiswa_id;
+            $data = $data->where('mahasiswa_id', $mahasiswa_id)->get();
+        } else {
+            $data = $data->get();
+        }
+
 
         return DataTables::of($data)
             ->addIndexColumn()

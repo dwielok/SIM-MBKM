@@ -112,9 +112,16 @@
                             if (data == 0) {
                                 status = '<span class="badge badge-info">Menunggu</span>';
                             } else if (data == 1) {
-                                status = '<span class="badge badge-success">Diterima</span>';
+                                status =
+                                    '<span class="badge badge-success">Diterima Koordinator</span>';
                             } else if (data == 2) {
-                                status = '<span class="badge badge-danger">Ditolak</span>';
+                                status = '<span class="badge badge-danger">Menolak Undangan</span>';
+                            } else if (data == 3) {
+                                status =
+                                    '<span class="badge badge-warning">Menerima Undangan</span>';
+                            } else if (data == 4) {
+                                status =
+                                    '<span class="badge badge-danger">Ditolak Koordinator</span>';
                             }
                             return status;
                         }

@@ -629,4 +629,78 @@ class KegiatanController extends Controller
 
         // dd($mahasiswas);
     }
+
+    //tolak
+    public function tolak(Request $request, $id)
+    {
+        $mahasiswa = MahasiswaModel::where('user_id', auth()->user()->user_id)->first();
+        $mahasiswa_id = $mahasiswa->mahasiswa_id;
+
+        $cek = PendaftaranModel::where('mahasiswa_id', $mahasiswa_id)
+            ->where('kegiatan_perusahaan_id', $id)
+            ->first();
+
+        if (!$cek) {
+            return response()->json([
+                'stat' => false,
+                'mc' => false, // close modal
+                'msg' => 'Anda belum diundang untuk kegiatan ini.'
+            ]);
+        }
+
+        //status
+        //0 = menunggu
+        //1 = diterima
+        //3 = menerima undangan
+        //2 = menolak undangan
+        //4 = ditolak
+
+        // dd($cek->pendaftaran_id);
+
+        $request['status'] = 2;
+        unset($request['_token']);
+        $res = PendaftaranModel::updateData($cek->pendaftaran_id, $request);
+
+        return response()->json([
+            'stat' => $res,
+            'mc' => $res, // close modal
+            'msg' => ($res) ? 'Berhasil menolak undangan.' : 'Gagal menolak undangan.'
+        ]);
+    }
+
+    //terima
+    public function terima(Request $request, $id)
+    {
+        $mahasiswa = MahasiswaModel::where('user_id', auth()->user()->user_id)->first();
+        $mahasiswa_id = $mahasiswa->mahasiswa_id;
+
+        $cek = PendaftaranModel::where('mahasiswa_id', $mahasiswa_id)
+            ->where('kegiatan_perusahaan_id', $id)
+            ->first();
+
+        if (!$cek) {
+            return response()->json([
+                'stat' => false,
+                'mc' => false, // close modal
+                'msg' => 'Anda belum diundang untuk kegiatan ini.'
+            ]);
+        }
+
+        //status
+        //0 = menunggu
+        //1 = diterima
+        //3 = menerima undangan
+        //2 = menolak undangan
+        //4 = ditolak
+
+        $request['status'] = 3;
+        unset($request['_token']);
+        $res = PendaftaranModel::updateData($cek->pendaftaran_id, $request);
+
+        return response()->json([
+            'stat' => $res,
+            'mc' => $res, // close modal
+            'msg' => ($res) ? 'Berhasil menerima undangan.' : 'Gagal menerima undangan.'
+        ]);
+    }
 }

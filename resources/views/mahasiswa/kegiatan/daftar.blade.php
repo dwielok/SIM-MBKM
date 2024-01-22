@@ -137,23 +137,20 @@ $is_edit = isset($data);
 </div>
 
 <div id="daftar_anggota">
-    <form method="post" action="{{ $url }}" role="form" class="form-horizontal" id="form-master">
-        @csrf
-        {!! $is_edit ? method_field('PUT') : '' !!}
-        <div id="modal-master" class="modal-dialog modal-md" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Detail Undangan</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="text-center" id="undangan-message"></div>
+    <div id="modal-master" class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Detail Undangan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center" id="undangan-message"></div>
 
 
-                    <table class="table table-sm mb-0" id="table_undangan">
-                        {{-- @foreach ($datas as $data)
+                <table class="table table-sm mb-0" id="table_undangan">
+                    {{-- @foreach ($datas as $data)
                             <tr>
                                 <th class="w-25 text-right">{{ $data->title }}</th>
                                 <th class="w-1">:</th>
@@ -163,15 +160,14 @@ $is_edit = isset($data);
                             </tr>
                         @endforeach --}}
 
-                    </table>
-                </div>
-                <div class="modal-footer" id="undangan-footer">
-                    <button type="button" data-dismiss="modal" class="btn btn-danger">Tolak</button>
-                    <button type="submit" class="btn btn-success">Terima</button>
-                </div>
+                </table>
+            </div>
+            <div class="modal-footer" id="undangan-footer">
+                <button type="button" id="tolak_btn" class="btn btn-danger">Tolak</button>
+                <button type="submit" id="terima_btn" class="btn btn-success">Terima</button>
             </div>
         </div>
-    </form>
+    </div>
 </div>
 
 <script>
@@ -291,6 +287,68 @@ $is_edit = isset($data);
             } else {
                 $('#jenis_magang_form').addClass('d-none');
             }
+        })
+
+        //tolak
+        $('#tolak_btn').on('click', function() {
+            $.ajax({
+                url: "{{ $url }}/tolak",
+                type: "POST",
+                data: {
+                    '_token': '{{ csrf_token() }}'
+                },
+                success: function(data) {
+                    console.log(data)
+                    if (!data?.mc) {
+                        return $('#undangan-message').html(
+                            `<div class="alert alert-danger">${data?.msg}</div>`)
+                    } else {
+                        $('#undangan-message').html(
+                            `<div class="alert alert-success">${data?.msg}</div>`)
+                        $('#undangan-footer').hide()
+                        //hide modal
+                        // setTimeout(function() {
+                        //     $('#modal-master').modal('hide');
+                        // }, 1000);
+                        // window.location.r
+                        //reload window
+                        setTimeout(function() {
+                            window.location.href = "{{ url('m/pendaftaran') }}"
+                            // window.location.reload();
+                        }, 1000);
+                    }
+                }
+            })
+        })
+
+        $('#terima_btn').on('click', function() {
+            $.ajax({
+                url: "{{ $url }}/terima",
+                type: "POST",
+                data: {
+                    '_token': '{{ csrf_token() }}'
+                },
+                success: function(data) {
+                    console.log(data)
+                    if (!data?.mc) {
+                        return $('#undangan-message').html(
+                            `<div class="alert alert-danger">${data?.msg}</div>`)
+                    } else {
+                        $('#undangan-message').html(
+                            `<div class="alert alert-success">${data?.msg}</div>`)
+                        $('#undangan-footer').hide()
+                        //hide modal
+                        // setTimeout(function() {
+                        //     $('#modal-master').modal('hide');
+                        // }, 1000);
+                        // window.location.r
+                        //reload window
+                        setTimeout(function() {
+                            window.location.href = "{{ url('m/pendaftaran') }}"
+                        }, 1000);
+                    }
+                }
+            })
         })
 
         $("#form-master").validate({

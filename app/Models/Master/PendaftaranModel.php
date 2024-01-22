@@ -16,10 +16,10 @@ class PendaftaranModel extends AppModel
     // ];
 
     protected $table = 'm_pendaftaran';
-    protected $primaryKey = 'pendafatran_id';
+    protected $primaryKey = 'pendaftaran_id';
 
     protected static $_table = 'm_pendaftaran';
-    protected static $_primaryKey = 'pendafatran_id';
+    protected static $_primaryKey = 'pendaftaran_id';
 
     protected $fillable = [
         'mahasiswa_id',
