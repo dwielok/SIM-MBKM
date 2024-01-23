@@ -21,6 +21,7 @@ class MPembimbingLapangan extends Migration
             $table->string('tempat_industri_pembimbing_lapangan');
             $table->string('phone_pembimbing_lapangan');
             $table->string('email_pembimbing_lapangan')->unique();
+            // foto
             $table->unsignedBigInteger('user_id')->index();
             $table->dateTime('created_at')->nullable()->useCurrent();
             $table->integer('created_by')->nullable()->index();

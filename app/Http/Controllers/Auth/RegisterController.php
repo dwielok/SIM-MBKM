@@ -105,23 +105,33 @@ class RegisterController extends Controller
 
     public function register_pembimbing_lapangan_store(Request $request)
     {
+        $validatedData = $request->validate([
+            'username' => 'required',
+            'name_pembimbing_lapangan' => 'required',
+            'email_pembimbing_lapangan' => 'required|email|unique:s_user,email',
+            'password' => 'required|min:6',
+            'jabatan_pembimbing_lapangan' => 'required',
+            'tempat_industri_pembimbing_lapangan' => 'required',
+            'phone_pembimbing_lapangan' => 'required|numeric',
+        ]);
         // Create a new UserModel instance
         $createdUser = UserModel::create([
-            'username' => $request->input('username'),
-            'name' => $request->input('name_pembimbing_lapangan'),
+            'username' => $validatedData['username'],
+            // 'name' => $validatedData['name_pembimbing_lapangan'],
+            'name' => 'Pembibing Lapangan',
             'group_id' => 6,
-            'email' => $request->input('email_pembimbing_lapangan'),
-            'password' => Hash::make($request->input('password')),
+            'email' => $validatedData['email_pembimbing_lapangan'],
+            'password' => Hash::make($validatedData['password']),
             'is_active' => 0,
         ]);
 
         // Create a new PembimbingLapanganModel instance
         $userPembimbingLapangan = PembimbingLapanganModel::create([
-            'name_pembimbing_lapangan' => $request->input('name_pembimbing_lapangan'),
-            'jabatan_pembimbing_lapangan' => $request->input('jabatan_pembimbing_lapangan'),
-            'tempat_industri_pembimbing_lapangan' => $request->input('tempat_industri_pembimbing_lapangan'),
-            'phone_pembimbing_lapangan' => $request->input('phone_pembimbing_lapangan'),
-            'email_pembimbing_lapangan' => $request->input('email_pembimbing_lapangan'),
+            'name_pembimbing_lapangan' => $validatedData['name_pembimbing_lapangan'],
+            'jabatan_pembimbing_lapangan' => $validatedData['jabatan_pembimbing_lapangan'],
+            'tempat_industri_pembimbing_lapangan' => $validatedData['tempat_industri_pembimbing_lapangan'],
+            'phone_pembimbing_lapangan' => $validatedData['phone_pembimbing_lapangan'],
+            'email_pembimbing_lapangan' => $validatedData['email_pembimbing_lapangan'],
             'user_id' => $createdUser->user_id, // Set the 'user_id' in PembimbingLapanganModel
         ]);
 

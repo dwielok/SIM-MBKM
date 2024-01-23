@@ -16,13 +16,14 @@ class MSeminarHasil extends Migration
         Schema::create('m_seminar_hasil', function (Blueprint $table) {
             $table->id('seminar_hasil_id');
             // isi tabel seminar hasil
-            
             // judul
             // file proposal
             // file ppt
             // link github 
-            // 
-
+            $table->longText('judul');
+            $table->string('file_proposal'); // You can adjust the type if needed
+            $table->string('file_ppt');
+            $table->string('link_github')->nullable()->url();
             $table->dateTime('created_at')->nullable()->useCurrent();
             $table->integer('created_by')->nullable()->index();
             $table->dateTime('updated_at')->nullable();

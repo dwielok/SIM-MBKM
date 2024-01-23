@@ -40,6 +40,10 @@
                         <div class="alert alert-danger rounded-0 mb-1">
                             {{ session()->get('error') }}
                         </div>
+                    @elseif (session()->has('success'))
+                        <div class="alert alert-danger rounded-0 mb-1">
+                            {{ session()->get('success') }}
+                        </div>
                     @endif
                 </div>
                 <form action="{{ route('login') }}" method="post" id="login-form" class="mt-2">

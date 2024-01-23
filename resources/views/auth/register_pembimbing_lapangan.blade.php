@@ -52,9 +52,14 @@
                         <div class="alert alert-danger rounded-0 mb-1">
                             {{ session()->get('error') }}
                         </div>
+                    @elseif (session()->has('success'))
+                        <div class="alert alert-danger rounded-0 mb-1">
+                            {{ session()->get('success') }}
+                        </div>
                     @endif
                 </div>
-                <form action="{{ route('register.pembimbing_lapangan') }}" method="post" id="login-form" class="mt-2">
+                <form action="{{ route('register.pembimbing_lapangan') }}" method="post" id="login-form"
+                    class="mt-2">
                     @csrf
                     <div class="input-group mb-2">
                         <div class="input-group-prepend">
@@ -71,8 +76,26 @@
                                 <span class="fas fa-at"></span>
                             </div>
                         </div>
-                        <input id="email_pembimbing_lapangan" name="email_pembimbing_lapangan" type="text" class="form-control" placeholder="Email"
-                            require autocomplete="off" />
+                        <input id="email_pembimbing_lapangan" name="email_pembimbing_lapangan" type="text"
+                            class="form-control" placeholder="Email" require autocomplete="off" />
+                    </div>
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <span class="far fa-user"></span>
+                            </div>
+                        </div>
+                        <input id="name_pembimbing_lapangan" name="name_pembimbing_lapangan" type="text"
+                            class="form-control" placeholder="Nama Pembimbing" require autocomplete="off" />
+                    </div>
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <span class="fas fa-user-tie"></span>
+                            </div>
+                        </div>
+                        <input id="jabatan_pembimbing_lapangan" name="jabatan_pembimbing_lapangan" type="text"
+                            class="form-control" placeholder="Jabatan Pembimbing" require autocomplete="off" />
                     </div>
                     <div class="input-group mb-2">
                         <div class="input-group-prepend">
@@ -80,35 +103,19 @@
                                 <span class="fas fa-building"></span>
                             </div>
                         </div>
-                        <input id="name_pembimbing_lapangan" name="name_pembimbing_lapangan" type="text" class="form-control"
-                            placeholder="Nama Pembimbing" require autocomplete="off" />
+                        <input id="tempat_industri_pembimbing_lapangan" name="tempat_industri_pembimbing_lapangan"
+                            type="text" class="form-control" placeholder="Nama Industri Pembimbing" require
+                            autocomplete="off" />
                     </div>
                     <div class="input-group mb-2">
                         <div class="input-group-prepend">
                             <div class="input-group-text">
-                                <span class="fas fa-building"></span>
+                                <span class="fas fa-phone"></span>
                             </div>
                         </div>
-                        <input id="jabatan_pembimbing_lapangan" name="jabatan_pembimbing_lapangan" type="text" class="form-control"
-                            placeholder="Jabatan Pembimbing" require autocomplete="off" />
-                    </div>
-                    <div class="input-group mb-2">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text">
-                                <span class="fas fa-building"></span>
-                            </div>
-                        </div>
-                        <input id="tempat_industri_pembimbing_lapangan" name="tempat_industri_pembimbing_lapangan" type="text" class="form-control"
-                            placeholder="Nama Industri Pembimbing" require autocomplete="off" />
-                    </div>
-                    <div class="input-group mb-2">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text">
-                                <span class="fas fa-building"></span>
-                            </div>
-                        </div>
-                        <input id="phone_pembimbing_lapangan" name="phone_pembimbing_lapangan" type="text" class="form-control"
-                            placeholder="No Telefon Industri Pembimbing" require autocomplete="off" />
+                        <input id="phone_pembimbing_lapangan" name="phone_pembimbing_lapangan" type="text"
+                            class="form-control" placeholder="No Telefon Industri Pembimbing" require
+                            autocomplete="off" />
                     </div>
                     <div class="input-group mb-2">
                         <div class="input-group-prepend">

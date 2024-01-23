@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class MLogBimbingan extends Migration
+class MRequestTopic extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,15 @@ class MLogBimbingan extends Migration
      */
     public function up()
     {
-        Schema::create('m_log_bimbingan', function (Blueprint $table) {
-            $table->id('log_bimbingan_id');
-            // isi tabel pembimbinglapangan
-            $table->string('topic');
-            $table->longText('log_content');
-            $table->date('Log_date');
-            $table->time('log_time_start');
-            $table->time('log_time_end');
-            $table->string('photo');
-            $table->integer('status1')->comment('0: Menunggu, 1: Diterima, 2: Ditolak');
-            $table->integer('status2')->comment('0: Menunggu, 1: Diterima, 2: Ditolak');
+        Schema::create('m_request_topic', function (Blueprint $table) {
+            $table->id('request_topic_id');
+            // isi tabel seminar hasil
+            // judul
+            // file proposal
+            // file ppt
+            // link github 
+            $table->longText('judul');
+            $table->integer('status')->comment('0: Available, 1: Selected, 2: Claimed');
             $table->dateTime('created_at')->nullable()->useCurrent();
             $table->integer('created_by')->nullable()->index();
             $table->dateTime('updated_at')->nullable();
