@@ -16,16 +16,17 @@ $is_edit = isset($data);
             </div>
             <div class="modal-body">
                 <div class="form-message text-center"></div>
-                {{-- <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Prodi</label>
+                <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Jenis Program</label>
                     <div class="col-sm-9">
-                        <select data-testid="partner-category" class="form-control form-control-sm" id="prodi_id"
-                            name="prodi_id" value="{{ isset($data->prodi_id) ? $data->prodi_id : '' }}">
+                        <select data-testid="partner-category" class="form-control form-control-sm"
+                            id="jenis_program_id" name="jenis_program_id"
+                            value="{{ isset($data->jenis_program_id) ? $data->jenis_program_id : '' }}">
                             <option disabled selected value="">Pilih opsi</option>
-                            @foreach ($prodis as $prodi)
-                                <option value="{{ $prodi->prodi_id }}"
-                                    {{ isset($data->prodi_id) ? ($data->prodi_id == $prodi->prodi_id ? 'selected' : '') : '' }}>
-                                    {{ $prodi->prodi_name }}
+                            @foreach ($programs as $program)
+                                <option value="{{ $program->jenis_program_id }}"
+                                    {{ isset($data->jenis_program_id) ? ($program->jenis_program_id == $data->jenis_program_id ? 'selected' : '') : '' }}>
+                                    {{ $program->nama_program }}
                                 </option>
                             @endforeach
                         </select>
@@ -33,23 +34,7 @@ $is_edit = isset($data);
                     </div>
                 </div>
                 <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Periode</label>
-                    <div class="col-sm-9">
-                        <select data-testid="partner-category" class="form-control form-control-sm" id="periode_id"
-                            name="periode_id" value="{{ isset($data->periode_id) ? $data->periode_id : '' }}">
-                            <option disabled selected value="">Pilih opsi</option>
-                            @foreach ($periodes as $periode)
-                                <option value="{{ $periode->periode_id }}"
-                                    {{ isset($data->periode_id) ? ($periode->periode_id == $data->periode_id ? 'selected' : '') : '' }}>
-                                    {{ $periode->semester }} - {{ $periode->tahun_ajar }}
-                                </option>
-                            @endforeach
-                        </select>
-
-                    </div>
-                </div> --}}
-                <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Tipe Kegiatan</label>
+                    <label class="col-sm-3 control-label col-form-label">Jenis Magang</label>
                     <div class="col-sm-9">
                         <input type="text" class="form-control form-control-sm" id="nama_kegiatan"
                             name="nama_kegiatan"
@@ -71,7 +56,7 @@ $is_edit = isset($data);
 
         $("#form-master").validate({
             rules: {
-                nama_kegiatan: {
+                nama_program: {
                     required: true,
                     maxlength: 100
                 }

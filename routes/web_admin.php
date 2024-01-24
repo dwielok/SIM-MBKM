@@ -3,7 +3,7 @@
 use App\Http\Controllers\Master\BeritaController;
 use App\Http\Controllers\Master\DosenCircleController;
 use App\Http\Controllers\Master\DosenController;
-use App\Http\Controllers\Master\JenisMagangController;
+use App\Http\Controllers\Master\JenisKegiatanController;
 use App\Http\Controllers\Master\JurusanController;
 use App\Http\Controllers\Master\KategoriController;
 use App\Http\Controllers\Master\KegiatanController;
@@ -13,7 +13,7 @@ use App\Http\Controllers\Master\PeriodeController;
 use App\Http\Controllers\Master\PerusahaanController;
 use App\Http\Controllers\Master\ProdiController;
 use App\Http\Controllers\Master\TahapanProposalController;
-use App\Http\Controllers\Master\TipeKegiatanController;
+use App\Http\Controllers\Master\JenisProgramController;
 use App\Http\Controllers\Proposal\AdminHasilSeminarProposalController;
 use App\Http\Controllers\Proposal\AdminPendaftaranSemproController;
 use App\Http\Controllers\Proposal\AdminProposalMahasiswaBermasalahController;
@@ -41,14 +41,14 @@ Route::group(['prefix' => 'master', 'middleware' => ['auth']], function () {
     Route::get('prodi/{id}/delete', [ProdiController::class, 'confirm']);
 
     // Tipe Kegiatan
-    Route::resource('tipe_kegiatan', TipeKegiatanController::class)->parameter('tipe_kegiatan', 'id');
-    Route::post('tipe_kegiatan/list', [TipeKegiatanController::class, 'list']);
-    Route::get('tipe_kegiatan/{id}/delete', [TipeKegiatanController::class, 'confirm']);
+    Route::resource('jenis_program', JenisProgramController::class)->parameter('jenis_program', 'id');
+    Route::post('jenis_program/list', [JenisProgramController::class, 'list']);
+    Route::get('jenis_program/{id}/delete', [JenisProgramController::class, 'confirm']);
 
     // Jenis Magang
-    Route::resource('jenis_magang', JenisMagangController::class)->parameter('jenis_magang', 'id');
-    Route::post('jenis_magang/list', [JenisMagangController::class, 'list']);
-    Route::get('jenis_magang/{id}/delete', [JenisMagangController::class, 'confirm']);
+    Route::resource('jenis_kegiatan', JenisKegiatanController::class)->parameter('jenis_kegiatan', 'id');
+    Route::post('jenis_kegiatan/list', [JenisKegiatanController::class, 'list']);
+    Route::get('jenis_kegiatan/{id}/delete', [JenisKegiatanController::class, 'confirm']);
 
     // Periode
     Route::resource('periode', PeriodeController::class)->parameter('periode', 'id');
@@ -109,5 +109,4 @@ Route::group(['prefix' => 'setting', 'middleware' => ['auth']], function () {
     Route::resource('user', UserController::class)->parameter('user', 'id');
     Route::post('user/list', [UserController::class, 'list']);
     Route::get('user/{id}/delete', [UserController::class, 'confirm']);
-
 });

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class MTipeKegiatan extends Migration
+class MJenisMagang extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class MTipeKegiatan extends Migration
      */
     public function up()
     {
-        Schema::create('m_tipe_kegiatan', function (Blueprint $table) {
-            $table->id('tipe_kegiatan_id');
+        Schema::create('m_jenis_kegiatan', function (Blueprint $table) {
+            $table->id('jenis_kegiatan_id');
+            $table->unsignedBigInteger('jenis_program_id');
+            $table->foreign('jenis_program_id')->references('jenis_program_id')->on('m_jenis_program');
             $table->string('nama_kegiatan');
             $table->dateTime('created_at')->nullable()->useCurrent();
             $table->integer('created_by')->nullable()->index();
@@ -32,6 +34,6 @@ class MTipeKegiatan extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('m_tipe_kegiatan');
+        Schema::dropIfExists('m_jenis_kegiatan');
     }
 }

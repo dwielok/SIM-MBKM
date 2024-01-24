@@ -59,14 +59,21 @@
                         "bSearchable": false
                     },
                     {
-                        "mData": "nama_magang",
+                        "mData": "jenis_program.nama_program",
                         "sClass": "",
                         "sWidth": "20%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
-                        "mData": "jenis_magang_id",
+                        "mData": "nama_kegiatan",
+                        "sClass": "",
+                        "sWidth": "20%",
+                        "bSortable": true,
+                        "bSearchable": true
+                    },
+                    {
+                        "mData": "jenis_kegiatan_id",
                         "sClass": "text-center pr-2",
                         "sWidth": "10%",
                         "bSortable": false,

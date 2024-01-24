@@ -3,19 +3,20 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
-use App\Models\Master\JenisMagangModel;
+use App\Models\Master\JenisKegiatanModel;
+use App\Models\Master\JenisProgramModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 
-class JenisMagangController extends Controller
+class JenisKegiatanController extends Controller
 {
     public function __construct()
     {
-        $this->menuCode  = 'MASTER.JENIS.MAGANG';
-        $this->menuUrl   = url('master/jenis_magang');     // set URL untuk menu ini
-        $this->menuTitle = 'Jenis Magang';                       // set nama menu
-        $this->viewPath  = 'master.jenis_magang.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
+        $this->menuCode  = 'MASTER.JENIS.KEGIATAN';
+        $this->menuUrl   = url('master/jenis_kegiatan');     // set URL untuk menu ini
+        $this->menuTitle = 'Jenis Kegiatan';                       // set nama menu
+        $this->viewPath  = 'master.jenis_kegiatan.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
     }
 
     public function index()
@@ -51,7 +52,7 @@ class JenisMagangController extends Controller
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data  = JenisMagangModel::selectRaw("jenis_magang_id, nama_magang");
+        $data  = JenisKegiatanModel::with('jenis_program')->get();
 
         return DataTables::of($data)
             ->addIndexColumn()
@@ -69,8 +70,11 @@ class JenisMagangController extends Controller
             'title' => 'Tambah ' . $this->menuTitle
         ];
 
+        $programs = JenisProgramModel::all();
+
         return view($this->viewPath . 'action')
-            ->with('page', (object) $page);
+            ->with('page', (object) $page)
+            ->with('programs', $programs);
     }
 
 
@@ -82,7 +86,8 @@ class JenisMagangController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
 
             $rules = [
-                'nama_magang' => 'required|string|max:100',
+                'nama_kegiatan' => 'required|string|max:100',
+                'jenis_program_id' => 'required|integer',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -96,7 +101,7 @@ class JenisMagangController extends Controller
                 ]);
             }
 
-            $res = JenisMagangModel::insertData($request);
+            $res = JenisKegiatanModel::insertData($request);
 
             return response()->json([
                 'stat' => $res,
@@ -118,13 +123,15 @@ class JenisMagangController extends Controller
             'title' => 'Edit ' . $this->menuTitle
         ];
 
-        $data = JenisMagangModel::find($id);
+        $data = JenisKegiatanModel::find($id);
+        $programs = JenisProgramModel::all();
 
         return (!$data) ? $this->showModalError() :
             view($this->viewPath . 'action')
             ->with('page', (object) $page)
             ->with('id', $id)
-            ->with('data', $data);
+            ->with('data', $data)
+            ->with('programs', $programs);
     }
 
 
@@ -136,7 +143,8 @@ class JenisMagangController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
 
             $rules = [
-                'nama_magang' => 'required|string|max:100',
+                'nama_kegiatan' => 'required|string|max:100',
+                'jenis_program_id' => 'required|integer',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -150,7 +158,7 @@ class JenisMagangController extends Controller
                 ]);
             }
 
-            $res = JenisMagangModel::updateData($id, $request);
+            $res = JenisKegiatanModel::updateData($id, $request);
 
             return response()->json([
                 'stat' => $res,
@@ -167,7 +175,7 @@ class JenisMagangController extends Controller
         $this->authAction('read', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = JenisMagangModel::find($id);
+        $data = JenisKegiatanModel::find($id);
         $page = [
             'title' => 'Detail ' . $this->menuTitle
         ];
@@ -185,7 +193,7 @@ class JenisMagangController extends Controller
         $this->authAction('delete', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = JenisMagangModel::find($id);
+        $data = JenisKegiatanModel::find($id);
 
         return (!$data) ? $this->showModalError() :
             $this->showModalConfirm($this->menuUrl . '/' . $id, [
@@ -200,12 +208,12 @@ class JenisMagangController extends Controller
 
         if ($request->ajax() || $request->wantsJson()) {
 
-            $res = JenisMagangModel::deleteData($id);
+            $res = JenisKegiatanModel::deleteData($id);
 
             return response()->json([
                 'stat' => $res,
                 'mc' => $res, // close modal
-                'msg' => JenisMagangModel::getDeleteMessage()
+                'msg' => JenisKegiatanModel::getDeleteMessage()
             ]);
         }
 

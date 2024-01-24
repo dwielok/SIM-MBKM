@@ -24,7 +24,7 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Tipe Kegiatan</th>
+                                        <th>Jenis Program</th>
                                         {{-- <th>Prodi</th>
                                         <th>Periode</td> --}}
                                         <th>#</th>
@@ -61,7 +61,7 @@
                         "bSearchable": false
                     },
                     {
-                        "mData": "nama_kegiatan",
+                        "mData": "nama_program",
                         "sClass": "",
                         "sWidth": "20%",
                         "bSortable": true,
@@ -85,7 +85,7 @@
                     //     }
                     // },
                     {
-                        "mData": "tipe_kegiatan_id",
+                        "mData": "jenis_kegiatan_id",
                         "sClass": "text-center pr-2",
                         "sWidth": "10%",
                         "bSortable": false,

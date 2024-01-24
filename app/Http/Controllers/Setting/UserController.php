@@ -7,10 +7,10 @@ use App\Models\Setting\GroupModel;
 use App\Models\Setting\UserModel;
 use App\Models\View\CustomerListView;
 use App\Models\View\UserView;
-use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Yajra\DataTables\Facades\DataTables;
 use function redirect;
 use function response;
 use function url;
@@ -67,8 +67,7 @@ class UserController extends Controller
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data  = UserView::selectRaw('user_id, username, name, group_name, is_active')    // wajib ada, karena pakai soft-delete harus di query yg deleted_at nya bernilai NULL
-            ->orderBy('user_id', 'asc');
+        $data  = UserModel::with('role')->orderBy('user_id', 'asc');
 
         if (!empty($request->input('filter_group'))) {
             $data->where('group_id', $request->input('filter_group'));

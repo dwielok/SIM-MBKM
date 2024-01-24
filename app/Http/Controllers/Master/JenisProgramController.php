@@ -5,19 +5,19 @@ namespace App\Http\Controllers\Master;
 use App\Http\Controllers\Controller;
 use App\Models\Master\PeriodeModel;
 use App\Models\Master\ProdiModel;
-use App\Models\Master\TipeKegiatanModel;
+use App\Models\Master\JenisProgramModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
-class TipeKegiatanController extends Controller
+class JenisProgramController extends Controller
 {
     public function __construct()
     {
-        $this->menuCode  = 'MASTER.TIPE.KEGIATAN';
-        $this->menuUrl   = url('master/tipe_kegiatan');     // set URL untuk menu ini
-        $this->menuTitle = 'Tipe Kegiatan';                       // set nama menu
-        $this->viewPath  = 'master.tipe_kegiatan.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
+        $this->menuCode  = 'MASTER.JENIS.PROGRAM';
+        $this->menuUrl   = url('master/jenis_program');     // set URL untuk menu ini
+        $this->menuTitle = 'Jenis Program';                       // set nama menu
+        $this->viewPath  = 'master.jenis_program.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
     }
 
     public function index()
@@ -53,15 +53,14 @@ class TipeKegiatanController extends Controller
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data  = TipeKegiatanModel::selectRaw("tipe_kegiatan_id, nama_kegiatan, periode_id, prodi_id, created_at, updated_at")
-            ->with([
-                'periode' => function ($query) {
-                    $query->selectRaw("periode_id, semester, tahun_ajar");
-                },
-                'prodi' => function ($query) {
-                    $query->selectRaw("prodi_id, prodi_name");
-                }
-            ]);
+        $data  = JenisProgramModel::with([
+            'periode' => function ($query) {
+                $query->selectRaw("periode_id, semester, tahun_ajar");
+            },
+            'prodi' => function ($query) {
+                $query->selectRaw("prodi_id, prodi_name");
+            }
+        ]);
 
         // dd($data);
 
@@ -102,7 +101,7 @@ class TipeKegiatanController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
 
             $rules = [
-                'nama_kegiatan' => 'required|string|max:100',
+                'nama_program' => 'required|string|max:100',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -116,7 +115,7 @@ class TipeKegiatanController extends Controller
                 ]);
             }
 
-            $res = TipeKegiatanModel::insertData($request);
+            $res = JenisProgramModel::insertData($request);
 
             return response()->json([
                 'stat' => $res,
@@ -138,7 +137,7 @@ class TipeKegiatanController extends Controller
             'title' => 'Edit ' . $this->menuTitle
         ];
 
-        $data = TipeKegiatanModel::find($id);
+        $data = JenisProgramModel::find($id);
 
         $prodis = ProdiModel::selectRaw("prodi_id, prodi_name")
             ->get();
@@ -164,7 +163,7 @@ class TipeKegiatanController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
 
             $rules = [
-                'nama_kegiatan' => 'required|string|max:100',
+                'nama_program' => 'required|string|max:100',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -178,7 +177,7 @@ class TipeKegiatanController extends Controller
                 ]);
             }
 
-            $res = TipeKegiatanModel::updateData($id, $request);
+            $res = JenisProgramModel::updateData($id, $request);
 
             return response()->json([
                 'stat' => $res,
@@ -195,7 +194,7 @@ class TipeKegiatanController extends Controller
         $this->authAction('read', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = TipeKegiatanModel::find($id);
+        $data = JenisProgramModel::find($id);
         $page = [
             'title' => 'Detail ' . $this->menuTitle
         ];
@@ -213,7 +212,7 @@ class TipeKegiatanController extends Controller
         $this->authAction('delete', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = TipeKegiatanModel::find($id);
+        $data = JenisProgramModel::find($id);
 
         return (!$data) ? $this->showModalError() :
             $this->showModalConfirm($this->menuUrl . '/' . $id, [
@@ -228,12 +227,12 @@ class TipeKegiatanController extends Controller
 
         if ($request->ajax() || $request->wantsJson()) {
 
-            $res = TipeKegiatanModel::deleteData($id);
+            $res = JenisProgramModel::deleteData($id);
 
             return response()->json([
                 'stat' => $res,
                 'mc' => $res, // close modal
-                'msg' => TipeKegiatanModel::getDeleteMessage()
+                'msg' => JenisProgramModel::getDeleteMessage()
             ]);
         }
 
