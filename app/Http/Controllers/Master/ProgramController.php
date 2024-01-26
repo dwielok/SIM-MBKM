@@ -222,7 +222,10 @@ class ProgramController extends Controller
 
         return (!$data) ? $this->showModalError() :
             $this->showModalConfirm($this->menuUrl . '/' . $id, [
-                'Nama' => $data->nama_kegiatan,
+                'Kode Program' => $data->program_kode, // Kode Program
+                'Nama Program' => $data->program_nama, // Nama Program
+                'Deskripsi' => $data->program_deskripsi, // Deskripsi
+                'Bulan' => $data->program_bulan, // Bulan
             ]);
     }
 
