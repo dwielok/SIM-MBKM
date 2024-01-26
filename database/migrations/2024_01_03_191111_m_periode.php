@@ -17,6 +17,9 @@ class MPeriode extends Migration
             $table->id('periode_id');
             $table->string('semester');
             $table->string('tahun_ajar');
+            $table->tinyInteger('is_active');
+            $table->tinyInteger('is_current')->default(0);
+
             $table->dateTime('created_at')->nullable()->useCurrent();
             $table->integer('created_by')->nullable()->index();
             $table->dateTime('updated_at')->nullable();
