@@ -13,7 +13,7 @@ use App\Http\Controllers\Master\PeriodeController;
 use App\Http\Controllers\Master\PerusahaanController;
 use App\Http\Controllers\Master\ProdiController;
 use App\Http\Controllers\Master\TahapanProposalController;
-use App\Http\Controllers\Master\JenisProgramController;
+use App\Http\Controllers\Master\ProgramController;
 use App\Http\Controllers\Proposal\AdminHasilSeminarProposalController;
 use App\Http\Controllers\Proposal\AdminPendaftaranSemproController;
 use App\Http\Controllers\Proposal\AdminProposalMahasiswaBermasalahController;
@@ -41,9 +41,9 @@ Route::group(['prefix' => 'master', 'middleware' => ['auth']], function () {
     Route::get('prodi/{id}/delete', [ProdiController::class, 'confirm']);
 
     // Tipe Kegiatan
-    Route::resource('jenis_program', JenisProgramController::class)->parameter('jenis_program', 'id');
-    Route::post('jenis_program/list', [JenisProgramController::class, 'list']);
-    Route::get('jenis_program/{id}/delete', [JenisProgramController::class, 'confirm']);
+    Route::resource('program', ProgramController::class)->parameter('program', 'id');
+    Route::post('program/list', [ProgramController::class, 'list']);
+    Route::get('program/{id}/delete', [ProgramController::class, 'confirm']);
 
     // Jenis Magang
     Route::resource('jenis_kegiatan', JenisKegiatanController::class)->parameter('jenis_kegiatan', 'id');

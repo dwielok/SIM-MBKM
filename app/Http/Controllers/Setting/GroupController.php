@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers\Setting;
 
-use App\Http\Controllers\Controller;
-use App\Models\Setting\GroupMenuModel;
-use App\Models\Setting\GroupModel;
-use App\Models\Setting\UserModel;
-use App\Models\View\CustomerListView;
-use App\Models\View\UserView;
-use DataTables;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-use PHPUnit\TextUI\XmlConfiguration\Group;
-use function redirect;
-use function response;
 use function url;
 use function view;
+use function redirect;
+use function response;
+use Illuminate\Http\Request;
+use App\Models\View\UserView;
+use Illuminate\Validation\Rule;
+use Yajra\DataTables\DataTables;
+use App\Models\Setting\UserModel;
+use App\Models\Setting\GroupModel;
+use App\Http\Controllers\Controller;
+use App\Models\View\CustomerListView;
+use App\Models\Setting\GroupMenuModel;
+use Illuminate\Support\Facades\Validator;
+use PHPUnit\TextUI\XmlConfiguration\Group;
 
 
 class GroupController extends Controller
@@ -251,7 +251,7 @@ class GroupController extends Controller
         // cek untuk Insert/Update/Delete harus via AJAX
         if ($request->ajax() || $request->wantsJson()) {
 
-            $res = GroupModel::DeleteData($id);
+            $res = GroupModel::deleteData($id);
 
             return response()->json([
                 'stat' => $res,

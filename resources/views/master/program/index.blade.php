@@ -24,9 +24,10 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Jenis Program</th>
-                                        {{-- <th>Prodi</th>
-                                        <th>Periode</td> --}}
+                                        <th>Kode Program</th>
+                                        <th>Nama Program</th>
+                                        <th>Deskripsi</th>
+                                        <th>Bulan</td>
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -61,31 +62,38 @@
                         "bSearchable": false
                     },
                     {
-                        "mData": "nama_program",
+                        "mData": "program_kode",
+                        "sClass": "",
+                        "sWidth": "10%",
+                        "bSortable": true,
+                        "bSearchable": true
+                    },
+                    {
+                        "mData": "program_nama",
                         "sClass": "",
                         "sWidth": "20%",
                         "bSortable": true,
                         "bSearchable": true
                     },
-                    // {
-                    //     "mData": "prodi.prodi_name",
-                    //     "sClass": "",
-                    //     "sWidth": "20%",
-                    //     "bSortable": true,
-                    //     "bSearchable": true
-                    // },
-                    // {
-                    //     "mData": "periode.tahun_ajar",
-                    //     "sClass": "",
-                    //     "sWidth": "20%",
-                    //     "bSortable": true,
-                    //     "bSearchable": true,
-                    //     "mRender": function(data, type, row, meta) {
-                    //         return row.periode.semester + ' - ' + data;
-                    //     }
-                    // },
                     {
-                        "mData": "jenis_kegiatan_id",
+                        "mData": "program_deskripsi",
+                        "sClass": "",
+                        "sWidth": "20%",
+                        "bSortable": true,
+                        "bSearchable": true
+                    },
+                    {
+                        "mData": "program_bulan",
+                        "sClass": "",
+                        "sWidth": "20%",
+                        "bSortable": true,
+                        "bSearchable": true,
+                        "mRender": function(data, type, row, meta) {
+                            return data + ' Bulan'
+                        }
+                    },
+                    {
+                        "mData": "program_id",
                         "sClass": "text-center pr-2",
                         "sWidth": "10%",
                         "bSortable": false,

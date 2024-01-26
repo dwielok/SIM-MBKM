@@ -24,13 +24,14 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Nama Perusahaan</th>
-                                        <th>Kategori</th>
-                                        <th>Tipe Industri</th>
-                                        <th>Alamat</th>
+                                        <th>Kode</th>
+                                        <th>Nama Posisi</th>
+                                        <th>Tipe Kegiatan</th>
+                                        <th>Prodi</th>
+                                        <th>Kuota</th>
+                                        <th>Durasi</th>
                                         <th>Status</th>
                                         <th>Keterangan</th>
-                                        <th>Menu</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -65,28 +66,51 @@
                         "bSearchable": false
                     },
                     {
-                        "mData": "nama_perusahaan",
+                        "mData": "kode_kegiatan",
                         "sClass": "",
                         "sWidth": "10%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
-                        "mData": "kategori",
+                        "mData": "posisi_lowongan",
+                        "sClass": "",
+                        "sWidth": "10%",
+                        "bSortable": true,
+                        "bSearchable": true
+                    },
+                    {
+                        "mData": "tipe_kegiatan.nama_kegiatan",
+                        "sClass": "",
+                        "sWidth": "10%",
+                        "bSortable": true,
+                        "bSearchable": true
+                    },
+                    {
+                        "mData": "prodi",
+                        "sClass": "",
+                        "sWidth": "10%",
+                        "bSortable": true,
+                        "bSearchable": true,
+                        "mRender": function(data, type, row, meta) {
+                            //split by comma
+                            var datas = data.split(",");
+                            var html = '';
+                            for (var i = 0; i < datas.length; i++) {
+                                html += '<span class="badge badge-info">' + datas[i] + '</span> ';
+                            }
+                            return html;
+                        }
+                    },
+                    {
+                        "mData": "kuota",
                         "sClass": "",
                         "sWidth": "5%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
-                        "mData": "tipe_industri",
-                        "sClass": "",
-                        "sWidth": "10%",
-                        "bSortable": true,
-                        "bSearchable": true
-                    },
-                    {
-                        "mData": "alamat_lengkap",
+                        "mData": "periode_kegiatan",
                         "sClass": "",
                         "sWidth": "25%",
                         "bSortable": true,
@@ -123,24 +147,7 @@
                         "bSearchable": true
                     },
                     {
-                        "mData": "perusahaan_id",
-                        "sClass": "pr-2",
-                        "sWidth": "8%",
-                        "bSortable": false,
-                        "bSearchable": false,
-                        "mRender": function(data, type, row, meta) {
-                            var buttons = '';
-                            @if ($allowAccess->update)
-                                if (row.status == 1) {
-                                    buttons +=
-                                        `<a href="{{ $page->url }}/${data}/kegiatan" class="btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat Kegiatan" ><i class="fa fa-th"></i> Kegiatan</a> `
-                                }
-                            @endif
-                            return buttons;
-                        }
-                    },
-                    {
-                        "mData": "perusahaan_id",
+                        "mData": "kegiatan_perusahaan_id",
                         "sClass": "text-center pr-2",
                         "sWidth": "10%",
                         "bSortable": false,
@@ -150,17 +157,42 @@
                             var buttons = '';
                             @if ($allowAccess->update)
                                 if (row.status == 0) {
-                                    buttons +=
-                                        `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
-                                        `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_reject" class="ajax_modal btn btn-xs btn-danger tooltips text-white" data-placement="left" data-original-title="Reject" ><i class="fa fa-times"></i></a> `;
+                                    @if ($koordinator)
+                                        buttons +=
+                                            `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
+                                            `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_reject" class="ajax_modal btn btn-xs btn-danger tooltips text-white" data-placement="left" data-original-title="Reject" ><i class="fa fa-times"></i></a> `;
+                                    @endif
                                 }
-                                buttons +=
-                                    `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/edit" class="ajax_modal btn btn-xs btn-warning tooltips text-secondary" data-placement="left" data-original-title="Edit Data" ><i class="fa fa-edit"></i></a> `;
+                                @if ($koordinator)
+                                    buttons +=
+                                        `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/edit" class="ajax_modal btn btn-xs btn-warning tooltips text-secondary" data-placement="left" data-original-title="Edit Data" ><i class="fa fa-edit"></i></a> `;
+                                @else
+                                    if (row.status == 0) {
+                                        buttons +=
+                                            `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/edit" class="ajax_modal btn btn-xs btn-warning tooltips text-secondary" data-placement="left" data-original-title="Edit Data" ><i class="fa fa-edit"></i></a> `;
+                                    }
+                                @endif
                             @endif
                             @if ($allowAccess->delete)
-                                buttons +=
-                                    `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/delete" class="ajax_modal btn btn-xs btn-danger tooltips text-light" data-placement="left" data-original-title="Hapus Data" ><i class="fa fa-trash"></i></a> `;
+                                @if ($koordinator)
+                                    buttons +=
+                                        `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/delete" class="ajax_modal btn btn-xs btn-danger tooltips text-light" data-placement="left" data-original-title="Hapus Data" ><i class="fa fa-trash"></i></a> `;
+                                @else
+                                    if (row.status == 0) {
+                                        buttons +=
+                                            `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/delete" class="ajax_modal btn btn-xs btn-danger tooltips text-light" data-placement="left" data-original-title="Hapus Data" ><i class="fa fa-trash"></i></a> `;
+                                    }
+                                @endif
                             @endif
+
+                            @if ($koordinator)
+                                buttons +=
+                                    `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/show" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Detail Kegiatan" ><i class="fa fa-eye"></i></a> `
+                            @else
+                                buttons +=
+                                    `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Detail Kegiatan" ><i class="fa fa-eye"></i></a> `
+                            @endif
+
 
                             return buttons;
                         }

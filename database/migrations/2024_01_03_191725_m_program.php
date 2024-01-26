@@ -13,9 +13,13 @@ class MTipeKegiatan extends Migration
      */
     public function up()
     {
-        Schema::create('m_jenis_program', function (Blueprint $table) {
-            $table->id('jenis_program_id');
-            $table->string('nama_program');
+        Schema::create('m_program', function (Blueprint $table) {
+            $table->id('program_id');
+            $table->string('program_kode', 10)->unique();
+            $table->string('program_nama', 100);
+            $table->text('program_deskripsi');
+            $table->tinyInteger('program_bulan');
+
             $table->dateTime('created_at')->nullable()->useCurrent();
             $table->integer('created_by')->nullable()->index();
             $table->dateTime('updated_at')->nullable();
@@ -32,6 +36,6 @@ class MTipeKegiatan extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('m_jenis_program');
+        Schema::dropIfExists('m_program');
     }
 }

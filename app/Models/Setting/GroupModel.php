@@ -30,6 +30,12 @@ class GroupModel extends AppModel
         'deleted_by'
     ];
 
+    protected static $cascadeDelete = false;   //  True: Force Delete from Parent (cascade)
+    protected static $childModel = [
+        //  Model => columnFK
+        //'App\Models\Master\EmployeeModel' => 'jabatan_id'
+    ];
+
     public function user()
     {
         return $this->belongsTo(UserModel::class, 'group_id', 'group_id');
@@ -55,10 +61,4 @@ class GroupModel extends AppModel
         return self::where('group_id', $id)
             ->update($data);
     }
-
-    protected static $cascadeDelete = false;   //  True: Force Delete from Parent (cascade)
-    protected static $childModel = [
-        //  Model => columnFK
-        //'App\Models\Master\EmployeeModel' => 'jabatan_id'
-    ];
 }

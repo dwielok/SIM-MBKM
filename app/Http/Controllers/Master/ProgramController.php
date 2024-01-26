@@ -5,19 +5,19 @@ namespace App\Http\Controllers\Master;
 use App\Http\Controllers\Controller;
 use App\Models\Master\PeriodeModel;
 use App\Models\Master\ProdiModel;
-use App\Models\Master\JenisProgramModel;
+use App\Models\Master\ProgramModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
-class JenisProgramController extends Controller
+class ProgramController extends Controller
 {
     public function __construct()
     {
-        $this->menuCode  = 'MASTER.JENIS.PROGRAM';
-        $this->menuUrl   = url('master/jenis_program');     // set URL untuk menu ini
-        $this->menuTitle = 'Jenis Program';                       // set nama menu
-        $this->viewPath  = 'master.jenis_program.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
+        $this->menuCode  = 'MASTER.PROGRAM';
+        $this->menuUrl   = url('master/program');     // set URL untuk menu ini
+        $this->menuTitle = 'Program';                       // set nama menu
+        $this->viewPath  = 'master.program.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
     }
 
     public function index()
@@ -27,12 +27,12 @@ class JenisProgramController extends Controller
 
         $breadcrumb = [
             'title' => $this->menuTitle,
-            'list'  => ['Data Master', 'Tipe Kegiatan']
+            'list'  => ['Data Master', 'Program']
         ];
 
         $activeMenu = [
             'l1' => 'master',
-            'l2' => 'master-tipe-kegiatan',
+            'l2' => 'master-program',
             'l3' => null
         ];
 
@@ -53,7 +53,7 @@ class JenisProgramController extends Controller
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data  = JenisProgramModel::with([
+        $data  = ProgramModel::with([
             'periode' => function ($query) {
                 $query->selectRaw("periode_id, semester, tahun_ajar");
             },
@@ -101,7 +101,9 @@ class JenisProgramController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
 
             $rules = [
-                'nama_program' => 'required|string|max:100',
+                'program_nama' => 'required|string|max:100',
+                'program_deskripsi' => 'required|string|max:100',
+                'program_bulan' => 'required|int|max:10',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -115,7 +117,9 @@ class JenisProgramController extends Controller
                 ]);
             }
 
-            $res = JenisProgramModel::insertData($request);
+            $request['program_kode'] = 'P-' . rand(100, 999);
+
+            $res = ProgramModel::insertData($request);
 
             return response()->json([
                 'stat' => $res,
@@ -137,7 +141,7 @@ class JenisProgramController extends Controller
             'title' => 'Edit ' . $this->menuTitle
         ];
 
-        $data = JenisProgramModel::find($id);
+        $data = ProgramModel::find($id);
 
         $prodis = ProdiModel::selectRaw("prodi_id, prodi_name")
             ->get();
@@ -163,7 +167,9 @@ class JenisProgramController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
 
             $rules = [
-                'nama_program' => 'required|string|max:100',
+                'program_nama' => 'required|string|max:100',
+                'program_deskripsi' => 'required|string|max:100',
+                'program_bulan' => 'required|int|max:10',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -177,7 +183,7 @@ class JenisProgramController extends Controller
                 ]);
             }
 
-            $res = JenisProgramModel::updateData($id, $request);
+            $res = ProgramModel::updateData($id, $request);
 
             return response()->json([
                 'stat' => $res,
@@ -194,7 +200,7 @@ class JenisProgramController extends Controller
         $this->authAction('read', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = JenisProgramModel::find($id);
+        $data = ProgramModel::find($id);
         $page = [
             'title' => 'Detail ' . $this->menuTitle
         ];
@@ -212,7 +218,7 @@ class JenisProgramController extends Controller
         $this->authAction('delete', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = JenisProgramModel::find($id);
+        $data = ProgramModel::find($id);
 
         return (!$data) ? $this->showModalError() :
             $this->showModalConfirm($this->menuUrl . '/' . $id, [
@@ -227,12 +233,12 @@ class JenisProgramController extends Controller
 
         if ($request->ajax() || $request->wantsJson()) {
 
-            $res = JenisProgramModel::deleteData($id);
+            $res = ProgramModel::deleteData($id);
 
             return response()->json([
                 'stat' => $res,
                 'mc' => $res, // close modal
-                'msg' => JenisProgramModel::getDeleteMessage()
+                'msg' => ProgramModel::getDeleteMessage()
             ]);
         }
 

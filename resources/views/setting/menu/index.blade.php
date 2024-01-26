@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container-fluid">
-	<div class="row">
+    <div class="row">
         <section class="col-lg-12">
             <div class="card card-outline card-{{ $theme->card_outline }}">
                 <div class="card-header">
@@ -12,7 +12,9 @@
                     </h3>
                     <div class="card-tools">
                         @if($allowAccess->create)
-                            <button type="button" data-block="body" class="btn btn-sm btn-{{ $theme->button }} mt-1 ajax_modal" data-url="{{ $page->url }}/create"><i class="fas fa-plus"></i> Tambah</button>
+                        <button type="button" data-block="body"
+                            class="btn btn-sm btn-{{ $theme->button }} mt-1 ajax_modal"
+                            data-url="{{ $page->url }}/create"><i class="fas fa-plus"></i> Tambah</button>
                         @endif
                     </div>
                 </div>
@@ -23,7 +25,8 @@
                                 <div class="form-group form-group-sm row text-sm mb-0">
                                     <label for="filter_date" class="col-md-1 col-form-label">Filter</label>
                                     <div class="col-md-3">
-                                        <select name="filter_level" class="form-control form-control-sm w-100 filter_combobox filter_level">
+                                        <select name="filter_level"
+                                            class="form-control form-control-sm w-100 filter_combobox filter_level">
                                             <option value="">- Semua -</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
@@ -32,37 +35,38 @@
                                         <small class="form-text text-muted">Level Menu</small>
                                     </div>
                                     <div class="col-md-3">
-                                        <select name="filter_parent" class="form-control form-control-sm w-100 filter_combobox filter_parent">
+                                        <select name="filter_parent"
+                                            class="form-control form-control-sm w-100 filter_combobox filter_parent">
                                             <option value="">- All Parent -</option>
                                             @foreach($parent as $p)
-                                                <option value="{{ $p->id }}">{{ $p->code .' - '. $p->name }}</option>
+                                            <option value="{{ $p->id }}">{{ $p->code .' - '. $p->name }}</option>
                                             @endforeach
                                         </select>
-                                        <small class="form-text text-muted">Level Menu</small>
+                                        <small class="form-text text-muted">Parent Menu</small>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-					<table class="table table-striped table-hover table-full-width" id="table_menu">
-						<thead>
-							<tr>
-								<th>No</th>
-								<th>Kode</th>
-								<th>Nama</th>
-								<th>Url</th>
-								<th>Lvl</th>
-								<th>Urut</th>
-								<th>Parent</th>
-								<th>Status</th>
-								<th></th>
-							</tr>
-						</thead>
-					</table>
-				</div>
-			</div>
-		</section>
-	</div>
+                    <table class="table table-striped table-hover table-full-width" id="table_menu">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Kode</th>
+                                <th>Nama</th>
+                                <th>Url</th>
+                                <th>Lvl</th>
+                                <th>Urut</th>
+                                <th>Parent</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
 </div>
 @endsection
 @push('content-js')
@@ -126,11 +130,14 @@
                     "bSearchable": true
                 },
                 {
-                    "mData": "parent_code",
+                    "mData": "parent",
                     "sClass": "",
                     "sWidth": "12%",
                     "bSortable": true,
                     "bSearchable": false,
+                    "mRender": function(data, type, row, meta) {
+                        return row.menu_code == null ? '-' : row.menu_code + `<small class="d-none">${row.parent_id}</small>`;
+                    }
                 },
                 {
                     "mData": "is_active",
@@ -150,7 +157,8 @@
                     "bSearchable": false,
                     "mRender": function(data, type, row, meta) {
                         return ''
-                            @if($allowAccess->update) + `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/edit" class="ajax_modal btn btn-xs btn-warning tooltips text-secondary" data-placement="left" data-original-title="Edit Data" ><i class="fa fa-edit"></i></a> ` @endif
+                            @if($allowAccess->update) + `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/edit" class="ajax_modal btn btn-xs btn-warning tooltips text-light" data-placement="left" data-original-title="Edit Data" ><i class="fa fa-edit"></i></a> ` @endif
+                            
                             @if($allowAccess->delete) + `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/delete" class="ajax_modal btn btn-xs btn-danger tooltips text-light" data-placement="left" data-original-title="Hapus Data" ><i class="fa fa-trash"></i></a> ` @endif ;
                     }
                 }

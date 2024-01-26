@@ -48,11 +48,35 @@ $is_edit = isset($data);
 
                     </div>
                 </div> --}}
+                @if ($is_edit)
+                    <div class="form-group required row mb-2">
+                        <label class="col-sm-3 control-label col-form-label">Kode Program</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control form-control-sm" id="program_kode"
+                                name="program_kode" value="{{ isset($data->program_kode) ? $data->program_kode : '' }}"
+                                @if ($is_edit) readonly @endif />
+                        </div>
+                    </div>
+                @endif
                 <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Jenis Program</label>
+                    <label class="col-sm-3 control-label col-form-label">Nama Program</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control form-control-sm" id="nama_program" name="nama_program"
-                            value="{{ isset($data->nama_program) ? $data->nama_program : '' }}" />
+                        <input type="text" class="form-control form-control-sm" id="program_nama" name="program_nama"
+                            value="{{ isset($data->program_nama) ? $data->program_nama : '' }}" />
+                    </div>
+                </div>
+                <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Deskripsi Program</label>
+                    <div class="col-sm-9">
+                        <textarea type="text" class="form-control form-control-sm" id="program_deskripsi" name="program_deskripsi">{{ isset($data->program_deskripsi) ? $data->program_deskripsi : '' }}</textarea>
+                    </div>
+                </div>
+                <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Bulan</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control form-control-sm" id="program_bulan"
+                            name="program_bulan"
+                            value="{{ isset($data->program_bulan) ? $data->program_bulan : '' }}" />
                     </div>
                 </div>
             </div>
