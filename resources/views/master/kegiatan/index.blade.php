@@ -89,7 +89,7 @@
                     {
                         "mData": "kegiatan_skema",
                         "sClass": "",
-                        "sWidth": "20%",
+                        "sWidth": "5%",
                         "bSortable": true,
                         "bSearchable": true,
                         "mRender": function(data, type, row, meta) {
