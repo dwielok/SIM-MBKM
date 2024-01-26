@@ -24,8 +24,14 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Jenis Program</th>
-                                        <th>Jenis Kegiatan</th>
+                                        <th>Nama Program</th>
+                                        <th>Kode Kegiatan</th>
+                                        <th>Nama Kegiatan</th>
+                                        <th>Skema</th>
+                                        <th>Deskripsi</th>
+                                        <th>Kuota</th>
+                                        <th>Pengajuan Mandiri</th>
+                                        <th>Submit Proposal</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -60,21 +66,96 @@
                         "bSearchable": false
                     },
                     {
-                        "mData": "jenis_program.nama_program",
+                        "mData": "program.program_nama",
+                        "sClass": "",
+                        "sWidth": "10%",
+                        "bSortable": true,
+                        "bSearchable": true
+                    },
+                    {
+                        "mData": "kegiatan_kode",
+                        "sClass": "",
+                        "sWidth": "10%",
+                        "bSortable": true,
+                        "bSearchable": true
+                    },
+                    {
+                        "mData": "kegiatan_nama",
                         "sClass": "",
                         "sWidth": "20%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
-                        "mData": "nama_kegiatan",
+                        "mData": "kegiatan_skema",
+                        "sClass": "",
+                        "sWidth": "20%",
+                        "bSortable": true,
+                        "bSearchable": true,
+                        "mRender": function(data, type, row, meta) {
+                            // S: Studi, C: Course, M: Magang
+                            if (data == 'S') {
+                                return 'Studi';
+                            } else if (data == 'C') {
+                                return 'Course';
+                            } else if (data == 'M') {
+                                return 'Magang';
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
+                    {
+                        "mData": "kegiatan_deskripsi",
                         "sClass": "",
                         "sWidth": "20%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
-                        "mData": "jenis_kegiatan_id",
+                        "mData": "is_kuota",
+                        "sClass": "",
+                        "sWidth": "10%",
+                        "bSortable": true,
+                        "bSearchable": true,
+                        "mRender": function(data, type, row, meta) {
+                            if (data == 1) {
+                                return 'Ya';
+                            } else {
+                                return 'Tidak';
+                            }
+                        }
+                    },
+                    {
+                        "mData": "is_mandiri",
+                        "sClass": "",
+                        "sWidth": "10%",
+                        "bSortable": true,
+                        "bSearchable": true,
+                        "mRender": function(data, type, row, meta) {
+                            if (data == 1) {
+                                return 'Ya';
+                            } else {
+                                return 'Tidak';
+                            }
+                        }
+                    },
+                    {
+                        "mData": "is_submit_proposal",
+                        "sClass": "",
+                        "sWidth": "10%",
+                        "bSortable": true,
+                        "bSearchable": true,
+                        "mRender": function(data, type, row, meta) {
+                            if (data == 1) {
+                                return 'Ya';
+                            } else {
+                                return 'Tidak';
+                            }
+                        }
+                    },
+                    {
+                        "mData": "kegiatan_id",
                         "sClass": "text-center pr-2",
                         "sWidth": "10%",
                         "bSortable": false,

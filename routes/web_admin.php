@@ -3,10 +3,10 @@
 use App\Http\Controllers\Master\BeritaController;
 use App\Http\Controllers\Master\DosenCircleController;
 use App\Http\Controllers\Master\DosenController;
-use App\Http\Controllers\Master\JenisKegiatanController;
+use App\Http\Controllers\Master\KegiatanController;
 use App\Http\Controllers\Master\JurusanController;
 use App\Http\Controllers\Master\KategoriController;
-use App\Http\Controllers\Master\KegiatanController;
+use App\Http\Controllers\Master\KegiatanMahasiswaController;
 use App\Http\Controllers\Master\MahasiswaController;
 use App\Http\Controllers\Master\PendaftaranController;
 use App\Http\Controllers\Master\PeriodeController;
@@ -46,9 +46,9 @@ Route::group(['prefix' => 'master', 'middleware' => ['auth']], function () {
     Route::get('program/{id}/delete', [ProgramController::class, 'confirm']);
 
     // Jenis Magang
-    Route::resource('jenis_kegiatan', JenisKegiatanController::class)->parameter('jenis_kegiatan', 'id');
-    Route::post('jenis_kegiatan/list', [JenisKegiatanController::class, 'list']);
-    Route::get('jenis_kegiatan/{id}/delete', [JenisKegiatanController::class, 'confirm']);
+    Route::resource('kegiatan', KegiatanController::class)->parameter('kegiatan', 'id');
+    Route::post('kegiatan/list', [KegiatanController::class, 'list']);
+    Route::get('kegiatan/{id}/delete', [KegiatanController::class, 'confirm']);
 
     // Periode
     Route::resource('periode', PeriodeController::class)->parameter('periode', 'id');
