@@ -24,12 +24,12 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Nama Perusahaan</th>
-                                        <th>Kategori</th>
-                                        <th>Tipe Industri</th>
+                                        <th>Nama Kegiatan</th>
+                                        <th>Periode</th>
+                                        <th>Nama Mitra</th>
                                         <th>Alamat</th>
-                                        <th>Status</th>
-                                        <th>Keterangan</th>
+                                        <th>Website</th>
+                                        <th>Deskripsi</th>
                                         <th>Menu</th>
                                         <th>#</th>
                                     </tr>
@@ -65,65 +65,71 @@
                         "bSearchable": false
                     },
                     {
-                        "mData": "nama_perusahaan",
+                        "mData": "kegiatan.kegiatan_nama",
                         "sClass": "",
                         "sWidth": "10%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
-                        "mData": "kategori",
+                        "mData": "periode.semester",
                         "sClass": "",
                         "sWidth": "5%",
                         "bSortable": true,
-                        "bSearchable": true
+                        "bSearchable": true,
+                        "mRender": function(data, type, row, meta) {
+                            return data + ' ' + row.periode.tahun_ajar;
+                        }
                     },
                     {
-                        "mData": "tipe_industri",
+                        "mData": "mitra_nama",
                         "sClass": "",
                         "sWidth": "10%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
-                        "mData": "alamat_lengkap",
+                        "mData": "mitra_alamat",
                         "sClass": "",
                         "sWidth": "25%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
-                        "mData": "status",
+                        "mData": "mitra_website",
                         "sClass": "",
                         "sWidth": "10%",
                         "bSortable": true,
                         "bSearchable": false,
                         "mRender": function(data, type, row, meta) {
-                            switch (data) {
-                                case 2:
-                                    return '<span class="badge badge-danger">Ditolak</span>';
-                                    break;
-                                case 1:
-                                    return '<span class="badge badge-success">Diterima</span>';
-                                    break;
-                                case 0:
-                                    return '<span class="badge badge-info">Menunggu</span>';
-                                    break;
-                                default:
-                                    return '<span class="badge badge-danger">-</span>';
-                                    break;
-                            }
+                            return '<a href="' + data + '" target="_blank">Link</a>';
                         }
+                        // "mRender": function(data, type, row, meta) {
+                        //     switch (data) {
+                        //         case 2:
+                        //             return '<span class="badge badge-danger">Ditolak</span>';
+                        //             break;
+                        //         case 1:
+                        //             return '<span class="badge badge-success">Diterima</span>';
+                        //             break;
+                        //         case 0:
+                        //             return '<span class="badge badge-info">Menunggu</span>';
+                        //             break;
+                        //         default:
+                        //             return '<span class="badge badge-danger">-</span>';
+                        //             break;
+                        //     }
+                        // }
                     },
                     {
-                        "mData": "keterangan",
+                        "mData": "mitra_deskripsi",
                         "sClass": "",
                         "sWidth": "15%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
-                        "mData": "perusahaan_id",
+                        "mData": "mitra_id",
                         "sClass": "pr-2",
                         "sWidth": "8%",
                         "bSortable": false,
@@ -131,16 +137,16 @@
                         "mRender": function(data, type, row, meta) {
                             var buttons = '';
                             @if ($allowAccess->update)
-                                if (row.status == 1) {
+                                if (row.kegiatan.is_kuota == 1) {
                                     buttons +=
-                                        `<a href="{{ $page->url }}/${data}/kegiatan" class="btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat Kegiatan" ><i class="fa fa-th"></i> Kegiatan</a> `
+                                        `<a href="{{ $page->url }}/${data}/kuota" class="btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat kuota" ><i class="fa fa-th"></i> kuota</a> `
                                 }
                             @endif
                             return buttons;
                         }
                     },
                     {
-                        "mData": "perusahaan_id",
+                        "mData": "mitra_id",
                         "sClass": "text-center pr-2",
                         "sWidth": "10%",
                         "bSortable": false,

@@ -10,10 +10,11 @@ use App\Http\Controllers\Master\KegiatanMahasiswaController;
 use App\Http\Controllers\Master\MahasiswaController;
 use App\Http\Controllers\Master\PendaftaranController;
 use App\Http\Controllers\Master\PeriodeController;
-use App\Http\Controllers\Master\PerusahaanController;
+use App\Http\Controllers\MitraController;
 use App\Http\Controllers\Master\ProdiController;
 use App\Http\Controllers\Master\TahapanProposalController;
 use App\Http\Controllers\Master\ProgramController;
+use App\Http\Controllers\MitraKuotaController;
 use App\Http\Controllers\Proposal\AdminHasilSeminarProposalController;
 use App\Http\Controllers\Proposal\AdminPendaftaranSemproController;
 use App\Http\Controllers\Proposal\AdminProposalMahasiswaBermasalahController;
@@ -57,14 +58,7 @@ Route::group(['prefix' => 'master', 'middleware' => ['auth']], function () {
     Route::get('periode/{id}/confirm_active', [PeriodeController::class, 'confirm_active']);
     Route::put('periode/{id}/active', [PeriodeController::class, 'set_active']);
 
-    // Perusahaan
-    Route::resource('perusahaan', PerusahaanController::class)->parameter('perusahaan', 'id');
-    Route::post('perusahaan/list', [PerusahaanController::class, 'list']);
-    Route::get('perusahaan/{id}/delete', [PerusahaanController::class, 'confirm']);
-    Route::get('perusahaan/{id}/confirm_approve', [PerusahaanController::class, 'confirm_approve']);
-    Route::get('perusahaan/{id}/confirm_reject', [PerusahaanController::class, 'confirm_reject']);
-    Route::put('perusahaan/{id}/approve', [PerusahaanController::class, 'approve']);
-    Route::put('perusahaan/{id}/reject', [PerusahaanController::class, 'reject']);
+
 
     // Kegiatan
     Route::get('perusahaan/{id}/kegiatan', [KegiatanController::class, 'index']);
@@ -91,6 +85,22 @@ Route::group(['prefix' => 'master', 'middleware' => ['auth']], function () {
     Route::resource('pendaftaran', PendaftaranController::class)->parameter('pendaftaran', 'id');
     Route::post('pendaftaran/list', [PendaftaranController::class, 'list']);
     Route::get('pendaftaran/{id}/delete', [PendaftaranController::class, 'confirm']);
+});
+
+// mitra
+Route::resource('mitra', MitraController::class)->parameter('mitra', 'id');
+Route::post('mitra/list', [MitraController::class, 'list']);
+Route::get('mitra/{id}/delete', [MitraController::class, 'confirm']);
+Route::get('mitra/{id}/confirm_approve', [MitraController::class, 'confirm_approve']);
+Route::get('mitra/{id}/confirm_reject', [MitraController::class, 'confirm_reject']);
+Route::put('mitra/{id}/approve', [MitraController::class, 'approve']);
+Route::put('mitra/{id}/reject', [MitraController::class, 'reject']);
+
+//kuota with url mitra/{id}/kuota
+Route::prefix('mitra/{id}')->group(function () {
+    Route::resource('kuota', MitraKuotaController::class);
+    Route::post('kuota/list', [MitraKuotaController::class, 'list']);
+    Route::get('kuota/{kuota}/delete', [MitraKuotaController::class, 'confirm']);
 });
 
 Route::group(['prefix' => 'setting', 'middleware' => ['auth']], function () {

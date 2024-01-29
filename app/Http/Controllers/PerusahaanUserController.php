@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 use stdClass;
 use Yajra\DataTables\Facades\DataTables;
 
-class PerusahaanController extends Controller
+class PerusahaanUserController extends Controller
 {
     public function __construct()
     {

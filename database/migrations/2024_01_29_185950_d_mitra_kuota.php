@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class MPerusahaan extends Migration
+class DMitraKuota extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,13 @@ class MPerusahaan extends Migration
      */
     public function up()
     {
-        Schema::create('m_perusahaan', function (Blueprint $table) {
-            $table->id('perusahaan_id');
-            $table->string('nama_perusahaan', 100);
-            $table->string('logo')->nullable();
-            $table->string('kategori');
-            $table->string('tipe_industri');
-            $table->text('alamat');
-            $table->integer('provinsi_id');
-            $table->integer('kota_id');
-            $table->text('profil_perusahaan');
-            $table->string('website');
+        Schema::create('d_mitra_kuota', function (Blueprint $table) {
+            $table->id('mitra_kuota_id');
+            $table->unsignedBigInteger('mitra_id');
+            $table->foreign('mitra_id')->references('mitra_id')->on('d_mitra');
+            $table->unsignedBigInteger('prodi_id');
+            $table->foreign('prodi_id')->references('prodi_id')->on('m_prodi');
+            $table->tinyInteger('kuota');
             $table->dateTime('created_at')->nullable()->useCurrent();
             $table->integer('created_by')->nullable()->index();
             $table->dateTime('updated_at')->nullable();
@@ -40,6 +36,6 @@ class MPerusahaan extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('m_perusahaan');
+        Schema::dropIfExists('d_mitra_kuota');
     }
 }

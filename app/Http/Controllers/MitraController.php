@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Master;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\KabupatenModel;
-use App\Models\Master\PerusahaanModel;
+use App\Models\Master\KegiatanModel;
+use App\Models\Master\PeriodeModel;
+use App\Models\MitraModel;
 use App\Models\ProvinsiModel;
 use App\Models\Setting\UserModel;
 use Illuminate\Http\Request;
@@ -13,14 +15,14 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
-class PerusahaanController extends Controller
+class MitraController extends Controller
 {
     public function __construct()
     {
-        $this->menuCode  = 'MASTER.PERUSAHAAN';
-        $this->menuUrl   = url('master/perusahaan');     // set URL untuk menu ini
-        $this->menuTitle = 'Perusahaan';                       // set nama menu
-        $this->viewPath  = 'master.perusahaan.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
+        $this->menuCode  = 'MITRA';
+        $this->menuUrl   = url('mitra');     // set URL untuk menu ini
+        $this->menuTitle = 'Mitra';                       // set nama menu
+        $this->viewPath  = 'mitra.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
     }
 
     public function index()
@@ -30,12 +32,12 @@ class PerusahaanController extends Controller
 
         $breadcrumb = [
             'title' => $this->menuTitle,
-            'list'  => ['Data Master', 'Perusahaan']
+            'list'  => ['Mitra']
         ];
 
         $activeMenu = [
-            'l1' => 'master',
-            'l2' => 'master-perusahaan',
+            'l1' => 'mitra',
+            'l2' => null,
             'l3' => null
         ];
 
@@ -56,11 +58,9 @@ class PerusahaanController extends Controller
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data  = PerusahaanModel::selectRaw("perusahaan_id, nama_perusahaan, kategori, tipe_industri, alamat, profil_perusahaan, website, status, keterangan");
-        //append provinsi and kota to $data with value "dummy"
-        $data->addSelect(DB::raw("'dummy' as provinsi, 'dummy' as kota"));
-        //combine alamat, kota, provinsi to alamat_lengkap
-        $data->addSelect(DB::raw("CONCAT(alamat, ', ', kota_id, ', ', provinsi_id) as alamat_lengkap"));
+        $data  = MitraModel::with('kegiatan')
+            ->with('periode')
+            ->get();
 
         return DataTables::of($data)
             ->addIndexColumn()
@@ -80,10 +80,14 @@ class PerusahaanController extends Controller
 
 
         $provinsis = ProvinsiModel::all();
+        $periodes = PeriodeModel::all();
+        $kegiatans = KegiatanModel::all();
         $kabupatens = [];
 
         return view($this->viewPath . 'action')
             ->with('page', (object) $page)
+            ->with('periodes', $periodes)
+            ->with('kegiatans', $kegiatans)
             ->with('provinsis', $provinsis)
             ->with('kabupatens', $kabupatens);
     }
@@ -97,15 +101,12 @@ class PerusahaanController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
 
             $rules = [
-                'nama_perusahaan' => 'required|string',
-                'kategori' => 'required',
-                'tipe_industri' => 'required',
-                'alamat' => 'required',
-                'provinsi_id' => 'required',
-                'kota_id' => 'required',
-                'profil_perusahaan' => 'required',
-                'website' => 'required',
-                'email' => 'required|email|unique:m_perusahaan,email',
+                'kegiatan_id' => 'required',
+                'periode_id' => 'required',
+                'mitra_nama' => 'required|string',
+                'mitra_alamat' => 'required',
+                'mitra_website' => 'required',
+                'mitra_deskripsi' => 'required',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -119,20 +120,20 @@ class PerusahaanController extends Controller
                 ]);
             }
 
-            $random_username = 'per_' . rand(100000, 999999);
-            $user = [
-                'username' => $random_username,
-                'name' => $request->nama_perusahaan,
-                'password' => Hash::make($random_username),
-                'group_id' => 5,
-                'is_active' => 1,
-                'email' => $request->email,
-            ];
-            $insert = UserModel::create($user);
+            // $random_username = 'per_' . rand(100000, 999999);
+            // $user = [
+            //     'username' => $random_username,
+            //     'name' => $request->nama_perusahaan,
+            //     'password' => Hash::make($random_username),
+            //     'group_id' => 5,
+            //     'is_active' => 1,
+            //     'email' => $request->email,
+            // ];
+            // $insert = UserModel::create($user);
 
-            $request['user_id'] = $insert->user_id;
+            // $request['user_id'] = $insert->user_id;
 
-            $res = PerusahaanModel::insertData($request);
+            $res = MitraModel::insertData($request);
 
 
 
@@ -156,15 +157,19 @@ class PerusahaanController extends Controller
             'title' => 'Edit ' . $this->menuTitle
         ];
 
-        $data = PerusahaanModel::find($id);
+        $data = MitraModel::find($id);
 
         $provinsis = ProvinsiModel::all();
+        $periodes = PeriodeModel::all();
+        $kegiatans = KegiatanModel::all();
         $kabupatens = KabupatenModel::where('d_provinsi_id', $data->provinsi_id)->get();
 
         return (!$data) ? $this->showModalError() :
             view($this->viewPath . 'action')
             ->with('page', (object) $page)
             ->with('id', $id)
+            ->with('periodes', $periodes)
+            ->with('kegiatans', $kegiatans)
             ->with('provinsis', $provinsis)
             ->with('kabupatens', $kabupatens)
             ->with('data', $data);
@@ -179,15 +184,12 @@ class PerusahaanController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
 
             $rules = [
-                'nama_perusahaan' => 'required|string',
-                'kategori' => 'required',
-                'tipe_industri' => 'required',
-                'alamat' => 'required',
-                'provinsi_id' => 'required',
-                'kota_id' => 'required',
-                'profil_perusahaan' => 'required',
-                'website' => 'required',
-                'email' => 'required'
+                'kegiatan_id' => 'required',
+                'periode_id' => 'required',
+                'mitra_nama' => 'required|string',
+                'mitra_alamat' => 'required',
+                'mitra_website' => 'required',
+                'mitra_deskripsi' => 'required',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -201,14 +203,14 @@ class PerusahaanController extends Controller
                 ]);
             }
 
-            $res = PerusahaanModel::updateData($id, $request);
+            $res = MitraModel::updateData($id, $request);
 
-            $id_perusahaan = PerusahaanModel::where('perusahaan_id', $id)->first();
+            // $id_perusahaan = MitraModel::where('perusahaan_id', $id)->first();
 
-            $res_user = UserModel::where('user_id', $id_perusahaan->user_id)->update([
-                'name' => $request->nama_perusahaan,
-                'email' => $request->email,
-            ]);
+            // $res_user = UserModel::where('user_id', $id_perusahaan->user_id)->update([
+            //     'name' => $request->nama_perusahaan,
+            //     'email' => $request->email,
+            // ]);
 
             return response()->json([
                 'stat' => $res,
@@ -225,7 +227,7 @@ class PerusahaanController extends Controller
         $this->authAction('read', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = PerusahaanModel::find($id);
+        $data = MitraModel::find($id);
         $page = [
             'title' => 'Detail ' . $this->menuTitle
         ];
@@ -243,11 +245,11 @@ class PerusahaanController extends Controller
         $this->authAction('delete', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = PerusahaanModel::find($id);
+        $data = MitraModel::find($id);
 
         return (!$data) ? $this->showModalError() :
             $this->showModalConfirm($this->menuUrl . '/' . $id, [
-                'Nama' => $data->nama_perusahaan,
+                'Nama' => $data->mitra_nama,
             ]);
     }
 
@@ -258,12 +260,12 @@ class PerusahaanController extends Controller
 
         if ($request->ajax() || $request->wantsJson()) {
 
-            $res = PerusahaanModel::deleteData($id);
+            $res = MitraModel::deleteData($id);
 
             return response()->json([
                 'stat' => $res,
                 'mc' => $res, // close modal
-                'msg' => PerusahaanModel::getDeleteMessage()
+                'msg' => MitraModel::getDeleteMessage()
             ]);
         }
 
@@ -275,7 +277,7 @@ class PerusahaanController extends Controller
         $this->authAction('update', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = PerusahaanModel::find($id);
+        $data = MitraModel::find($id);
 
         return (!$data) ? $this->showModalError() :
             $this->showModalConfirm($this->menuUrl . '/' . $id . '/approve', [
@@ -288,7 +290,7 @@ class PerusahaanController extends Controller
         $this->authAction('update', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = PerusahaanModel::find($id);
+        $data = MitraModel::find($id);
 
         return (!$data) ? $this->showModalError() :
             $this->showModalReject($this->menuUrl . '/' . $id . '/reject', [
@@ -304,7 +306,7 @@ class PerusahaanController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
 
             $request['status'] = 1; // [0: pending, 1: approved, 2: rejected]
-            $res = PerusahaanModel::updateData($id, $request);
+            $res = MitraModel::updateData($id, $request);
 
             return response()->json([
                 'stat' => $res,
@@ -326,7 +328,7 @@ class PerusahaanController extends Controller
             $request['status'] = 2; // [0: pending, 1: approved, 2: rejected]
             $request['keterangan'] = $request->reason;
             unset($request['reason']);
-            $res = PerusahaanModel::updateData($id, $request);
+            $res = MitraModel::updateData($id, $request);
 
             return response()->json([
                 'stat' => $res,
