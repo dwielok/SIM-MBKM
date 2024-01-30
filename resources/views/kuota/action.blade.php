@@ -24,7 +24,7 @@ $is_edit = isset($data);
                             <option disabled selected value="">Pilih Prodi</option>
                             @foreach ($prodis as $prodi)
                                 <option value="{{ $prodi->prodi_id }}"
-                                    {{ isset($data->prodi_id) && $data->prodi_id == $kegiatan->prodi_id ? 'selected' : '' }}>
+                                    {{ isset($data->prodi_id) && $data->prodi_id == $prodi->prodi_id ? 'selected' : '' }}>
                                     {{ $prodi->prodi_name }}</option>
                             @endforeach
                         </select>

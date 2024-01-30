@@ -51,8 +51,7 @@ class MitraKuotaController extends Controller
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data  = MitraKuotaModel::with ('prodi')->
-            where('mitra_id', $id)->get();
+        $data  = MitraKuotaModel::with('prodi')->where('mitra_id', $id)->get();
 
         return DataTables::of($data)
             ->addIndexColumn()
@@ -60,13 +59,13 @@ class MitraKuotaController extends Controller
     }
 
 
-    public function create()
+    public function create($id)
     {
         $this->authAction('create', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         $page = [
-            'url' => $this->menuUrl,
+            'url' => $this->menuUrl . '/' . $id . '/kuota',
             'title' => 'Tambah ' . $this->menuTitle
         ];
 
@@ -79,7 +78,7 @@ class MitraKuotaController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
         $this->authAction('create', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
@@ -116,6 +115,7 @@ class MitraKuotaController extends Controller
 
             // $request['user_id'] = $insert->user_id;
 
+            $request['mitra_id'] = $id;
             $res = MitraKuotaModel::insertData($request);
 
 
@@ -130,17 +130,19 @@ class MitraKuotaController extends Controller
         return redirect('/');
     }
 
-    public function edit($id)
+    public function edit($mitra_id, $id)
     {
         $this->authAction('update', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         $page = [
-            'url' => $this->menuUrl . '/' . $id,
+            'url' => $this->menuUrl . '/' . $mitra_id . '/kuota' . '/' . $id,
             'title' => 'Edit ' . $this->menuTitle
         ];
 
         $data = MitraKuotaModel::find($id);
+
+        // dd($data, $id);
 
         $prodis = ProdiModel::all();
 
@@ -153,7 +155,7 @@ class MitraKuotaController extends Controller
     }
 
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $mitra_id, $id)
     {
         $this->authAction('update', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
@@ -206,7 +208,7 @@ class MitraKuotaController extends Controller
     }
 
 
-    public function confirm($id)
+    public function confirm($mitra_id, $id)
     {
         $this->authAction('delete', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
@@ -214,12 +216,14 @@ class MitraKuotaController extends Controller
         $data = MitraKuotaModel::with('mitra')->find($id);
 
         return (!$data) ? $this->showModalError() :
-            $this->showModalConfirm($this->menuUrl . '/' . $id, [
+            $this->showModalConfirm($this->menuUrl . '/' . $mitra_id . '/kuota/' . $id, [
                 'Nama' => $data->mitra->mitra_nama,
+                'Prodi' => $data->prodi->prodi_name,
+                'Kuota' => $data->kuota,
             ]);
     }
 
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, $mitra_id, $id)
     {
         $this->authAction('delete', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
