@@ -18,18 +18,18 @@ class SUserSeeder extends Seeder
             [
                 'user_id'   => 1, // Super Admin
                 'group_id'  => 1, // Super Admin
-                'username'  => 'superadmin',
-                'name'      => 'Super Administrator',
-                'email'     => 'super@admin.com',
+                'username'  => 'koordinator',
+                'name'      => 'Koordinator MBKM',
+                'email'     => 'koordinator@admin.com',
                 'password'  => password_hash('12345', PASSWORD_DEFAULT),
-            ],[
+            ], [
                 'user_id'   => 2, // Admin
                 'group_id'  => 2, // Admin
                 'username'  => 'admin',
                 'name'      => 'Administrator',
                 'email'     => 'admin@admin.com',
                 'password'  => password_hash('12345', PASSWORD_DEFAULT),
-            ],[
+            ], [
                 'user_id'   => 3, //
                 'group_id'  => 3, // Dosen
                 'username'  => 'dosen',
