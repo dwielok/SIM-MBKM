@@ -15,9 +15,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             //SDateSeeder::class,
-            //SGroupSeeder::class,
-            //SUserSeeder::class,
-            // SMenuSeeder::class,
+            SGroupSeeder::class,
+            SUserSeeder::class,
+            SMenuSeeder::class,
             SGroupMenuSeeder::class,
         ]);
     }
