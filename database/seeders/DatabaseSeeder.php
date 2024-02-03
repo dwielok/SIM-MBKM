@@ -19,6 +19,10 @@ class DatabaseSeeder extends Seeder
             SUserSeeder::class,
             SMenuSeeder::class,
             SGroupMenuSeeder::class,
+            MJurusanSeeder::class,
+            MProdiSeeder::class,
+            MProgramSeeder::class,
+            MKegiatanSeeder::class,
         ]);
     }
 }
