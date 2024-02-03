@@ -3,11 +3,7 @@
 namespace App\Http\Controllers\Setting;
 
 use App\Http\Controllers\Controller;
-use App\Models\KabupatenModel;
 use App\Models\KategoriUsaha;
-use App\Models\Master\PerusahaanModel;
-use App\Models\ProvinsiModel;
-use App\Models\Setting\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -20,7 +16,7 @@ class ProfileController extends Controller
 
     public function __construct()
     {
-        $this->menuCode  = 'SETTING.PROFILE';
+        $this->menuCode  = 'SETTING.ACCOUNT';
         $this->menuUrl   = url('setting/profile');     // set URL untuk menu ini
         $this->menuTitle = 'User Profile';                       // set nama menu
         $this->viewPath  = 'setting.profile.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
@@ -231,103 +227,6 @@ class ProfileController extends Controller
                 'stat'     => false,
                 'mc'       => false, // close modal
                 'msg'      => $this->getMessage('data.notfound')
-            ]);
-        }
-
-        return redirect('/');
-    }
-
-    public function perusahaan()
-    {
-        // $this->authAction('read');
-        // $this->authCheckDetailAccess();
-
-        // untuk set breadcrumb pada halaman web
-        $breadcrumb = [
-            'title' => 'Profile Perusahaan',
-            'list'  => ['Data Profile']
-        ];
-
-        // untuk set aktif menu pada sidebar
-        $activeMenu = [
-            'l1' => 'profile',              // menu aktif untuk level 1, berdasarkan class yang ada di sidebar
-            'l2' => null,              // menu aktif untuk level 2, berdasarkan class yang ada di sidebar
-            'l3' => null               // menu aktif untuk level 3, berdasarkan class yang ada di sidebar
-        ];
-
-        // untuk set konten halaman web
-        $page = [
-            'url' => route('perusahaan.update.save'),
-            'title' => 'Profile Perusahaan'
-        ];
-
-        $role = Auth::user()->group_id;
-
-        if ($role == 5) {
-            $view = 'perusahaan';
-        } else {
-            $view = 'mahasiswa';
-        }
-
-
-        $perusahaan = PerusahaanModel::where('user_id', Auth::user()->user_id)->first();
-        $provinsis = ProvinsiModel::all();
-        $kabupatens = KabupatenModel::where('d_provinsi_id', $perusahaan->provinsi_id)->get();
-
-        return view($this->viewPath . $view)
-            ->with('breadcrumb', (object) $breadcrumb)
-            ->with('activeMenu', (object) $activeMenu)
-            ->with('page', (object) $page)
-            ->with('allowAccess', $this->authAccessKey())
-            ->with('user', Auth::user())
-            ->with('perusahaan', $perusahaan)
-            ->with('provinsis', $provinsis)
-            ->with('kabupatens', $kabupatens);
-    }
-
-
-    public function update_perusahaan(Request $request)
-    {
-        $perusahaan_id = $request->id;
-        // $this->authAction('update', 'json');
-        // if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
-
-        if ($request->ajax() || $request->wantsJson()) {
-
-            $rules = [
-                'nama_perusahaan' => 'required|string',
-                'kategori' => 'required',
-                'tipe_industri' => 'required',
-                'alamat' => 'required',
-                'provinsi_id' => 'required',
-                'kota_id' => 'required',
-                'profil_perusahaan' => 'required',
-                'website' => 'required',
-            ];
-
-            $validator = Validator::make($request->all(), $rules);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'stat'     => false,
-                    'mc'       => false,
-                    'msg'      => 'Terjadi kesalahan.',
-                    'msgField' => $validator->errors()
-                ]);
-            }
-
-            unset($request['id']);
-            $request['status'] = 1;
-            $res = PerusahaanModel::updateData($perusahaan_id, $request);
-
-            $user = UserModel::where('user_id', Auth::user()->user_id)->first();
-            $user->name = $request->nama_perusahaan;
-            $user->save();
-
-            return response()->json([
-                'stat' => $res,
-                'mc' => $res, // close modal
-                'msg' => ($res) ? $this->getMessage('update.success') : $this->getMessage('update.failed')
             ]);
         }
 

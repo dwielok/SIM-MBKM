@@ -92,7 +92,7 @@ class AccountController extends Controller
                     $user->updated_at = date('Y-m-d H:i:s');
                     $user->save();
 
-                    LogActivityModel::setLog($user->user_id, 'account.update-password', 'Update Password');
+                    // LogActivityModel::setLog($user->user_id, 'account.update-password', 'Update Password');
 
                     return response()->json([
                         'stat'     => true,
@@ -175,7 +175,7 @@ class AccountController extends Controller
                         ]);
                     }
 
-                    LogActivityModel::setLog($user->user_id, 'account.update-avatar', 'Update Avatar');
+                    // LogActivityModel::setLog($user->user_id, 'account.update-avatar', 'Update Avatar');
 
                     return response()->json([
                         'stat'     => true,

@@ -28,8 +28,11 @@ class SMenuSeeder extends Seeder
             ['menu_id' => '10', 'menu_scope' => 'ADMIN', 'menu_code' => 'MASTER.PERIODE', 'menu_name' => 'Periode', 'menu_url' => 'master/periode', 'menu_level' => '2', 'order_no' => '5', 'parent_id' => '2', 'class_tag' => 'master-periode', 'icon' => 'fas fa-minus text-xs', 'is_active' => '1'],
             ['menu_id' => '11', 'menu_scope' => 'ADMIN', 'menu_code' => 'MASTER.MAHASISWA', 'menu_name' => 'Mahasiswa', 'menu_url' => 'master/mahasiswa', 'menu_level' => '2', 'order_no' => '6', 'parent_id' => '2', 'class_tag' => 'master-mahasiswa', 'icon' => 'fas fa-minus text-xs', 'is_active' => '1'],
             ['menu_id' => '12', 'menu_scope' => 'ADMIN', 'menu_code' => 'TRANSACTION.PENDAFTARAN', 'menu_name' => 'Pendaftaran', 'menu_url' => 'transaksi/pendaftaran', 'menu_level' => '2', 'order_no' => '1', 'parent_id' => '3', 'class_tag' => 'transaksi-pendaftaran', 'icon' => 'fas fa-minus text-xs', 'is_active' => '1'],
-            ['menu_id' => '13', 'menu_scope' => 'ALL', 'menu_code' => 'MITRA', 'menu_name' => 'Mitra', 'menu_url' => 'mitra', 'menu_level' => '1', 'order_no' => '2', 'parent_id' => '2', 'class_tag' => 'mitra', 'icon' => 'fas fa-bulding text-xs', 'is_active' => '1'],
-
+            ['menu_id' => '13', 'menu_scope' => 'ALL', 'menu_code' => 'MITRA', 'menu_name' => 'Mitra', 'menu_url' => 'mitra', 'menu_level' => '1', 'order_no' => '2', 'parent_id' => '2', 'class_tag' => 'mitra', 'icon' => 'fas fa-building text-xs', 'is_active' => '1'],
+            ['menu_id' => '14', 'menu_scope' => 'ADMIN', 'menu_code' => 'SETTING.MENU', 'menu_name' => 'Menu', 'menu_url' => 'setting/menu', 'menu_level' => '2', 'order_no' => '1', 'parent_id' => '5', 'class_tag' => 'setting-menu', 'icon' => 'fas fa-minus text-xs', 'is_active' => '1'],
+            ['menu_id' => '15', 'menu_scope' => 'ADMIN', 'menu_code' => 'SETTING.GROUP', 'menu_name' => 'Group', 'menu_url' => 'setting/group', 'menu_level' => '2', 'order_no' => '2', 'parent_id' => '5', 'class_tag' => 'setting-group', 'icon' => 'fas fa-minus text-xs', 'is_active' => '1'],
+            ['menu_id' => '16', 'menu_scope' => 'ADMIN', 'menu_code' => 'SETTING.USER', 'menu_name' => 'User', 'menu_url' => 'setting/user', 'menu_level' => '2', 'order_no' => '3', 'parent_id' => '5', 'class_tag' => 'setting-user', 'icon' => 'fas fa-minus text-xs', 'is_active' => '1'],
+            ['menu_id' => '17', 'menu_scope' => 'ALL', 'menu_code' => 'SETTING.ACCOUNT', 'menu_name' => 'Account', 'menu_url' => 'setting/account', 'menu_level' => '2', 'order_no' => '4', 'parent_id' => '5', 'class_tag' => 'setting-account', 'icon' => 'fas fa-minus text-xs', 'is_active' => '1'],
 
 
         ], ['menu_id', 'menu_code'], ['menu_scope', 'menu_name', 'menu_url', 'class_tag']);
