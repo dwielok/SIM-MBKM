@@ -72,14 +72,11 @@
                         "bSearchable": true
                     },
                     {
-                        "mData": "periode.semester",
+                        "mData": "periode.periode_nama",
                         "sClass": "",
                         "sWidth": "5%",
                         "bSortable": true,
                         "bSearchable": true,
-                        "mRender": function(data, type, row, meta) {
-                            return data + ' ' + row.periode.tahun_ajar;
-                        }
                     },
                     {
                         "mData": "mitra_nama",

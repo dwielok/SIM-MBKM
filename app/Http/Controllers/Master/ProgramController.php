@@ -55,7 +55,7 @@ class ProgramController extends Controller
 
         $data  = ProgramModel::with([
             'periode' => function ($query) {
-                $query->selectRaw("periode_id, semester, tahun_ajar");
+                $query->selectRaw("periode_id, periode_nama");
             },
             'prodi' => function ($query) {
                 $query->selectRaw("prodi_id, prodi_name");
@@ -83,7 +83,7 @@ class ProgramController extends Controller
         $prodis = ProdiModel::selectRaw("prodi_id, prodi_name")
             ->get();
 
-        $periodes = PeriodeModel::selectRaw("periode_id, semester, tahun_ajar")
+        $periodes = PeriodeModel::selectRaw("periode_id, periode_nama")
             ->get();
 
         return view($this->viewPath . 'action')
@@ -146,7 +146,7 @@ class ProgramController extends Controller
         $prodis = ProdiModel::selectRaw("prodi_id, prodi_name")
             ->get();
 
-        $periodes = PeriodeModel::selectRaw("periode_id, semester, tahun_ajar")
+        $periodes = PeriodeModel::selectRaw("periode_id, periode_nama")
             ->get();
 
         return (!$data) ? $this->showModalError() :

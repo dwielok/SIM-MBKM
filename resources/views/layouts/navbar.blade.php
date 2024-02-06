@@ -15,7 +15,7 @@
                     <button class="btn btn-light btn-sm mr-2">Periode : &nbsp; <i
                             class="fa fa-check-square text-primary"> </i>&nbsp;<span
                             class="text-primary font-weight-bold">
-                            <strong>{{ $periode->semester }} {{ $periode->tahun_ajar }}</strong></span></button>
+                            <strong>{{ $periode->periode_nama }}</strong></span></button>
                 @else
                     <button class="btn btn-danger btn-sm mr-2"><i class="fa fa-ban"></i> Periode Magang belum di
                         set</button>

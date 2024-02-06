@@ -144,6 +144,7 @@ class GroupController extends Controller
         if (!$data) return $this->showModalError();
 
         $menu = GroupMenuModel::getMenuMap($data->group_id);
+        // dd($menu);
 
         return view($this->viewPath . 'menu')
             ->with('page', (object) $page)

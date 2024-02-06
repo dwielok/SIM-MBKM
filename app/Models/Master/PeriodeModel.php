@@ -18,8 +18,9 @@ class PeriodeModel extends AppModel
     protected static $_primaryKey = 'periode_id';
 
     protected $fillable = [
-        'semester',
-        'tahun_ajar',
+        'periode_nama',
+        'periode_direktur',
+        'periode_nip',
         'is_active',
         'created_at',
         'created_by',

@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             MProdiSeeder::class,
             MProgramSeeder::class,
             MKegiatanSeeder::class,
+            MPeriodeSeeder::class,
         ]);
     }
 }

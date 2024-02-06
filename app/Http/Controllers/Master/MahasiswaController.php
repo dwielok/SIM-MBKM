@@ -43,10 +43,13 @@ class MahasiswaController extends Controller
             'title' => 'Daftar ' . $this->menuTitle
         ];
 
+        $prodis = ProdiModel::select('prodi_id', 'prodi_name', 'prodi_code')->get();
+
         return view($this->viewPath . 'index')
             ->with('breadcrumb', (object) $breadcrumb)
             ->with('activeMenu', (object) $activeMenu)
             ->with('page', (object) $page)
+            ->with('prodis', $prodis)
             ->with('allowAccess', $this->authAccessKey());
     }
 
@@ -57,6 +60,10 @@ class MahasiswaController extends Controller
 
         $data  = MahasiswaModel::selectRaw("mahasiswa_id, prodi_id, user_id, nim, nama_mahasiswa, email_mahasiswa, no_hp, jenis_kelamin, kelas, nama_ortu, hp_ortu")
             ->with('prodi:prodi_id,prodi_id,prodi_name,prodi_code');
+
+        if ($request->prodi_id) {
+            $data->where('prodi_id', $request->prodi_id);
+        }
         //append provinsi and kota to $data with value "dummy"
 
         // dd($data);

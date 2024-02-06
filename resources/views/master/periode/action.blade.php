@@ -17,17 +17,25 @@ $is_edit = isset($data);
             <div class="modal-body">
                 <div class="form-message text-center"></div>
                 <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Semester</label>
+                    <label class="col-sm-3 control-label col-form-label">Nama</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control form-control-sm" id="semester" name="semester"
-                            value="{{ isset($data->semester) ? $data->semester : '' }}" />
+                        <input type="text" class="form-control form-control-sm" id="periode_nama" name="periode_nama"
+                            value="{{ isset($data->periode_nama) ? $data->periode_nama : '' }}" />
                     </div>
                 </div>
                 <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Tahun Ajar</label>
+                    <label class="col-sm-3 control-label col-form-label">Direktur</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control form-control-sm" id="tahun_ajar" name="tahun_ajar"
-                            value="{{ isset($data->tahun_ajar) ? $data->tahun_ajar : '' }}" />
+                        <input type="text" class="form-control form-control-sm" id="periode_direktur"
+                            name="periode_direktur"
+                            value="{{ isset($data->periode_direktur) ? $data->periode_direktur : '' }}" />
+                    </div>
+                </div>
+                <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">NIP</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control form-control-sm" id="periode_nip" name="periode_nip"
+                            value="{{ isset($data->periode_nip) ? $data->periode_nip : '' }}" />
                     </div>
                 </div>
                 <div class="form-group required row mb-2">

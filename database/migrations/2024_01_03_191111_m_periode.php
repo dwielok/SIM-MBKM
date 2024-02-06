@@ -15,8 +15,9 @@ class MPeriode extends Migration
     {
         Schema::create('m_periode', function (Blueprint $table) {
             $table->id('periode_id');
-            $table->string('semester');
-            $table->string('tahun_ajar');
+            $table->string('periode_nama');
+            $table->string('periode_direktur');
+            $table->string('periode_nip');
             $table->tinyInteger('is_active');
             $table->tinyInteger('is_current')->default(0);
 

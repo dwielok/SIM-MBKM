@@ -39,7 +39,7 @@ $is_edit = isset($data);
                             @foreach ($periodes as $periode)
                                 <option value="{{ $periode->periode_id }}"
                                     {{ isset($data->periode_id) && $data->periode_id == $periode->periode_id ? 'selected' : '' }}>
-                                    {{ $periode->semester }} | {{ $periode->tahun_ajar }}</option>
+                                    {{ $periode->periode_nama }} </option>
                             @endforeach
                         </select>
                     </div>

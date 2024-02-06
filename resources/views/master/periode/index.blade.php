@@ -24,8 +24,8 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Semester</th>
-                                        <th>Tahun Ajar</th>
+                                        <th>Nama</th>
+                                        <th>Direktur</th>
                                         <th>Status</th>
                                         <th>Periode Aktif</th>
                                         <th>#</th>
@@ -62,18 +62,21 @@
                         "bSearchable": false
                     },
                     {
-                        "mData": "semester",
+                        "mData": "periode_nama",
                         "sClass": "",
                         "sWidth": "20%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
-                        "mData": "tahun_ajar",
+                        "mData": "periode_direktur",
                         "sClass": "",
                         "sWidth": "40%",
                         "bSortable": true,
-                        "bSearchable": true
+                        "bSearchable": true,
+                        "mRender": function(data, type, row, meta) {
+                            return data + ' (' + row.periode_nip + ')';
+                        }
                     },
                     {
                         "mData": "is_active",

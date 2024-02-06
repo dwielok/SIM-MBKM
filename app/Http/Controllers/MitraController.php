@@ -80,7 +80,7 @@ class MitraController extends Controller
 
 
         $provinsis = ProvinsiModel::all();
-        $periodes = PeriodeModel::all();
+        $periodes = PeriodeModel::where('is_active', 1)->get();
         $kegiatans = KegiatanModel::all();
         $kabupatens = [];
 
@@ -160,7 +160,7 @@ class MitraController extends Controller
         $data = MitraModel::find($id);
 
         $provinsis = ProvinsiModel::all();
-        $periodes = PeriodeModel::all();
+        $periodes = PeriodeModel::where('is_active', 1)->get();
         $kegiatans = KegiatanModel::all();
         $kabupatens = KabupatenModel::where('d_provinsi_id', $data->provinsi_id)->get();
 

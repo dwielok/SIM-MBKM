@@ -51,7 +51,7 @@ class PeriodeController extends Controller
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data  = PeriodeModel::selectRaw("periode_id, semester, tahun_ajar, is_active, is_current");
+        $data  = PeriodeModel::selectRaw("periode_id, periode_nama, periode_direktur, periode_nip, is_active, is_current");
 
         return DataTables::of($data)
             ->addIndexColumn()
@@ -82,8 +82,9 @@ class PeriodeController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
 
             $rules = [
-                'semester' => 'required|string',
-                'tahun_ajar' => 'required|string'
+                'periode_nama' => 'required|string',
+                'periode_direktur' => 'required|string',
+                'periode_nip' => 'required|string'
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -137,8 +138,9 @@ class PeriodeController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
 
             $rules = [
-                'semester' => 'required|string',
-                'tahun_ajar' => 'required|string'
+                'periode_nama' => 'required|string',
+                'periode_direktur' => 'required|string',
+                'periode_nip' => 'required|string'
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -191,8 +193,9 @@ class PeriodeController extends Controller
 
         return (!$data) ? $this->showModalError() :
             $this->showModalConfirm($this->menuUrl . '/' . $id, [
-                'Semester' => $data->semester,
-                'Tahun Ajar' => $data->tahun_ajar
+                'Nama' => $data->periode_nama,
+                'Direktur' => $data->periode_direktur,
+                'NIP' => $data->periode_nip
             ]);
     }
 
@@ -224,7 +227,7 @@ class PeriodeController extends Controller
 
         return (!$data) ? $this->showModalError() :
             $this->showModalConfirm($this->menuUrl . '/' . $id . '/active', [
-                'Periode' => "$data->semester $data->tahun_ajar",
+                'Nama' => "$data->periode_nama",
             ], 'Konfirmasi Aktif Periode', 'Apakah anda yakin ingin mengset periode berikut:', 'Ya, Set', 'PUT');
     }
 
@@ -252,7 +255,7 @@ class PeriodeController extends Controller
             if ($res) {
 
                 $periode_active = PeriodeModel::where('is_current', 1)
-                    ->selectRaw('periode_id, semester, tahun_ajar')
+                    ->selectRaw('periode_id, periode_nama')
                     ->first();
 
                 session()->put('periode_active', $periode_active);
