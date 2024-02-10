@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DummyController;
 use App\Http\Controllers\KabupatenController;
 use App\Http\Controllers\Setting\AccountController;
 use App\Http\Controllers\Setting\ProfileController;
@@ -44,3 +45,6 @@ Route::group(['prefix' => 'setting', 'middleware' => ['auth']], function () {
 });
 
 Route::get('kota', [KabupatenController::class, 'getKota']);
+
+Route::resource('dummy', DummyController::class);
+Route::post('dummy/list', [DummyController::class, 'list']);
