@@ -16,11 +16,11 @@ class DatabaseSeeder extends Seeder
         $this->call([
             //SDateSeeder::class,
             SGroupSeeder::class,
+            MJurusanSeeder::class,
+            MProdiSeeder::class,
             SUserSeeder::class,
             SMenuSeeder::class,
             SGroupMenuSeeder::class,
-            MJurusanSeeder::class,
-            MProdiSeeder::class,
             MProgramSeeder::class,
             MKegiatanSeeder::class,
             MPeriodeSeeder::class,

@@ -19,8 +19,8 @@ class MitraController extends Controller
 {
     public function __construct()
     {
-        $this->menuCode  = 'MITRA';
-        $this->menuUrl   = url('mitra');     // set URL untuk menu ini
+        $this->menuCode  = 'TRANSACTION.MITRA';
+        $this->menuUrl   = url('transaksi/mitra');     // set URL untuk menu ini
         $this->menuTitle = 'Mitra';                       // set nama menu
         $this->viewPath  = 'mitra.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
     }
@@ -32,12 +32,12 @@ class MitraController extends Controller
 
         $breadcrumb = [
             'title' => $this->menuTitle,
-            'list'  => ['Mitra']
+            'list'  => ['Transaksi', 'Mitra MBKM']
         ];
 
         $activeMenu = [
-            'l1' => 'mitra',
-            'l2' => null,
+            'l1' => 'transaction',
+            'l2' => 'transaksi-mitra',
             'l3' => null
         ];
 

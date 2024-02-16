@@ -14,14 +14,29 @@ class SGroupMenuSeeder extends Seeder
      */
     public function run()
     {
-        $menu_super = [];
         $menu_admin = [];
-        for ($i = 1; $i <= 17; $i++) {
-            $menu_super[] = ['group_id'  => 1, 'menu_id'   => $i, 'c'   => 1, 'r'    => 1, 'u'   => 1, 'd' => 1];
-            $menu_admin[] = ['group_id'  => 2, 'menu_id'   => $i, 'c'   => 0, 'r'    => 1, 'u'   => 0, 'd' => 0];
+        $menu_koordinator = [];
+        $menu_mahasiswa = [];
+        for ($i = 1; $i <= 19; $i++) {
+            $menu_admin[] = ['group_id'  => 1, 'menu_id'   => $i, 'c'   => 1, 'r'    => 1, 'u'   => 1, 'd' => 1];
         }
 
-        DB::table('s_group_menu')->insert($menu_super);
+        for ($i = 1; $i <= 12; $i++) {
+            $menu_koordinator[] = ['group_id'  => 2, 'menu_id'   => $i, 'c'   => 1, 'r'    => 1, 'u'   => 1, 'd' => 1];
+        }
+        $menu_koordinator[] = ['group_id'  => 2, 'menu_id'   => 13, 'c'   => 1, 'r'    => 1, 'u'   => 1, 'd' => 1];
+        $menu_koordinator[] = ['group_id'  => 2, 'menu_id'   => 19, 'c'   => 1, 'r'    => 1, 'u'   => 1, 'd' => 1];
+
+        $menu_mahasiswa[] = ['group_id'  => 4, 'menu_id'   => 1, 'c'   => 1, 'r'    => 1, 'u'   => 1, 'd' => 1];
+        $menu_mahasiswa[] = ['group_id'  => 4, 'menu_id'   => 3, 'c'   => 1, 'r'    => 1, 'u'   => 1, 'd' => 1];
+        // $menu_mahasiswa[] = ['group_id'  => 4, 'menu_id'   => 11, 'c'   => 1, 'r'    => 1, 'u'   => 1, 'd' => 1];
+        for ($i = 14; $i <= 15; $i++) {
+            $menu_mahasiswa[] = ['group_id'  => 4, 'menu_id'   => $i, 'c'   => 1, 'r'    => 1, 'u'   => 1, 'd' => 1];
+        }
+        $menu_mahasiswa[] = ['group_id'  => 4, 'menu_id'   => 19, 'c'   => 1, 'r'    => 1, 'u'   => 1, 'd' => 1];
+
         DB::table('s_group_menu')->insert($menu_admin);
+        DB::table('s_group_menu')->insert($menu_koordinator);
+        DB::table('s_group_menu')->insert($menu_mahasiswa);
     }
 }

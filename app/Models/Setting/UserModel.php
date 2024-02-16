@@ -6,6 +6,7 @@ namespace App\Models\Setting;
 use App\Models\Master\DosenModel;
 use App\Models\Master\MahasiswaModel;
 use App\Models\Master\PerusahaanModel;
+use App\Models\Master\ProdiModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -23,6 +24,7 @@ class UserModel extends Authenticatable
     protected $primaryKey = 'user_id';
     protected $fillable = [
         'username',
+        'prodi_id',
         'name',
         'password',
         'group_id',
@@ -53,7 +55,15 @@ class UserModel extends Authenticatable
 
     public function getRoleName()
     {
-        return $this->role->group_name;
+        $group_id = Auth::user()->group_id;
+        //if group id == 2 then get group_name + prodi_name
+        if ($group_id == 2) {
+            $prodi_id = Auth::user()->prodi_id;
+            $prodi = ProdiModel::find($prodi_id);
+            return $this->role->group_name . ' - ' . $prodi->prodi_code;
+        } else {
+            return $this->role->group_name;
+        }
     }
 
     public function hasRole($role)

@@ -16,7 +16,7 @@ class SMenu extends Migration
         Schema::create('s_menu', function (Blueprint $table) {
             $table->id('menu_id');
             $table->string('menu_scope', 30)->nullable();
-            $table->string('menu_code', 30)->unique();
+            $table->string('menu_code', 50)->unique();
             $table->string('menu_name', 100);
             $table->string('menu_url', 100)->nullable();
             $table->unsignedTinyInteger('menu_level')->default(1);

@@ -16,6 +16,7 @@ class SUser extends Migration
         Schema::create('s_user', function (Blueprint $table) {
             $table->id('user_id');
             $table->unsignedBigInteger('group_id')->index()->nullable();
+            $table->unsignedBigInteger('prodi_id')->index()->nullable();
             $table->string('username', 20)->unique();
             $table->string('email', 100)->nullable()->unique();
             $table->string('name', 100)->nullable();
@@ -31,6 +32,7 @@ class SUser extends Migration
             $table->integer('deleted_by')->nullable()->index();
 
             $table->foreign('group_id')->references('group_id')->on('s_group');
+            $table->foreign('prodi_id')->references('prodi_id')->on('m_prodi');
         });
     }
 
