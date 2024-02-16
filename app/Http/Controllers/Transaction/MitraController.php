@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use stdClass;
 use Yajra\DataTables\Facades\DataTables;
 
 class MitraController extends Controller
@@ -63,7 +64,7 @@ class MitraController extends Controller
             ->get();
 
         $data = $data->map(function ($item) {
-            //TODO: get jumlah pendaftar    
+            //TODO: get jumlah pendaftar
             $item['mitra_jumlah_pendaftar'] = 0;
             return $item;
         });
@@ -244,11 +245,77 @@ class MitraController extends Controller
             'title' => 'Detail ' . $this->menuTitle
         ];
 
+        $mitra = MitraModel::where('mitra_id', $id)
+            ->with('kegiatan')
+            ->with('periode')
+            ->first();
+
+        $datas = [
+            [
+                "title" => "Kode Kegiatan",
+                "value" => $mitra->kegiatan->kegiatan_kode,
+                "bold" => true
+            ],
+            [
+                "title" => "Nama Kegiatan",
+                "value" => $mitra->kegiatan->kegiatan_nama,
+                "bold" => false
+            ],
+            [
+                "title" => "Nama Mitra",
+                "value" => $mitra->mitra_nama,
+                "bold" => true
+            ],
+            [
+                "title" => "Periode",
+                "value" => $mitra->periode->periode_nama,
+                "bold" => false
+            ],
+            [
+                "title" => "Deskripsi",
+                "value" => $mitra->mitra_deskripsi,
+                "bold" => false
+            ],
+            [
+                "title" => "Durasi",
+                "value" => $mitra->mitra_durasi . ' bulan',
+                "bold" => true
+            ],
+            [
+                "title" => "Status",
+                "value" => $mitra->status == 0 ? 'Menunggu' : ($mitra->status == 1 ? 'Diterima' : 'Ditolak'),
+                "bold" => false,
+                "color" => $mitra->status == 0 ? 'info' : ($mitra->status == 1 ? 'success' : 'danger')
+            ],
+            [
+                "title" => "Keterangan Ditolak",
+                "value" => $mitra->mitra_keterangan_ditolak ?? '-',
+                "bold" => false
+            ]
+        ];
+
+
+        // if status != 2 then remove last index
+        if ($mitra->status != 2) {
+            array_pop($datas);
+        }
+
+        //change to stdClass loop
+        $datas = array_map(function ($item) {
+            $obj = new stdClass;
+            $obj->title = $item['title'];
+            $obj->value = $item['value'];
+            $obj->bold = $item['bold'];
+            $obj->color = $item['color'] ?? null;
+            return $obj;
+        }, $datas);
+
         return (!$data) ? $this->showModalError() :
             view($this->viewPath . 'detail')
             ->with('page', (object) $page)
             ->with('id', $id)
-            ->with('data', $data);
+            ->with('data', $data)
+            ->with('datas', $datas);
     }
 
 
@@ -293,7 +360,7 @@ class MitraController extends Controller
 
         return (!$data) ? $this->showModalError() :
             $this->showModalConfirm($this->menuUrl . '/' . $id . '/approve', [
-                'Nama' => "$data->nama_perusahaan",
+                'Nama' => "$data->mitra_nama",
             ], 'Konfirmasi Approve Perusahaan', 'Apakah anda yakin ingin approve perusahaan berikut:', 'Ya, Approve', 'PUT');
     }
 
@@ -306,7 +373,7 @@ class MitraController extends Controller
 
         return (!$data) ? $this->showModalError() :
             $this->showModalReject($this->menuUrl . '/' . $id . '/reject', [
-                'Nama' => "$data->nama_perusahaan",
+                'Nama' => "$data->mitra_nama",
             ], 'Konfirmasi Reject Perusahaan', 'Apakah anda yakin ingin reject perusahaan berikut:', 'Ya, Reject', 'PUT');
     }
 
@@ -338,7 +405,7 @@ class MitraController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
 
             $request['status'] = 2; // [0: pending, 1: approved, 2: rejected]
-            $request['keterangan'] = $request->reason;
+            $request['mitra_keterangan_ditolak'] = $request->reason;
             unset($request['reason']);
             $res = MitraModel::updateData($id, $request);
 

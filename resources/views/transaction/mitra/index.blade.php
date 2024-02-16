@@ -31,6 +31,7 @@
                                         <th>Website</th>
                                         <th>Durasi</th>
                                         <th>Jumlah Pendaftar</th>
+                                        <th>Status</th>
                                         <th>Menu</th>
                                         <th>#</th>
                                     </tr>
@@ -89,14 +90,14 @@
                     {
                         "mData": "mitra_alamat",
                         "sClass": "",
-                        "sWidth": "25%",
+                        "sWidth": "10%",
                         "bSortable": true,
                         "bSearchable": true
                     },
                     {
                         "mData": "mitra_website",
                         "sClass": "",
-                        "sWidth": "10%",
+                        "sWidth": "5%",
                         "bSortable": true,
                         "bSearchable": false,
                         "mRender": function(data, type, row, meta) {
@@ -137,6 +138,30 @@
                         "bSearchable": true
                     },
                     {
+                        "mData": "status",
+                        "sClass": "",
+                        "sWidth": "10%",
+                        "bSortable": true,
+                        "bSearchable": false,
+                        "mRender": function(data, type, row, meta) {
+                            switch (data) {
+                                case 2:
+                                    return '<span class="badge badge-danger">Ditolak</span><br />Alasan : ' +
+                                        row.mitra_keterangan_ditolak;
+                                    break;
+                                case 1:
+                                    return '<span class="badge badge-success">Diterima</span>';
+                                    break;
+                                case 0:
+                                    return '<span class="badge badge-info">Menunggu</span>';
+                                    break;
+                                default:
+                                    return '<span class="badge badge-danger">-</span>';
+                                    break;
+                            }
+                        }
+                    },
+                    {
                         "mData": "mitra_id",
                         "sClass": "pr-2",
                         "sWidth": "8%",
@@ -147,7 +172,7 @@
                             @if ($allowAccess->update)
                                 if (row.kegiatan.is_kuota == 1) {
                                     buttons +=
-                                        `<a href="{{ $page->url }}/${data}/kuota" class="btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat kuota" ><i class="fa fa-th"></i> kuota</a> `
+                                        `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat kuota" ><i class="fa fa-th"></i> kuota</a> `
                                 }
                             @endif
                             return buttons;

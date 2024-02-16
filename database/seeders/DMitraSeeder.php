@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\MitraModel;
 use Illuminate\Database\Seeder;
 
 class DMitraSeeder extends Seeder
@@ -13,6 +14,41 @@ class DMitraSeeder extends Seeder
      */
     public function run()
     {
-        //
+        MitraModel::insert([
+            [
+                'mitra_id' => 1,
+                'kegiatan_id' => 1,
+                'periode_id' => 1,
+                'mitra_nama' => 'PT IMSS',
+                'mitra_alamat' => 'Kota Madiun',
+                'mitra_website' => 'https://imsservice.co.id',
+                'mitra_deskripsi' => 'test',
+                'mitra_durasi' => 4,
+                'provinsi_id' => 11,
+                'kota_id' => 140
+            ], [
+                'mitra_id' => 2,
+                'kegiatan_id' => 2,
+                'periode_id' => 1,
+                'mitra_nama' => 'PT Rekaindo Global Jasa',
+                'mitra_alamat' => 'Kota Madiun',
+                'mitra_website' => 'https://ptrekaindo.co.id',
+                'mitra_deskripsi' => 'test',
+                'mitra_durasi' => 5,
+                'provinsi_id' => 11,
+                'kota_id' => 140
+            ], [
+                'mitra_id' => 3,
+                'kegiatan_id' => 8,
+                'periode_id' => 1,
+                'mitra_nama' => 'PT INKA (Persero)',
+                'mitra_alamat' => 'Kota Madiun',
+                'mitra_website' => 'https://inka.co.id',
+                'mitra_deskripsi' => 'test',
+                'mitra_durasi' => 3,
+                'provinsi_id' => 11,
+                'kota_id' => 140
+            ],
+        ]);
     }
 }
