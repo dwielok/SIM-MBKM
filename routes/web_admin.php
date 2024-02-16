@@ -7,10 +7,10 @@ use App\Http\Controllers\Master\KegiatanController;
 use App\Http\Controllers\Master\JurusanController;
 use App\Http\Controllers\Master\KategoriController;
 use App\Http\Controllers\Master\KegiatanMahasiswaController;
-use App\Http\Controllers\Master\MahasiswaController;
+use App\Http\Controllers\Transaction\MahasiswaController;
 use App\Http\Controllers\Master\PendaftaranController;
 use App\Http\Controllers\Master\PeriodeController;
-use App\Http\Controllers\MitraController;
+use App\Http\Controllers\Transaction\MitraController;
 use App\Http\Controllers\Master\ProdiController;
 use App\Http\Controllers\Master\TahapanProposalController;
 use App\Http\Controllers\Master\ProgramController;
@@ -75,11 +75,6 @@ Route::group(['prefix' => 'master', 'middleware' => ['auth']], function () {
     Route::put('perusahaan/{id}/kegiatan/{kegiatan_id}/approve', [KegiatanController::class, 'approve']);
     Route::put('perusahaan/{id}/kegiatan/{kegiatan_id}/reject', [KegiatanController::class, 'reject']);
 
-    // Mahasiswa
-    Route::resource('mahasiswa', MahasiswaController::class)->parameter('mahasiswa', 'id');
-    Route::post('mahasiswa/list', [MahasiswaController::class, 'list']);
-    Route::get('mahasiswa/{id}/delete', [MahasiswaController::class, 'confirm']);
-
 
     //pendaftaran
     Route::resource('pendaftaran', PendaftaranController::class)->parameter('pendaftaran', 'id');
@@ -96,6 +91,11 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     Route::get('mitra/{id}/confirm_reject', [MitraController::class, 'confirm_reject']);
     Route::put('mitra/{id}/approve', [MitraController::class, 'approve']);
     Route::put('mitra/{id}/reject', [MitraController::class, 'reject']);
+
+    // Mahasiswa
+    Route::resource('mahasiswa', MahasiswaController::class)->parameter('mahasiswa', 'id');
+    Route::post('mahasiswa/list', [MahasiswaController::class, 'list']);
+    Route::get('mahasiswa/{id}/delete', [MahasiswaController::class, 'confirm']);
 });
 
 //kuota with url mitra/{id}/kuota

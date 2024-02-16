@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Transaction;
 
 use App\Http\Controllers\Controller;
 use App\Models\KabupatenModel;
@@ -22,7 +22,7 @@ class MitraController extends Controller
         $this->menuCode  = 'TRANSACTION.MITRA';
         $this->menuUrl   = url('transaksi/mitra');     // set URL untuk menu ini
         $this->menuTitle = 'Mitra';                       // set nama menu
-        $this->viewPath  = 'mitra.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
+        $this->viewPath  = 'transaction.mitra.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
     }
 
     public function index()
@@ -61,6 +61,12 @@ class MitraController extends Controller
         $data  = MitraModel::with('kegiatan')
             ->with('periode')
             ->get();
+
+        $data = $data->map(function ($item) {
+            //TODO: get jumlah pendaftar    
+            $item['mitra_jumlah_pendaftar'] = 0;
+            return $item;
+        });
 
         return DataTables::of($data)
             ->addIndexColumn()
@@ -104,7 +110,6 @@ class MitraController extends Controller
                 'kegiatan_id' => 'required',
                 'periode_id' => 'required',
                 'mitra_nama' => 'required|string',
-                'mitra_alamat' => 'required',
                 'mitra_website' => 'required',
                 'mitra_deskripsi' => 'required',
             ];
@@ -132,6 +137,10 @@ class MitraController extends Controller
             // $insert = UserModel::create($user);
 
             // $request['user_id'] = $insert->user_id;
+
+            $kota = KabupatenModel::find($request['kota_id']);
+            $request['mitra_alamat'] = $kota->nama_kab_kota;
+            $request['status'] = 1;
 
             $res = MitraModel::insertData($request);
 
@@ -202,6 +211,9 @@ class MitraController extends Controller
                     'msgField' => $validator->errors()
                 ]);
             }
+
+            $kota = KabupatenModel::find($request['kota_id']);
+            $request['mitra_alamat'] = $kota->nama_kab_kota;
 
             $res = MitraModel::updateData($id, $request);
 

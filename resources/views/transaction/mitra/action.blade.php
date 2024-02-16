@@ -51,13 +51,28 @@ $is_edit = isset($data);
                             value="{{ isset($data->mitra_nama) ? $data->mitra_nama : '' }}" />
                     </div>
                 </div>
-
                 <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Durasi</label>
+                    <div class="col-sm-9">
+                        <select data-testid="partner-category" class="form-control form-control-sm" id="mitra_durasi"
+                            name="mitra_durasi">
+                            <option disabled selected value="">Pilih durasi</option>
+                            @foreach (range(1, 12) as $month)
+                                <option value="{{ $month }}"
+                                    {{ isset($data->mitra_durasi) && $data->mitra_durasi == $month ? 'selected' : '' }}>
+                                    {{ $month }} Bulan
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                {{-- <div class="form-group required row mb-2">
                     <label class="col-sm-3 control-label col-form-label">Alamat</label>
                     <div class="col-sm-9">
                         <textarea type="text" class="form-control form-control-sm" id="mitra_alamat" name="mitra_alamat">{{ isset($data->mitra_alamat) ? $data->mitra_alamat : '' }}</textarea>
                     </div>
-                </div>
+                </div> --}}
                 <div class="form-group required row mb-2">
                     <label class="col-sm-3 control-label col-form-label">Provinsi</label>
                     <div class="col-sm-9">

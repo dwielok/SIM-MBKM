@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Master;
+namespace App\Http\Controllers\Transaction;
 
 use App\Http\Controllers\Controller;
 use App\Models\Master\MahasiswaModel;
 use App\Models\Master\ProdiModel;
 use App\Models\Setting\UserModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -16,10 +17,10 @@ class MahasiswaController extends Controller
 {
     public function __construct()
     {
-        $this->menuCode  = 'MASTER.MAHASISWA';
-        $this->menuUrl   = url('master/mahasiswa');     // set URL untuk menu ini
+        $this->menuCode  = 'TRANSACTION.MAHASISWA';
+        $this->menuUrl   = url('transaksi/mahasiswa');     // set URL untuk menu ini
         $this->menuTitle = 'Mahasiswa';                       // set nama menu
-        $this->viewPath  = 'master.mahasiswa.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
+        $this->viewPath  = 'transaction.mahasiswa.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
     }
 
     public function index()
@@ -63,6 +64,11 @@ class MahasiswaController extends Controller
 
         if ($request->prodi_id) {
             $data->where('prodi_id', $request->prodi_id);
+        }
+
+        $group_id = Auth::user()->group_id;
+        if ($group_id == 2) {
+            $data->where('prodi_id', Auth::user()->prodi_id);
         }
         //append provinsi and kota to $data with value "dummy"
 

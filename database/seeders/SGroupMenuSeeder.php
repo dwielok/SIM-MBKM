@@ -20,6 +20,10 @@ class SGroupMenuSeeder extends Seeder
         for ($i = 1; $i <= 19; $i++) {
             $menu_admin[] = ['group_id'  => 1, 'menu_id'   => $i, 'c'   => 1, 'r'    => 1, 'u'   => 1, 'd' => 1];
         }
+        //remove with menu_id 14 and 15
+        $menu_admin = array_filter($menu_admin, function ($value) {
+            return $value['menu_id'] != 14 && $value['menu_id'] != 15;
+        });
 
         for ($i = 1; $i <= 12; $i++) {
             $menu_koordinator[] = ['group_id'  => 2, 'menu_id'   => $i, 'c'   => 1, 'r'    => 1, 'u'   => 1, 'd' => 1];
