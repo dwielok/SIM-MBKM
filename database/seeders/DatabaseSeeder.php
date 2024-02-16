@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             MKegiatanSeeder::class,
             MPeriodeSeeder::class,
             MWilayahSeeder::class,
+            DMitraSeeder::class,
         ]);
     }
 }

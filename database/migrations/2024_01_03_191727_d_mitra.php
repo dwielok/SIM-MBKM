@@ -27,6 +27,7 @@ class DMitra extends Migration
             $table->string('mitra_website', 100);
             $table->text('mitra_deskripsi');
             $table->tinyInteger('status')->default(0)->comment('0: Pending, 1: Diterima, 2: Ditolak');
+            $table->text('mitra_keterangan_ditolak')->nullable();
             $table->dateTime('created_at')->nullable()->useCurrent();
             $table->integer('created_by')->nullable()->index();
             $table->dateTime('updated_at')->nullable();
