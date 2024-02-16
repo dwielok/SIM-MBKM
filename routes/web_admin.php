@@ -26,6 +26,7 @@ use App\Http\Controllers\Setting\GroupController;
 use App\Http\Controllers\Setting\MenuController;
 use App\Http\Controllers\Setting\ProfileController;
 use App\Http\Controllers\Setting\UserController;
+use App\Http\Controllers\Transaction\DaftarMagangController;
 use App\Http\Controllers\Transaction\QuotaDosenController;
 use Illuminate\Support\Facades\Route;
 
@@ -97,6 +98,11 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     Route::resource('mahasiswa', MahasiswaController::class)->parameter('mahasiswa', 'id');
     Route::post('mahasiswa/list', [MahasiswaController::class, 'list']);
     Route::get('mahasiswa/{id}/delete', [MahasiswaController::class, 'confirm']);
+
+    //daftar magang
+    Route::resource('daftar-magang', DaftarMagangController::class)->parameter('daftar-magang', 'id');
+    Route::post('daftar-magang/list', [DaftarMagangController::class, 'list']);
+    Route::get('daftar-magang/{id}/delete', [DaftarMagangController::class, 'confirm']);
 });
 
 //kuota with url mitra/{id}/kuota
