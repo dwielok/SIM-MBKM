@@ -30,12 +30,12 @@ class MahasiswaController extends Controller
 
         $breadcrumb = [
             'title' => $this->menuTitle,
-            'list'  => ['Data Master', 'Mahasiswa']
+            'list'  => ['Transaksi', 'Mahasiswa']
         ];
 
         $activeMenu = [
-            'l1' => 'master',
-            'l2' => 'master-mahasiswa',
+            'l1' => 'transaction',
+            'l2' => 'transaksi-mahasiswa',
             'l3' => null
         ];
 
@@ -115,6 +115,11 @@ class MahasiswaController extends Controller
                 'kelas' => 'required',
             ];
 
+            //if group == 2 then remove prodi_id from request
+            if (Auth::user()->group_id == 2) {
+                unset($rules['prodi_id']);
+            }
+
             $validator = Validator::make($request->all(), $rules);
 
             if ($validator->fails()) {
@@ -137,6 +142,10 @@ class MahasiswaController extends Controller
             $insert = UserModel::create($user);
 
             $request['user_id'] = $insert->user_id;
+
+            if (Auth::user()->group_id == 2) {
+                $request['prodi_id'] = Auth::user()->prodi_id;
+            }
 
             $res = MahasiswaModel::insertData($request);
 
@@ -252,6 +261,10 @@ class MahasiswaController extends Controller
         return (!$data) ? $this->showModalError() :
             $this->showModalConfirm($this->menuUrl . '/' . $id, [
                 'Nama' => $data->nama_mahasiswa,
+                'NIM' => $data->nim,
+                'Prodi' => $data->prodi->prodi_name,
+                'Email' => $data->email_mahasiswa,
+                'No HP' => $data->no_hp,
             ]);
     }
 
