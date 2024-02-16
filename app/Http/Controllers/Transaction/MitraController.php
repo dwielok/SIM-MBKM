@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\KabupatenModel;
 use App\Models\Master\KegiatanModel;
 use App\Models\Master\PeriodeModel;
+use App\Models\Master\ProdiModel;
+use App\Models\MitraKuotaModel;
 use App\Models\MitraModel;
 use App\Models\ProvinsiModel;
 use App\Models\Setting\UserModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -252,11 +255,6 @@ class MitraController extends Controller
 
         $datas = [
             [
-                "title" => "Kode Kegiatan",
-                "value" => $mitra->kegiatan->kegiatan_kode,
-                "bold" => true
-            ],
-            [
                 "title" => "Nama Kegiatan",
                 "value" => $mitra->kegiatan->kegiatan_nama,
                 "bold" => false
@@ -310,12 +308,22 @@ class MitraController extends Controller
             return $obj;
         }, $datas);
 
+        $prodi_id = Auth::user()->prodi_id;
+        $prodi = ProdiModel::find($prodi_id);
+        $kuota = MitraKuotaModel::where('mitra_id', $id)
+            ->where('prodi_id', $prodi_id)
+            ->first();
+
         return (!$data) ? $this->showModalError() :
             view($this->viewPath . 'detail')
             ->with('page', (object) $page)
             ->with('id', $id)
             ->with('data', $data)
-            ->with('datas', $datas);
+            ->with('datas', $datas)
+            ->with('url', $this->menuUrl . '/' . $id . '/kuota')
+            ->with('action', 'PUT')
+            ->with('prodi', $prodi)
+            ->with('kuota', $kuota);
     }
 
 
@@ -413,6 +421,44 @@ class MitraController extends Controller
                 'stat' => $res,
                 'mc' => $res, // close modal
                 'msg' => ($res) ? 'Perusahaan berhasil direject.' : 'Perusahaan gagal direject.'
+            ]);
+        }
+
+        return redirect('/');
+    }
+
+    public function set_kuota(Request $request, $id)
+    {
+        $this->authAction('update', 'json');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        if ($request->ajax() || $request->wantsJson()) {
+
+            $prodi_id = Auth::user()->prodi_id;
+            $cek = MitraKuotaModel::where('mitra_id', $id)
+                ->where('prodi_id', $prodi_id)
+                ->first();
+
+            $request['mitra_id'] = $id;
+            $request['prodi_id'] = $prodi_id;
+            // dd($request);
+            if ($cek) {
+                unset($request['mitra_id']);
+                unset($request['prodi_id']);
+                $res = MitraKuotaModel::where('mitra_id', $id)
+                    ->where('prodi_id', $prodi_id)
+                    ->update([
+                        'kuota' => $request->kuota
+                    ]);
+            } else {
+                $res = MitraKuotaModel::insertData($request);
+            }
+
+
+            return response()->json([
+                'stat' => $res,
+                'mc' => $res, // close modal
+                'msg' => ($res) ? 'Berhasil set kuota.' : 'Gagal set kuota.'
             ]);
         }
 

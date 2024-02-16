@@ -41,6 +41,10 @@ class UserModel extends Authenticatable
         'deleted_by'
     ];
 
+    public function prodi()
+    {
+        return $this->hasOne(ProdiModel::class, 'prodi_id', 'prodi_id');
+    }
 
 
     public function role()
