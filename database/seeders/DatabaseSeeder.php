@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             MJurusanSeeder::class,
             MProdiSeeder::class,
             SUserSeeder::class,
+            MMahasiswaSeeder::class,
             SMenuSeeder::class,
             SGroupMenuSeeder::class,
             MProgramSeeder::class,

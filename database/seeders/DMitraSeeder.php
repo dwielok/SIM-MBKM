@@ -25,7 +25,9 @@ class DMitraSeeder extends Seeder
                 'mitra_deskripsi' => 'test',
                 'mitra_durasi' => 4,
                 'provinsi_id' => 11,
-                'kota_id' => 140
+                'kota_id' => 140,
+                'status' => 1,
+                'mitra_keterangan_ditolak' => NULL
             ], [
                 'mitra_id' => 2,
                 'kegiatan_id' => 2,
@@ -36,7 +38,9 @@ class DMitraSeeder extends Seeder
                 'mitra_deskripsi' => 'test',
                 'mitra_durasi' => 5,
                 'provinsi_id' => 11,
-                'kota_id' => 140
+                'kota_id' => 140,
+                'status' => 0,
+                'mitra_keterangan_ditolak' => NULL
             ], [
                 'mitra_id' => 3,
                 'kegiatan_id' => 8,
@@ -47,7 +51,9 @@ class DMitraSeeder extends Seeder
                 'mitra_deskripsi' => 'test',
                 'mitra_durasi' => 3,
                 'provinsi_id' => 11,
-                'kota_id' => 140
+                'kota_id' => 140,
+                'status' => 2,
+                'mitra_keterangan_ditolak' => 'Fiktif'
             ],
         ]);
     }

@@ -8,7 +8,7 @@ use App\Http\Controllers\Master\JurusanController;
 use App\Http\Controllers\Master\KategoriController;
 use App\Http\Controllers\Master\KegiatanMahasiswaController;
 use App\Http\Controllers\Transaction\MahasiswaController;
-use App\Http\Controllers\Master\PendaftaranController;
+use App\Http\Controllers\Transaction\PendaftaranController;
 use App\Http\Controllers\Master\PeriodeController;
 use App\Http\Controllers\Transaction\MitraController;
 use App\Http\Controllers\Master\ProdiController;
@@ -103,6 +103,12 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     Route::resource('daftar-magang', DaftarMagangController::class)->parameter('daftar-magang', 'id');
     Route::post('daftar-magang/list', [DaftarMagangController::class, 'list']);
     Route::get('daftar-magang/{id}/delete', [DaftarMagangController::class, 'confirm']);
+    Route::post('daftar-magang/{id}/daftar', [DaftarMagangController::class, 'daftar']);
+
+    //pendaftaran (role koordinator)
+    Route::resource('pendaftaran', PendaftaranController::class)->parameter('pendaftaran', 'id');
+    Route::post('pendaftaran/list', [PendaftaranController::class, 'list']);
+    Route::get('pendaftaran/{id}/delete', [PendaftaranController::class, 'confirm']);
 });
 
 //kuota with url mitra/{id}/kuota

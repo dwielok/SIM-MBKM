@@ -22,6 +22,7 @@ class PeriodeModel extends AppModel
         'periode_direktur',
         'periode_nip',
         'is_active',
+        'is_current',
         'created_at',
         'created_by',
         'updated_at',

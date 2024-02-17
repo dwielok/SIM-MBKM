@@ -53,7 +53,7 @@
                         <td class="w-74">
                             <select data-testid="partner-category"
                                 class="form-control select2_combobox form-control-sm mahasiswa-1" id="mahasiswa_1"
-                                name="mahasiswa[]" readonly disabled>
+                                name="mahasiswa[]" readonly>
                                 <option value="" selected>Pilih Mahasiswa 1</option>
                                 @foreach ($mahasiswas as $item)
                                     <option value="{{ $item->mahasiswa_id }}"
@@ -68,8 +68,8 @@
                         <th class="w-25 text-right">Mahasiswa 2</th>
                         <th class="w-1">:</th>
                         <td class="w-74">
-                            <select data-testid="partner-category"
-                                class="form-control select2_combobox form-control-sm mahasiswa-1" id="mahasiswa_1"
+                            <select data-testid="partner-category2"
+                                class="form-control select2_combobox form-control-sm mahasiswa-2" id="mahasiswa_2"
                                 name="mahasiswa[]">
                                 <option value="" selected>Pilih Mahasiswa 2</option>
                                 @foreach ($mahasiswas as $item)
@@ -85,7 +85,7 @@
                         <th class="w-1">:</th>
                         <td class="w-74">
                             <select data-testid="partner-category"
-                                class="form-control select2_combobox form-control-sm mahasiswa-1" id="mahasiswa_1"
+                                class="form-control select2_combobox form-control-sm mahasiswa-3" id="mahasiswa_3"
                                 name="mahasiswa[]">
                                 <option value="" selected>Pilih Mahasiswa 3</option>
                                 @foreach ($mahasiswas as $item)
@@ -109,6 +109,8 @@
 <script>
     $(document).ready(function() {
         // unblockUI();
+
+        $('.select2_combobox').select2();
 
         $('#mahasiswa_select').hide();
 

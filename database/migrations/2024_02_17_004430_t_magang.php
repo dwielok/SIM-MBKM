@@ -21,6 +21,8 @@ class TMagang extends Migration
             $table->foreign('mitra_id')->references('mitra_id')->on('d_mitra');
             $table->unsignedBigInteger('periode_id');
             $table->foreign('periode_id')->references('periode_id')->on('m_periode');
+            $table->unsignedBigInteger('prodi_id');
+            $table->foreign('prodi_id')->references('prodi_id')->on('m_prodi');
             $table->string('magang_kode');
             $table->tinyInteger('magang_tipe')->comment('0: Ketua, 1: Anggota, 2:Individu');
             $table->tinyInteger('is_accept')->comment('0: Menunggu, 1: Menerima ajakan, 2: Menolak ajakan')->nullable();

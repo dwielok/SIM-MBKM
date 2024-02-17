@@ -66,22 +66,33 @@ class SUserSeeder extends Seeder
                 'email'     => 'dwielok@admin.com',
                 'prodi_id'  => NULL,
                 'password'  => password_hash('12345', PASSWORD_DEFAULT),
-            ]
-        ]);
-
-        MahasiswaModel::insert([
+            ],
             [
-                'prodi_id' => 1,
-                'user_id' => 6,
-                'nim' => '2041720177',
-                'nama_mahasiswa' => 'Dwi Elok Nuraini',
-                'email_mahasiswa' => 'dwielok@admin.com',
-                'no_hp' => '08123456789',
-                'jenis_kelamin' => 0,
-                'kelas' => '4D',
-                'nama_ortu' => 'Supri',
-                'hp_ortu' => '08123456789',
-            ]
+                'user_id'   => 7, //
+                'group_id'  => 4, // Mahasiswa
+                'username'  => 'krisma',
+                'name'      => 'Krismawati',
+                'email'     => 'kris@admin.com',
+                'prodi_id'  => NULL,
+                'password'  => password_hash('12345', PASSWORD_DEFAULT),
+            ],
+            [
+                'user_id'   => 8, //
+                'group_id'  => 4, // Mahasiswa
+                'username'  => 'aldanelva',
+                'name'      => 'Alda',
+                'email'     => 'alda@admin.com',
+                'prodi_id'  => NULL,
+                'password'  => password_hash('12345', PASSWORD_DEFAULT),
+            ], [
+                'user_id'   => 9, //
+                'group_id'  => 4, // Mahasiswa
+                'username'  => 'yantooo',
+                'name'      => 'Yanto',
+                'email'     => 'yanto@admin.com',
+                'prodi_id'  => NULL,
+                'password'  => password_hash('12345', PASSWORD_DEFAULT),
+            ],
         ]);
     }
 }
