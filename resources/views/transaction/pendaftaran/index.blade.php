@@ -26,6 +26,9 @@
                                         <th>No</th>
                                         <th>Kode Magang</th>
                                         <th>Nama Mahasiswa</th>
+                                        @if (auth()->user()->group_id == 1)
+                                            <th>Prodi</th>
+                                        @endif
                                         <th>Nama Mitra</th>
                                         <th>Jenis Kegiatan</th>
                                         <th>Durasi</th>
@@ -78,7 +81,15 @@
                         "bSortable": true,
                         "bSearchable": true,
                     },
-                    {
+                    @if (auth()->user()->group_id == 1)
+                        {
+                            "mData": "prodi.prodi_name",
+                            "sClass": "",
+                            "sWidth": "10%",
+                            "bSortable": true,
+                            "bSearchable": true
+                        },
+                    @endif {
                         "mData": "mitra.mitra_nama",
                         "sClass": "",
                         "sWidth": "10%",
