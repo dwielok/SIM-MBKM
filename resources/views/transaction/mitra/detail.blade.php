@@ -31,27 +31,29 @@
                         </td>
                     </tr>
                 @endforeach
-                <tr>
-                    <th class="w-25 text-right">Kuota</th>
-                    <th class="w-1">:</th>
-                    <td class="w-74">
-                        @foreach ($prodis as $prodi)
-                            <form method="post" action="{{ $url }}" role="form" class="form-horizontal"
-                                id="form-kuota-{{ $prodi->prodi_id }}">
-                                @csrf
-                                {!! method_field($action) !!}
-                                Set kuota untuk prodi {{ $prodi->prodi_name }}
-                                <div class="d-flex justify-content-start align-items-center">
-                                    <input type="number" class="w-50 form-control form-control-sm" id="kuota"
-                                        name="kuota"
-                                        value="{{ isset($prodi->kuota->kuota) ? $prodi->kuota->kuota : '' }}" />
-                                    <input type="hidden" name="prodi_id" value="{{ $prodi->prodi_id }}" />
-                                    <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
-                                </div>
-                            </form>
-                        @endforeach
-                    </td>
-                </tr>
+                @if ($mitra->status == 1)
+                    <tr>
+                        <th class="w-25 text-right">Kuota</th>
+                        <th class="w-1">:</th>
+                        <td class="w-74">
+                            @foreach ($prodis as $prodi)
+                                <form method="post" action="{{ $url }}" role="form" class="form-horizontal"
+                                    id="form-kuota-{{ $prodi->prodi_id }}">
+                                    @csrf
+                                    {!! method_field($action) !!}
+                                    Set kuota untuk prodi {{ $prodi->prodi_name }}
+                                    <div class="d-flex justify-content-start align-items-center">
+                                        <input type="number" class="w-50 form-control form-control-sm" id="kuota"
+                                            name="kuota"
+                                            value="{{ isset($prodi->kuota->kuota) ? $prodi->kuota->kuota : '' }}" />
+                                        <input type="hidden" name="prodi_id" value="{{ $prodi->prodi_id }}" />
+                                        <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
+                                    </div>
+                                </form>
+                            @endforeach
+                        </td>
+                    </tr>
+                @endif
             </table>
         </div>
         <div class="modal-footer">

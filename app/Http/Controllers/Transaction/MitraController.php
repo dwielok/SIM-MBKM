@@ -349,7 +349,8 @@ class MitraController extends Controller
             ->with('datas', $datas)
             ->with('url', $this->menuUrl . '/' . $id . '/kuota')
             ->with('action', 'PUT')
-            ->with('prodis', $prodis);
+            ->with('prodis', $prodis)
+            ->with('mitra', $mitra);
     }
 
 

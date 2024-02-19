@@ -168,14 +168,16 @@
                         "bSortable": false,
                         "bSearchable": false,
                         "mRender": function(data, type, row, meta) {
-                            var buttons = '';
                             @if ($allowAccess->update)
                                 if (row.kegiatan.is_kuota == 1) {
+                                    var buttons = '';
                                     buttons +=
                                         `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat kuota" ><i class="fa fa-th"></i> kuota</a> `
+                                    return buttons;
+                                } else {
+                                    return 'Tidak berkuota';
                                 }
                             @endif
-                            return buttons;
                         }
                     },
                     {
