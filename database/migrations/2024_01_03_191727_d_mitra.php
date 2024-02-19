@@ -19,6 +19,7 @@ class DMitra extends Migration
             $table->foreign('kegiatan_id')->references('kegiatan_id')->on('m_kegiatan');
             $table->unsignedBigInteger('periode_id');
             $table->foreign('periode_id')->references('periode_id')->on('m_periode');
+            $table->string('mitra_prodi');
             $table->string('mitra_nama', 100);
             $table->string('mitra_alamat');
             $table->tinyInteger('mitra_durasi');

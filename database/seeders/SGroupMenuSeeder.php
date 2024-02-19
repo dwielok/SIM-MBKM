@@ -30,6 +30,10 @@ class SGroupMenuSeeder extends Seeder
         }
         $menu_koordinator[] = ['group_id'  => 2, 'menu_id'   => 13, 'c'   => 1, 'r'    => 1, 'u'   => 1, 'd' => 1];
         $menu_koordinator[] = ['group_id'  => 2, 'menu_id'   => 19, 'c'   => 1, 'r'    => 1, 'u'   => 1, 'd' => 1];
+        //remove id 6,7 in koordinator
+        $menu_koordinator = array_filter($menu_koordinator, function ($value) {
+            return $value['menu_id'] != 6 && $value['menu_id'] != 7;
+        });
 
         $menu_mahasiswa[] = ['group_id'  => 4, 'menu_id'   => 1, 'c'   => 1, 'r'    => 1, 'u'   => 1, 'd' => 1];
         $menu_mahasiswa[] = ['group_id'  => 4, 'menu_id'   => 3, 'c'   => 1, 'r'    => 1, 'u'   => 1, 'd' => 1];

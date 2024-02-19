@@ -66,6 +66,15 @@ class MitraController extends Controller
             ->with('periode')
             ->get();
 
+        if (auth()->user()->group_id != 1) {
+            //data in mitra with column mitra_prodi is [1,2,3,etc]
+            //how to get with getProdiId() include with mitra_prodi
+            $prodi_id = auth()->user()->getProdiId();
+            $data = $data->filter(function ($item) use ($prodi_id) {
+                return in_array($prodi_id, json_decode($item->mitra_prodi));
+            });
+        }
+
         $data = $data->map(function ($item) {
             //TODO: get jumlah pendaftar
             $item['mitra_jumlah_pendaftar'] = 0;

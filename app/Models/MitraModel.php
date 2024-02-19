@@ -20,6 +20,7 @@ class MitraModel extends AppModel
     protected $fillable = [
         'kegiatan_id',
         'periode_id',
+        'mitra_prodi',
         'mitra_nama',
         'mitra_alamat',
         'mitra_website',

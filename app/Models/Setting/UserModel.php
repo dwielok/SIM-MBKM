@@ -46,6 +46,16 @@ class UserModel extends Authenticatable
         return $this->hasOne(ProdiModel::class, 'prodi_id', 'prodi_id');
     }
 
+    public function getProdiId()
+    {
+        $group = auth()->user()->group_id;
+        if ($group == 2) {
+            return $this->prodi->prodi_id;
+        } else {
+            return MahasiswaModel::where('user_id', auth()->user()->user_id)->first()->prodi_id;
+        }
+    }
+
 
     public function role()
     {
