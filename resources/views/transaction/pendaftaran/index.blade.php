@@ -167,16 +167,20 @@
                         "bSortable": true,
                         "bSearchable": true,
                         "mRender": function(data, type, row, meta) {
-                            switch (data) {
-                                case 2:
-                                    return '<span class="badge badge-danger">Ditolak</span>';
-                                    break;
-                                case 1:
-                                    return '<span class="badge badge-success">Diterima</span>';
-                                    break;
-                                case 0:
-                                    return '<span class="badge badge-warning">Menunggu</span>';
-                                    break;
+                            if (row.magang_tipe == 1 && row.is_accept == 2) {
+                                return '<span class="badge badge-danger">Menolak Undangan</span>';
+                            } else {
+                                switch (data) {
+                                    case 2:
+                                        return '<span class="badge badge-danger">Ditolak</span>';
+                                        break;
+                                    case 1:
+                                        return '<span class="badge badge-success">Diterima</span>';
+                                        break;
+                                    case 0:
+                                        return '<span class="badge badge-warning">Menunggu</span>';
+                                        break;
+                                }
                             }
                         }
                     },

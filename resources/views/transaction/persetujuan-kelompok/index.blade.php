@@ -121,7 +121,7 @@
                         }
                     },
                     {
-                        "mData": "mitra_id",
+                        "mData": "magang_id",
                         "sClass": "pr-2",
                         "sWidth": "8%",
                         "bSortable": false,
