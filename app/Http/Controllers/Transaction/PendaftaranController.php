@@ -59,6 +59,8 @@ class PendaftaranController extends Controller
 
         if (auth()->user()->group_id == 1) {
             $data = $data->get();
+        } else if (auth()->user()->group_id == 4) {
+            $data = $data->where('mahasiswa_id', auth()->user()->getUserMahasiswa->mahasiswa_id)->get();
         } else {
             $prodi_id = auth()->user()->getProdiId();
             $data = $data->where('prodi_id', $prodi_id)->get();
