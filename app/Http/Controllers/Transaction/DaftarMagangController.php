@@ -66,6 +66,7 @@ class DaftarMagangController extends Controller
             //TODO: get jumlah pendaftar
             $item['mitra_jumlah_pendaftar'] = Magang::where('mitra_id', $item->mitra_id)
                 ->where('periode_id', PeriodeModel::where('is_current', 1)->first()->periode_id)
+                ->where('status', 1)
                 ->count();
             return $item;
         });
@@ -175,6 +176,7 @@ class DaftarMagangController extends Controller
             //if exist, return error
             $cek = Magang::where('mahasiswa_id', $id_mahasiswa)
                 ->where('periode_id', $id_periode)
+                ->where('status', '!=', 2)
                 ->first();
 
             if ($cek) {
@@ -228,6 +230,7 @@ class DaftarMagangController extends Controller
         } else {
             $cek = Magang::whereIn('mahasiswa_id', $mahasiswa)
                 ->where('periode_id', $id_periode)
+                ->where('status', '!=', 2)
                 ->first();
 
             if ($cek) {

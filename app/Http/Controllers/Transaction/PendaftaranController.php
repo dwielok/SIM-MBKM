@@ -114,4 +114,46 @@ class PendaftaranController extends Controller
                 'Kegiatan' => $data->mitra->kegiatan->kegiatan_nama,
             ], 'Konfirmasi Tolak', 'Apakah anda yakin ingin menolak mahasiswa berikut:', 'Ya, Reject', 'PUT');
     }
+
+    public function approve(Request $request, $id)
+    {
+        $this->authAction('update', 'json');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        if ($request->ajax() || $request->wantsJson()) {
+
+            $request['status'] = 1; // [0: pending, 1: approved, 2: rejected]
+            $res = Magang::updateData($id, $request);
+
+            return response()->json([
+                'stat' => $res,
+                'mc' => $res, // close modal
+                'msg' => ($res) ? 'Magang berhasil diapprove.' : 'Magang gagal diapprove.'
+            ]);
+        }
+
+        return redirect('/');
+    }
+
+    public function reject(Request $request, $id)
+    {
+        $this->authAction('update', 'json');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        if ($request->ajax() || $request->wantsJson()) {
+
+            $request['status'] = 2; // [0: pending, 1: approved, 2: rejected]
+            // $request['mitra_keterangan_ditolak'] = $request->reason;
+            // unset($request['reason']);
+            $res = Magang::updateData($id, $request);
+
+            return response()->json([
+                'stat' => $res,
+                'mc' => $res, // close modal
+                'msg' => ($res) ? 'Magang berhasil direject.' : 'Magang gagal direject.'
+            ]);
+        }
+
+        return redirect('/');
+    }
 }
