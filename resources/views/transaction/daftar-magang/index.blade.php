@@ -144,10 +144,10 @@
                         "mRender": function(data, type, row, meta) {
                             var buttons = '';
                             @if ($allowAccess->update)
-                                if (row.kegiatan.is_kuota == 1) {
-                                    buttons +=
-                                        `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat detail" ><i class="fa fa-th"></i> Detail</a> `
-                                }
+                                // if (row.kegiatan.is_kuota == 1) {
+                                buttons +=
+                                    `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat detail" ><i class="fa fa-th"></i> Detail</a> `
+                                // }
                             @endif
                             return buttons;
                         }

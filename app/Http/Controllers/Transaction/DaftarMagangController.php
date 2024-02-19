@@ -128,6 +128,11 @@ class DaftarMagangController extends Controller
             ],
         ];
 
+        if ($mitra->kegiatan->is_kuota == 0) {
+            //remove kuota
+            unset($datas[5]);
+        }
+
         //change to stdClass loop
         $datas = array_map(function ($item) {
             $obj = new stdClass;
@@ -176,6 +181,32 @@ class DaftarMagangController extends Controller
                     'mc' => false, // close modal
                     'msg' => 'Anda sudah mendaftar magang'
                 ]);
+            }
+
+            //cek kegiatan model if is_kuota 1 then check kuota
+            $kegiatan = MitraModel::with('kegiatan')
+                ->where('mitra_id', $id_mitra)
+                ->first();
+
+            if ($kegiatan->kegiatan->is_kuota == 1) {
+                $kuota = MitraKuotaModel::where('mitra_id', $id_mitra)
+                    ->where('prodi_id', $prodi_id)
+                    ->first();
+
+                $kuota = ($kuota) ? $kuota->kuota : 0;
+
+                $pendaftar = Magang::where('mitra_id', $id_mitra)
+                    ->where('periode_id', $id_periode)
+                    ->where('prodi_id', $prodi_id)
+                    ->count();
+
+                if ($pendaftar >= $kuota) {
+                    return response()->json([
+                        'stat' => false,
+                        'mc' => false, // close modal
+                        'msg' => 'Kuota sudah penuh'
+                    ]);
+                }
             }
 
             $kode = 'P-' . rand(1000, 9999);
