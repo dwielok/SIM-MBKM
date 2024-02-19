@@ -68,6 +68,12 @@ class PersetujuanKelompokController extends Controller
             $data = $data->where('prodi_id', $prodi_id)->get();
         }
 
+        $data = $data->map(function ($item) {
+            $ketua = Magang::with('mahasiswa')->where('magang_kode', $item->magang_kode)->where('magang_tipe', 0)->first();
+            $item->ketua = $ketua->mahasiswa->nama_mahasiswa;
+            return $item;
+        });
+
         return DataTables::of($data)
             ->addIndexColumn()
             ->make(true);

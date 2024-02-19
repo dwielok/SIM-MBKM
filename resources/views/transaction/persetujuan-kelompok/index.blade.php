@@ -25,7 +25,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Kode Magang</th>
-                                        <th>Nama Mahasiswa</th>
+                                        <th>Nama Ketua</th>
                                         <th>Nama Mitra</th>
                                         <th>Jenis Kegiatan</th>
                                         <th>Durasi</th>
@@ -69,14 +69,14 @@
                         "sWidth": "10%",
                         "bSortable": true,
                         "bSearchable": true
-                    },
-                    {
-                        "mData": "mahasiswa.nama_mahasiswa",
+                    }, {
+                        "mData": "ketua",
                         "sClass": "",
                         "sWidth": "5%",
                         "bSortable": true,
                         "bSearchable": true,
-                    }, {
+                    },
+                    {
                         "mData": "mitra.mitra_nama",
                         "sClass": "",
                         "sWidth": "10%",
