@@ -34,7 +34,9 @@
                                         <th>Durasi</th>
                                         <th>Tipe Pendaftar</th>
                                         <th>Status</th>
-                                        {{-- <th>#</th> --}}
+                                        @if (auth()->user()->group_id != 4)
+                                            <th>#</th>
+                                        @endif
                                     </tr>
                                 </thead>
                             </table>
@@ -147,23 +149,26 @@
                             }
                         }
                     },
-                    // {
-                    //     "mData": "mitra_id",
-                    //     "sClass": "pr-2",
-                    //     "sWidth": "8%",
-                    //     "bSortable": false,
-                    //     "bSearchable": false,
-                    //     "mRender": function(data, type, row, meta) {
-                    //         var buttons = '';
-                    //         @if ($allowAccess->update)
-                    //             if (row.kegiatan.is_kuota == 1) {
-                    //                 buttons +=
-                    //                     `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat detail" ><i class="fa fa-th"></i> Detail</a> `
-                    //             }
-                    //         @endif
-                    //         return buttons;
-                    //     }
-                    // },
+                    @if (auth()->user()->group_id != 4)
+                        {
+                            "mData": "mitra_id",
+                            "sClass": "pr-2",
+                            "sWidth": "8%",
+                            "bSortable": false,
+                            "bSearchable": false,
+                            "mRender": function(data, type, row, meta) {
+                                var buttons = '';
+                                @if ($allowAccess->update)
+                                    if (row.status == 0) {
+                                        buttons +=
+                                            `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
+                                            `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_reject" class="ajax_modal btn btn-xs btn-danger tooltips text-white" data-placement="left" data-original-title="Reject" ><i class="fa fa-times"></i></a> `;
+                                    }
+                                @endif
+                                return buttons;
+                            }
+                        },
+                    @endif
                 ],
                 "fnDrawCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     $('a', this.fnGetNodes()).tooltip();

@@ -106,13 +106,15 @@ class MitraController extends Controller
         $periodes = PeriodeModel::where('is_active', 1)->get();
         $kegiatans = KegiatanModel::all();
         $kabupatens = [];
+        $prodis = ProdiModel::where('is_active', 1)->get();
 
         return view($this->viewPath . 'action')
             ->with('page', (object) $page)
             ->with('periodes', $periodes)
             ->with('kegiatans', $kegiatans)
             ->with('provinsis', $provinsis)
-            ->with('kabupatens', $kabupatens);
+            ->with('kabupatens', $kabupatens)
+            ->with('prodis', $prodis);
     }
 
 
@@ -155,6 +157,10 @@ class MitraController extends Controller
 
             // $request['user_id'] = $insert->user_id;
 
+            $request['mitra_prodi'] = json_encode($request->prodi_arr);
+            // unset($request['periode_arr']);
+            unset($request['prodi_arr']);
+
             $kota = KabupatenModel::find($request['kota_id']);
             $request['mitra_alamat'] = $kota->nama_kab_kota;
             $request['status'] = 1;
@@ -189,6 +195,7 @@ class MitraController extends Controller
         $periodes = PeriodeModel::where('is_active', 1)->get();
         $kegiatans = KegiatanModel::all();
         $kabupatens = KabupatenModel::where('d_provinsi_id', $data->provinsi_id)->get();
+        $prodis = ProdiModel::where('is_active', 1)->get();
 
         return (!$data) ? $this->showModalError() :
             view($this->viewPath . 'action')
@@ -198,7 +205,8 @@ class MitraController extends Controller
             ->with('kegiatans', $kegiatans)
             ->with('provinsis', $provinsis)
             ->with('kabupatens', $kabupatens)
-            ->with('data', $data);
+            ->with('data', $data)
+            ->with('prodis', $prodis);
     }
 
 
@@ -213,7 +221,7 @@ class MitraController extends Controller
                 'kegiatan_id' => 'required',
                 'periode_id' => 'required',
                 'mitra_nama' => 'required|string',
-                'mitra_alamat' => 'required',
+                // 'mitra_alamat' => 'required',
                 'mitra_website' => 'required',
                 'mitra_deskripsi' => 'required',
             ];
@@ -231,6 +239,10 @@ class MitraController extends Controller
 
             $kota = KabupatenModel::find($request['kota_id']);
             $request['mitra_alamat'] = $kota->nama_kab_kota;
+
+            $request['mitra_prodi'] = json_encode($request->prodi_arr);
+            // unset($request['periode_arr']);
+            unset($request['prodi_arr']);
 
             $res = MitraModel::updateData($id, $request);
 

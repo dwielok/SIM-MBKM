@@ -109,6 +109,10 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     Route::resource('pendaftaran', PendaftaranController::class)->parameter('pendaftaran', 'id');
     Route::post('pendaftaran/list', [PendaftaranController::class, 'list']);
     Route::get('pendaftaran/{id}/delete', [PendaftaranController::class, 'confirm']);
+    Route::get('pendaftaran/{id}/confirm_approve', [PendaftaranController::class, 'confirm_approve']);
+    Route::get('pendaftaran/{id}/confirm_reject', [PendaftaranController::class, 'confirm_reject']);
+    Route::put('pendaftaran/{id}/approve', [PendaftaranController::class, 'approve']);
+    Route::put('pendaftaran/{id}/reject', [PendaftaranController::class, 'reject']);
 });
 
 //kuota with url mitra/{id}/kuota
