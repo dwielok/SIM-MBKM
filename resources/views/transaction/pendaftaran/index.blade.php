@@ -141,7 +141,7 @@
                             "bSearchable": true,
                             "mRender": function(data, type, row, meta) {
                                 if (row.magang_tipe == "2") {
-                                    return '-';
+                                    return '';
                                 } else {
                                     switch (data) {
                                         case 0:
