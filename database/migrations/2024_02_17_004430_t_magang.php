@@ -25,7 +25,7 @@ class TMagang extends Migration
             $table->foreign('prodi_id')->references('prodi_id')->on('m_prodi');
             $table->string('magang_kode');
             $table->tinyInteger('magang_tipe')->comment('0: Ketua, 1: Anggota, 2:Individu');
-            $table->tinyInteger('is_accept')->comment('0: Menunggu, 1: Menerima ajakan, 2: Menolak ajakan')->nullable();
+            $table->tinyInteger('is_accept')->comment('0: Menunggu, 1: Menerima ajakan, 2: Menolak ajakan')->nullable()->default(0);
             $table->tinyInteger('status')->comment('0: Menunggu, 1: Diterima, 2: Ditolak');
             $table->dateTime('created_at')->nullable()->useCurrent();
             $table->integer('created_by')->nullable()->index();

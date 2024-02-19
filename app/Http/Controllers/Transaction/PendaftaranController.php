@@ -81,7 +81,8 @@ class PendaftaranController extends Controller
             ->with('periode')
             ->with('prodi')
             ->with('mitra.kegiatan')
-            ->find($id);
+            ->where('magang_id', $id)
+            ->first();
 
         return (!$data) ? $this->showModalError() :
             $this->showModalConfirm($this->menuUrl . '/' . $id . '/approve', [
@@ -102,7 +103,8 @@ class PendaftaranController extends Controller
             ->with('periode')
             ->with('prodi')
             ->with('mitra.kegiatan')
-            ->find($id);
+            ->where('magang_id', $id)
+            ->first();
 
         return (!$data) ? $this->showModalError() :
             $this->showModalConfirm($this->menuUrl . '/' . $id . '/reject', [

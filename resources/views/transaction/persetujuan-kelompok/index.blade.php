@@ -26,17 +26,11 @@
                                         <th>No</th>
                                         <th>Kode Magang</th>
                                         <th>Nama Mahasiswa</th>
-                                        @if (auth()->user()->group_id == 1)
-                                            <th>Prodi</th>
-                                        @endif
                                         <th>Nama Mitra</th>
                                         <th>Jenis Kegiatan</th>
                                         <th>Durasi</th>
-                                        <th>Tipe Pendaftar</th>
                                         <th>Status</th>
-                                        @if (auth()->user()->group_id != 4)
-                                            <th>#</th>
-                                        @endif
+                                        <th>#</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -82,16 +76,7 @@
                         "sWidth": "5%",
                         "bSortable": true,
                         "bSearchable": true,
-                    },
-                    @if (auth()->user()->group_id == 1)
-                        {
-                            "mData": "prodi.prodi_name",
-                            "sClass": "",
-                            "sWidth": "10%",
-                            "bSortable": true,
-                            "bSearchable": true
-                        },
-                    @endif {
+                    }, {
                         "mData": "mitra.mitra_nama",
                         "sClass": "",
                         "sWidth": "10%",
@@ -116,21 +101,7 @@
                         }
                     },
                     {
-                        "mData": "magang_tipe",
-                        "sClass": "",
-                        "sWidth": "15%",
-                        "bSortable": true,
-                        "bSearchable": true,
-                        "mRender": function(data, type, row, meta) {
-                            if (data == 2) {
-                                return 'Individu';
-                            } else {
-                                return data == 0 ? 'Kelompok (Ketua)' : 'Kelompok (Anggota)'
-                            }
-                        }
-                    },
-                    {
-                        "mData": "status",
+                        "mData": "is_accept",
                         "sClass": "",
                         "sWidth": "10%",
                         "bSortable": true,
@@ -149,26 +120,24 @@
                             }
                         }
                     },
-                    @if (auth()->user()->group_id != 4)
-                        {
-                            "mData": "magang_id",
-                            "sClass": "pr-2",
-                            "sWidth": "8%",
-                            "bSortable": false,
-                            "bSearchable": false,
-                            "mRender": function(data, type, row, meta) {
-                                var buttons = '';
-                                @if ($allowAccess->update)
-                                    if (row.status == 0) {
-                                        buttons +=
-                                            `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
-                                            `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_reject" class="ajax_modal btn btn-xs btn-danger tooltips text-white" data-placement="left" data-original-title="Reject" ><i class="fa fa-times"></i></a> `;
-                                    }
-                                @endif
-                                return buttons;
-                            }
-                        },
-                    @endif
+                    {
+                        "mData": "mitra_id",
+                        "sClass": "pr-2",
+                        "sWidth": "8%",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mRender": function(data, type, row, meta) {
+                            var buttons = '';
+                            @if ($allowAccess->update)
+                                if (row.is_accept == 0) {
+                                    buttons +=
+                                        `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
+                                        `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_reject" class="ajax_modal btn btn-xs btn-danger tooltips text-white" data-placement="left" data-original-title="Reject" ><i class="fa fa-times"></i></a> `;
+                                }
+                            @endif
+                            return buttons;
+                        }
+                    },
                 ],
                 "fnDrawCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     $('a', this.fnGetNodes()).tooltip();

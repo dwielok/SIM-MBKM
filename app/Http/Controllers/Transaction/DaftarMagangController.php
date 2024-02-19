@@ -241,19 +241,24 @@ class DaftarMagangController extends Controller
             $kode = 'P-' . rand(1000, 9999);
 
             foreach ($mahasiswa as $index => $m) {
+                $idx = $index;
                 $id_mahasiswa = $m;
                 $prodi_id = MahasiswaModel::where('mahasiswa_id', $id_mahasiswa)->first()->prodi_id;
 
                 //cek in Magang id_mahasiswa and id_periode
                 //if exist, return error
 
-
+                if ($idx == 0) {
+                    $request['magang_tipe'] = 0;
+                } else {
+                    $request['magang_tipe'] = 1;
+                    $request['is_accept'] = 0;
+                }
                 $request['mahasiswa_id'] = $id_mahasiswa;
                 $request['mitra_id'] = $id_mitra;
                 $request['periode_id'] = $id_periode;
                 $request['prodi_id'] = $prodi_id;
                 $request['magang_kode'] = $kode;
-                $request['magang_tipe'] = $index = 0 ? 0 : 1;
                 $request['status'] = 0;
 
                 unset($request['mahasiswa']);

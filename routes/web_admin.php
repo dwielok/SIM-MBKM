@@ -27,6 +27,7 @@ use App\Http\Controllers\Setting\MenuController;
 use App\Http\Controllers\Setting\ProfileController;
 use App\Http\Controllers\Setting\UserController;
 use App\Http\Controllers\Transaction\DaftarMagangController;
+use App\Http\Controllers\Transaction\PersetujuanKelompokController;
 use App\Http\Controllers\Transaction\QuotaDosenController;
 use Illuminate\Support\Facades\Route;
 
@@ -114,6 +115,15 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     Route::get('pendaftaran/{id}/confirm_reject', [PendaftaranController::class, 'confirm_reject']);
     Route::put('pendaftaran/{id}/approve', [PendaftaranController::class, 'approve']);
     Route::put('pendaftaran/{id}/reject', [PendaftaranController::class, 'reject']);
+
+    //persetujuan kelompok
+    Route::resource('persetujuan-kelompok', PersetujuanKelompokController::class)->parameter('persetujuan-kelompok', 'id');
+    Route::post('persetujuan-kelompok/list', [PersetujuanKelompokController::class, 'list']);
+    Route::get('persetujuan-kelompok/{id}/delete', [PersetujuanKelompokController::class, 'confirm']);
+    Route::get('persetujuan-kelompok/{id}/confirm_approve', [PersetujuanKelompokController::class, 'confirm_approve']);
+    Route::get('persetujuan-kelompok/{id}/confirm_reject', [PersetujuanKelompokController::class, 'confirm_reject']);
+    Route::put('persetujuan-kelompok/{id}/approve', [PersetujuanKelompokController::class, 'approve']);
+    Route::put('persetujuan-kelompok/{id}/reject', [PersetujuanKelompokController::class, 'reject']);
 });
 
 //kuota with url mitra/{id}/kuota
