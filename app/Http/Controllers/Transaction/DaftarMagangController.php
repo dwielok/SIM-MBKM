@@ -64,7 +64,9 @@ class DaftarMagangController extends Controller
 
         $data = $data->map(function ($item) {
             //TODO: get jumlah pendaftar
-            $item['mitra_jumlah_pendaftar'] = 0;
+            $item['mitra_jumlah_pendaftar'] = Magang::where('mitra_id', $item->mitra_id)
+                ->where('periode_id', PeriodeModel::where('is_current', 1)->first()->periode_id)
+                ->count();
             return $item;
         });
 

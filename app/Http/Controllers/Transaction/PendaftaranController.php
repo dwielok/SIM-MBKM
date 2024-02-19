@@ -50,18 +50,19 @@ class PendaftaranController extends Controller
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
+
         $data  = Magang::with('mahasiswa')
             ->with('mitra')
             ->with('periode')
             ->with('prodi')
-            ->with('mitra.kegiatan')
-            ->get();
+            ->with('mitra.kegiatan');
 
-        $data = $data->map(function ($item) {
-            //TODO: get jumlah pendaftar
-            $item['mitra_jumlah_pendaftar'] = 0;
-            return $item;
-        });
+        if (auth()->user()->group_id == 1) {
+            $data = $data->get();
+        } else {
+            $prodi_id = auth()->user()->getProdiId();
+            $data = $data->where('prodi_id', $prodi_id)->get();
+        }
 
         return DataTables::of($data)
             ->addIndexColumn()

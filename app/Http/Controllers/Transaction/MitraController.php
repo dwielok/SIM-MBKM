@@ -11,6 +11,7 @@ use App\Models\MitraKuotaModel;
 use App\Models\MitraModel;
 use App\Models\ProvinsiModel;
 use App\Models\Setting\UserModel;
+use App\Models\Transaction\Magang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -77,7 +78,10 @@ class MitraController extends Controller
 
         $data = $data->map(function ($item) {
             //TODO: get jumlah pendaftar
-            $item['mitra_jumlah_pendaftar'] = 0;
+            $item['mitra_jumlah_pendaftar'] = Magang::where('mitra_id', $item->mitra_id)
+                ->where('periode_id', PeriodeModel::where('is_current', 1)->first()->periode_id)
+                ->count();
+
             return $item;
         });
 
@@ -317,11 +321,25 @@ class MitraController extends Controller
             return $obj;
         }, $datas);
 
-        $prodi_id = Auth::user()->prodi_id;
-        $prodi = ProdiModel::find($prodi_id);
-        $kuota = MitraKuotaModel::where('mitra_id', $id)
-            ->where('prodi_id', $prodi_id)
-            ->first();
+        if (auth()->user()->group_id != 1) {
+            //data in mitra with column mitra_prodi is [1,2,3,etc]
+            //how to get with getProdiId() include with mitra_prodi
+            $prodi_id = auth()->user()->getProdiId();
+            // $data = $data->filter(function ($item) use ($prodi_id) {
+            //     return in_array($prodi_id, json_decode($item->mitra_prodi));
+            // });
+            $prodis = ProdiModel::where('prodi_id', $prodi_id)->get();
+        } else {
+            $prodi_arr = $mitra->mitra_prodi;
+            //get prodi by $prodi_arr
+            $prodis = ProdiModel::whereIn('prodi_id', json_decode($prodi_arr))->get();
+        }
+        $prodis = $prodis->map(function ($item) use ($id) {
+            $item['kuota'] = MitraKuotaModel::where('mitra_id', $id)
+                ->where('prodi_id', $item->prodi_id)
+                ->first();
+            return $item;
+        });
 
         return (!$data) ? $this->showModalError() :
             view($this->viewPath . 'detail')
@@ -331,8 +349,7 @@ class MitraController extends Controller
             ->with('datas', $datas)
             ->with('url', $this->menuUrl . '/' . $id . '/kuota')
             ->with('action', 'PUT')
-            ->with('prodi', $prodi)
-            ->with('kuota', $kuota);
+            ->with('prodis', $prodis);
     }
 
 
@@ -443,7 +460,7 @@ class MitraController extends Controller
 
         if ($request->ajax() || $request->wantsJson()) {
 
-            $prodi_id = Auth::user()->prodi_id;
+            $prodi_id = $request->prodi_id;
             $cek = MitraKuotaModel::where('mitra_id', $id)
                 ->where('prodi_id', $prodi_id)
                 ->first();
