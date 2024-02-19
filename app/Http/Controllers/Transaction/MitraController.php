@@ -157,9 +157,13 @@ class MitraController extends Controller
 
             // $request['user_id'] = $insert->user_id;
 
-            $request['mitra_prodi'] = json_encode($request->prodi_arr);
-            // unset($request['periode_arr']);
-            unset($request['prodi_arr']);
+            if (auth()->user()->group_id == 1) {
+                $request['mitra_prodi'] = json_encode($request->prodi_arr);
+                // unset($request['periode_arr']);
+                unset($request['prodi_arr']);
+            } else {
+                $request['mitra_prodi'] = json_encode([auth()->user()->getProdiId()]);
+            }
 
             $kota = KabupatenModel::find($request['kota_id']);
             $request['mitra_alamat'] = $kota->nama_kab_kota;
@@ -240,9 +244,11 @@ class MitraController extends Controller
             $kota = KabupatenModel::find($request['kota_id']);
             $request['mitra_alamat'] = $kota->nama_kab_kota;
 
-            $request['mitra_prodi'] = json_encode($request->prodi_arr);
-            // unset($request['periode_arr']);
-            unset($request['prodi_arr']);
+            if (auth()->user()->group_id == 1) {
+                $request['mitra_prodi'] = json_encode($request->prodi_arr);
+                // unset($request['periode_arr']);
+                unset($request['prodi_arr']);
+            }
 
             $res = MitraModel::updateData($id, $request);
 
@@ -502,5 +508,72 @@ class MitraController extends Controller
         }
 
         return redirect('/');
+    }
+
+    public function alasan($id)
+    {
+        $this->authAction('read', 'modal');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        $data = MitraModel::find($id);
+        $page = [
+            'title' => 'Detail ' . $this->menuTitle
+        ];
+
+        $mitra = MitraModel::where('mitra_id', $id)
+            ->with('kegiatan')
+            ->with('periode')
+            ->first();
+
+        $datas = [
+            [
+                "title" => "Nama Kegiatan",
+                "value" => $mitra->kegiatan->kegiatan_nama,
+                "bold" => false
+            ],
+            [
+                "title" => "Nama Mitra",
+                "value" => $mitra->mitra_nama,
+                "bold" => true
+            ],
+            [
+                "title" => "Periode",
+                "value" => $mitra->periode->periode_nama,
+                "bold" => false
+            ],
+            [
+                "title" => "Status",
+                "value" => $mitra->status == 0 ? 'Menunggu' : ($mitra->status == 1 ? 'Diterima' : 'Ditolak'),
+                "bold" => false,
+                "color" => $mitra->status == 0 ? 'info' : ($mitra->status == 1 ? 'success' : 'danger')
+            ],
+            [
+                "title" => "Keterangan Ditolak",
+                "value" => $mitra->mitra_keterangan_ditolak ?? '-',
+                "bold" => false
+            ]
+        ];
+
+
+
+        //change to stdClass loop
+        $datas = array_map(function ($item) {
+            $obj = new stdClass;
+            $obj->title = $item['title'];
+            $obj->value = $item['value'];
+            $obj->bold = $item['bold'];
+            $obj->color = $item['color'] ?? null;
+            return $obj;
+        }, $datas);
+
+        return (!$data) ? $this->showModalError() :
+            view($this->viewPath . 'alasan')
+            ->with('page', (object) $page)
+            ->with('id', $id)
+            ->with('data', $data)
+            ->with('datas', $datas)
+            ->with('url', $this->menuUrl . '/' . $id . '/kuota')
+            ->with('action', 'PUT')
+            ->with('mitra', $mitra);
     }
 }

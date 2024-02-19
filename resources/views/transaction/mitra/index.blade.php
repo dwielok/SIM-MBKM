@@ -32,6 +32,7 @@
                                         <th>Durasi</th>
                                         <th>Jumlah Pendaftar</th>
                                         <th>Status</th>
+                                        <th>Alasan</th>
                                         <th>Menu</th>
                                         <th>#</th>
                                     </tr>
@@ -146,8 +147,7 @@
                         "mRender": function(data, type, row, meta) {
                             switch (data) {
                                 case 2:
-                                    return '<span class="badge badge-danger">Ditolak</span><br />Alasan : ' +
-                                        row.mitra_keterangan_ditolak;
+                                    return '<span class="badge badge-danger">Ditolak</span>';
                                     break;
                                 case 1:
                                     return '<span class="badge badge-success">Diterima</span>';
@@ -159,6 +159,25 @@
                                     return '<span class="badge badge-danger">-</span>';
                                     break;
                             }
+                        }
+                    },
+                    {
+                        "mData": "mitra_id",
+                        "sClass": "pr-2",
+                        "sWidth": "8%",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mRender": function(data, type, row, meta) {
+                            @if ($allowAccess->update)
+                                if (row.status == 2) {
+                                    var buttons = '';
+                                    buttons +=
+                                        `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/alasan" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat" >Lihat</a> `
+                                    return buttons;
+                                } else {
+                                    return '-';
+                                }
+                            @endif
                         }
                     },
                     {

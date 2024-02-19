@@ -93,6 +93,7 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     Route::put('mitra/{id}/approve', [MitraController::class, 'approve']);
     Route::put('mitra/{id}/reject', [MitraController::class, 'reject']);
     Route::put('mitra/{id}/kuota', [MitraController::class, 'set_kuota']);
+    Route::get('mitra/{id}/alasan', [MitraController::class, 'alasan']);
 
     // Mahasiswa
     Route::resource('mahasiswa', MahasiswaController::class)->parameter('mahasiswa', 'id');

@@ -51,32 +51,34 @@ $is_edit = isset($data);
                             value="{{ isset($data->mitra_nama) ? $data->mitra_nama : '' }}" />
                     </div>
                 </div>
-                <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Prodi</label>
-                    <div class="col-sm-9 d-flex flex-column text-left pr-0">
-                        @foreach ($prodis as $prodi)
-                            @php
-                                if (isset($data->mitra_prodi)) {
-                                    $prodi_value = json_decode($data->mitra_prodi);
-                                } else {
-                                    $prodi_value = [];
-                                }
-                            @endphp
-                            <div class="icheck-success d-inline">
-                                <input name="prodi_arr[]" value={{ $prodi->prodi_id }} type="checkbox"
-                                    onchange="updateCheck(this,'.r_act')" class="r_act"
-                                    id="prodi_{{ $prodi->prodi_id }}"
-                                    @if (isset($data->mitra_prodi)) @if (in_array($prodi->prodi_id, $prodi_value))
+                @if (auth()->user()->group_id == 1)
+                    <div class="form-group required row mb-2">
+                        <label class="col-sm-3 control-label col-form-label">Prodi</label>
+                        <div class="col-sm-9 d-flex flex-column text-left pr-0">
+                            @foreach ($prodis as $prodi)
+                                @php
+                                    if (isset($data->mitra_prodi)) {
+                                        $prodi_value = json_decode($data->mitra_prodi);
+                                    } else {
+                                        $prodi_value = [];
+                                    }
+                                @endphp
+                                <div class="icheck-success d-inline">
+                                    <input name="prodi_arr[]" value={{ $prodi->prodi_id }} type="checkbox"
+                                        onchange="updateCheck(this,'.r_act')" class="r_act"
+                                        id="prodi_{{ $prodi->prodi_id }}"
+                                        @if (isset($data->mitra_prodi)) @if (in_array($prodi->prodi_id, $prodi_value))
                                                 checked @endif
-                                    @endif
-                                />
-                                <label for="prodi_{{ $prodi->prodi_id }}" class="mr-2">
-                                    {{ $prodi->prodi_code }} - {{ $prodi->prodi_name }}
-                                </label>
-                            </div>
-                        @endforeach
+                                        @endif
+                                    />
+                                    <label for="prodi_{{ $prodi->prodi_id }}" class="mr-2">
+                                        {{ $prodi->prodi_code }} - {{ $prodi->prodi_name }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
-                </div>
+                @endif
                 <div class="form-group required row mb-2">
                     <label class="col-sm-3 control-label col-form-label">Durasi</label>
                     <div class="col-sm-9">
