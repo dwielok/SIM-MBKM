@@ -33,6 +33,9 @@
                                         <th>Jenis Kegiatan</th>
                                         <th>Durasi</th>
                                         <th>Tipe Pendaftar</th>
+                                        @if (auth()->user()->group_id != 4)
+                                            <th>Persetujuan Anggota </th>
+                                        @endif
                                         <th>Status</th>
                                         @if (auth()->user()->group_id != 4)
                                             <th>#</th>
@@ -129,7 +132,35 @@
                             }
                         }
                     },
-                    {
+                    @if (auth()->user()->group_id != 4)
+                        {
+                            "mData": "is_accept",
+                            "sClass": "",
+                            "sWidth": "10%",
+                            "bSortable": true,
+                            "bSearchable": true,
+                            "mRender": function(data, type, row, meta) {
+                                if (row.magang_tipe == "2") {
+                                    return '-';
+                                } else {
+                                    switch (data) {
+                                        case 0:
+                                            return '<span class="badge badge-warning">Menunggu</span>';
+                                            break;
+                                        case 1:
+                                            return '<span class="badge badge-success">Menerima</span>';
+                                            break;
+                                        case 2:
+                                            return '<span class="badge badge-danger">Menolak</span>';
+                                            break;
+                                        default:
+                                            return '';
+                                            break;
+                                    }
+                                }
+                            }
+                        },
+                    @endif {
                         "mData": "status",
                         "sClass": "",
                         "sWidth": "10%",
@@ -160,9 +191,12 @@
                                 var buttons = '';
                                 @if ($allowAccess->update)
                                     if (row.status == 0) {
-                                        buttons +=
-                                            `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
-                                            `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_reject" class="ajax_modal btn btn-xs btn-danger tooltips text-white" data-placement="left" data-original-title="Reject" ><i class="fa fa-times"></i></a> `;
+                                        if (row.magang_tipe == 0 || row.magang_tipe == 1 && row
+                                            .is_accept == 1 || row.magang_tipe == 2) {
+                                            buttons +=
+                                                `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
+                                                `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_reject" class="ajax_modal btn btn-xs btn-danger tooltips text-white" data-placement="left" data-original-title="Reject" ><i class="fa fa-times"></i></a> `;
+                                        }
                                     }
                                 @endif
                                 return buttons;
