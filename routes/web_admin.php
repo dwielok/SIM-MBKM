@@ -27,6 +27,8 @@ use App\Http\Controllers\Setting\MenuController;
 use App\Http\Controllers\Setting\ProfileController;
 use App\Http\Controllers\Setting\UserController;
 use App\Http\Controllers\Transaction\DaftarMagangController;
+use App\Http\Controllers\Transaction\LihatStatusPendaftaranController;
+use App\Http\Controllers\Transaction\LihatStatusPengajuanController;
 use App\Http\Controllers\Transaction\PersetujuanKelompokController;
 use App\Http\Controllers\Transaction\QuotaDosenController;
 use Illuminate\Support\Facades\Route;
@@ -106,6 +108,8 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     Route::post('daftar-magang/list', [DaftarMagangController::class, 'list']);
     Route::get('daftar-magang/{id}/delete', [DaftarMagangController::class, 'confirm']);
     Route::post('daftar-magang/{id}/daftar', [DaftarMagangController::class, 'daftar']);
+    Route::get('daftar-magang/ajukan', [DaftarMagangController::class, 'ajukan']);
+    Route::post('daftar-magang/ajukan', [DaftarMagangController::class, 'ajukan_action']);
 
     //pendaftaran (role koordinator)
     Route::resource('pendaftaran', PendaftaranController::class)->parameter('pendaftaran', 'id');
@@ -124,6 +128,16 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     Route::get('persetujuan-kelompok/{id}/confirm_reject', [PersetujuanKelompokController::class, 'confirm_reject']);
     Route::put('persetujuan-kelompok/{id}/approve', [PersetujuanKelompokController::class, 'approve']);
     Route::put('persetujuan-kelompok/{id}/reject', [PersetujuanKelompokController::class, 'reject']);
+
+    //lihat status
+    Route::resource('lihat-status-pendaftaran', LihatStatusPendaftaranController::class)->parameter('lihat-status-pendaftaran', 'id');
+    Route::post('lihat-status-pendaftaran/list', [LihatStatusPendaftaranController::class, 'list']);
+
+     //lihat status
+     Route::resource('lihat-status-pengajuan', LihatStatusPengajuanController::class)->parameter('lihat-status-pengajuan', 'id');
+     Route::post('lihat-status-pengajuan/list', [LihatStatusPengajuanController::class, 'list']);
+    Route::get('lihat-status-pengajuan/{id}/alasan', [LihatStatusPengajuanController::class, 'alasan']);
+
 });
 
 //kuota with url mitra/{id}/kuota

@@ -14,7 +14,7 @@
                             @if ($allowAccess->create)
                                 <button type="button" data-block="body"
                                     class="btn btn-sm btn-{{ $theme->button }} mt-1 ajax_modal"
-                                    data-url="{{ $page->url }}/ajukan"><i class="fas fa-plus"></i> Ajukan Mitra</button>
+                                    data-url="{{ $page->url }}/create"><i class="fas fa-plus"></i> Tambah</button>
                             @endif
                         </div>
                     </div>
@@ -30,8 +30,8 @@
                                         <th>Alamat</th>
                                         <th>Website</th>
                                         <th>Durasi</th>
-                                        <th>Jumlah Pendaftar</th>
-                                        <th>#</th>
+                                        <th>Status</th>
+                                        <th>Alasan</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -129,11 +129,27 @@
                         }
                     },
                     {
-                        "mData": "mitra_jumlah_pendaftar",
+                        "mData": "status",
                         "sClass": "",
-                        "sWidth": "15%",
+                        "sWidth": "10%",
                         "bSortable": true,
-                        "bSearchable": true
+                        "bSearchable": false,
+                        "mRender": function(data, type, row, meta) {
+                            switch (data) {
+                                case 2:
+                                    return '<span class="badge badge-danger">Ditolak</span>';
+                                    break;
+                                case 1:
+                                    return '<span class="badge badge-success">Diterima</span>';
+                                    break;
+                                case 0:
+                                    return '<span class="badge badge-info">Menunggu</span>';
+                                    break;
+                                default:
+                                    return '<span class="badge badge-danger">-</span>';
+                                    break;
+                            }
+                        }
                     },
                     {
                         "mData": "mitra_id",
@@ -142,14 +158,15 @@
                         "bSortable": false,
                         "bSearchable": false,
                         "mRender": function(data, type, row, meta) {
-                            var buttons = '';
-                            @if ($allowAccess->update)
-                                // if (row.kegiatan.is_kuota == 1) {
-                                buttons +=
-                                    `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat detail" ><i class="fa fa-th"></i> Detail</a> `
-                                // }
-                            @endif
-                            return buttons;
+
+                                if (row.status == 2) {
+                                    var buttons = '';
+                                    buttons +=
+                                        `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/alasan" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat" >Lihat</a> `
+                                    return buttons;
+                                } else {
+                                    return '-';
+                                }
                         }
                     },
                 ],

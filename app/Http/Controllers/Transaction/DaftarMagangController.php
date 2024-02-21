@@ -3,14 +3,18 @@
 namespace App\Http\Controllers\Transaction;
 
 use App\Http\Controllers\Controller;
+use App\Models\KabupatenModel;
+use App\Models\Master\KegiatanModel;
 use App\Models\Master\MahasiswaModel;
 use App\Models\Master\PeriodeModel;
 use App\Models\Master\ProdiModel;
 use App\Models\MitraKuotaModel;
 use App\Models\MitraModel;
+use App\Models\ProvinsiModel;
 use App\Models\Transaction\Magang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use stdClass;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -278,5 +282,75 @@ class DaftarMagangController extends Controller
         ]);
 
         // dd($request->all(), $id_mitra, $id_periode, $tipe_pendaftar, $id_mahasiswa);
+    }
+
+    public function ajukan()
+    {
+        $this->authAction('create', 'modal');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        $page = [
+            'url' => $this->menuUrl . '/ajukan',
+            'title' => 'Tambah ' . $this->menuTitle
+        ];
+
+
+        $provinsis = ProvinsiModel::all();
+        $kegiatans = KegiatanModel::where('is_mandiri', 1)->get();
+        $kabupatens = [];
+
+        return view($this->viewPath . 'ajukan')
+            ->with('page', (object) $page)
+            ->with('kegiatans', $kegiatans)
+            ->with('provinsis', $provinsis)
+            ->with('kabupatens', $kabupatens);
+    }
+
+    public function ajukan_action(Request $request)
+    {
+        $this->authAction('create', 'json');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        if ($request->ajax() || $request->wantsJson()) {
+
+            $rules = [
+                'kegiatan_id' => 'required',
+                'mitra_nama' => 'required|string',
+                'mitra_website' => 'required',
+                'mitra_deskripsi' => 'required',
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'stat'     => false,
+                    'mc'       => false,
+                    'msg'      => 'Terjadi kesalahan.',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+
+            $mahasiswa=MahasiswaModel::where('user_id',Auth::user()->user_id)->first();
+                $request['mitra_prodi'] = $mahasiswa->prodi_id;
+                $request['periode_id'] = PeriodeModel::where('is_current', 1)->first()->periode_id;
+
+            $kota = KabupatenModel::find($request['kota_id']);
+            $request['mitra_alamat'] = $kota->nama_kab_kota;
+            $request['status'] = 0;
+
+            $res = MitraModel::insertData($request);
+
+
+
+            return response()->json([
+                'stat' => $res,
+                'mc' => $res, // close modal
+                'msg' => ($res) ? $this->getMessage('insert.success') : $this->getMessage('insert.failed')
+            ]);
+        }
+
+        return redirect('/');
     }
 }
