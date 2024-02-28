@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DummyController;
 use App\Http\Controllers\KabupatenController;
+use App\Http\Controllers\Profile\MahasiswaProfileController;
 use App\Http\Controllers\Setting\AccountController;
 use App\Http\Controllers\Setting\ProfileController;
 use Illuminate\Support\Facades\Auth;
@@ -42,6 +43,13 @@ Route::group(['prefix' => 'setting', 'middleware' => ['auth']], function () {
     Route::put('profile', [ProfileController::class, 'update']);
     Route::put('profile/avatar', [ProfileController::class, 'update_avatar']);
     Route::put('profile/password', [ProfileController::class, 'update_password']);
+});
+
+Route::group(['prefix' => 'mahasiswa', 'middleware' => ['auth']], function () {
+    Route::get('profile', [MahasiswaProfileController::class, 'index']);
+    Route::put('profile', [MahasiswaProfileController::class, 'update']);
+    Route::put('profile/avatar', [MahasiswaProfileController::class, 'update_avatar']);
+    Route::put('profile/password', [MahasiswaProfileController::class, 'update_password']);
 });
 
 Route::get('kota', [KabupatenController::class, 'getKota']);

@@ -16,14 +16,16 @@ use Illuminate\Validation\Rule;
 class MahasiswaProfileController extends Controller
 {
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->menuCode  = 'STUDENT.PROFILE';
-        $this->menuUrl   = url('student/profile');     // set URL untuk menu ini
+        $this->menuUrl   = url('mahasiswa/profile');     // set URL untuk menu ini
         $this->menuTitle = 'Profil Mahasiswa';                       // set nama menu
-        $this->viewPath  = 'profile.mahasiswa.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
+        $this->viewPath  = 'setting.profile.mahasiswa.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
     }
 
-    public function index(){
+    public function index()
+    {
         $this->authAction('read');
         $this->authCheckDetailAccess();
 
@@ -46,9 +48,11 @@ class MahasiswaProfileController extends Controller
             'title' => $this->menuTitle
         ];
 
-        $mahasiswa = MahasiswaView::find(getMahasiswaID());
+        $mahasiswa = MahasiswaModel::with('prodi')->with('prodi.jurusan')->where('mahasiswa_id', getMahasiswaID())->first();
 
-        return (!$mahasiswa)? $this->showPageNotFound() :
+        // dd($mahasiswa);
+
+        return (!$mahasiswa) ? $this->showPageNotFound() :
             view($this->viewPath . 'index')
             ->with('breadcrumb', (object) $breadcrumb)
             ->with('activeMenu', (object) $activeMenu)
@@ -58,26 +62,22 @@ class MahasiswaProfileController extends Controller
     }
 
 
-    public function update(Request $request){
+    public function update(Request $request)
+    {
         $this->authAction('update', 'json');
-        if($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         if ($request->ajax() || $request->wantsJson()) {
 
             $user = Auth::user();
             $rules = [
-                'mahasiswa_email' => ['required', 'email:rfc,dns,filter', 'max:50', Rule::unique('s_user', 'email')->ignore($user->user_id, 'user_id')],
-                'mahasiswa_name' => 'required|string|max:50',
-                'mahasiswa_phone' => 'required|numeric|digits_between:8,15',
-                'mahasiswa_gender' => 'required|in:L,P',
-                'mahasiswa_tahun'	=> 'required|integer|min:2019|max:2050',
+                'email_mahasiswa' => ['required', 'email:rfc,dns,filter', 'max:50', Rule::unique('s_user', 'email')->ignore($user->user_id, 'user_id')],
+                'nama_mahasiswa' => 'required|string|max:50',
+                'no_hp' => 'required|numeric|digits_between:8,15',
+                'jenis_kelamin' => 'required|in:0,1',
                 'kelas' => 'required|string|max:5',
-                'ortu_nama' => 'required|string|max:50',
-                'ortu_hp' => 'required|numeric|digits_between:8,15',
-                'url_fb' => 'required|url|max:255',
-                'url_instagram' => 'required|url|max:255',
-                'url_twitter' => 'required|url|max:255',
-                'url_linkedin' => 'required|url|max:255',
+                'nama_ortu' => 'required|string|max:50',
+                'hp_ortu' => 'required|numeric|digits_between:8,15',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -93,8 +93,8 @@ class MahasiswaProfileController extends Controller
 
             if ($user) {
                 try {
-                    $user->email = $request->mahasiswa_email;
-                    $user->name = $request->mahasiswa_name;
+                    $user->email = $request->email_mahasiswa;
+                    $user->name = $request->nama_mahasiswa;
                     $user->updated_by = $user->user_id;
                     $user->updated_at = date('Y-m-d H:i:s');
                     $user->save();
@@ -125,16 +125,17 @@ class MahasiswaProfileController extends Controller
         return redirect('/');
     }
 
-    public function update_password(Request $request){
+    public function update_password(Request $request)
+    {
         $this->authAction('update', 'json');
-        if($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         if ($request->ajax() || $request->wantsJson()) {
 
             $user = Auth::user();
 
             $rules = [
-                'password_old' => ['required', function ($attribute, $value, $fail) use ($user){
+                'password_old' => ['required', function ($attribute, $value, $fail) use ($user) {
                     if (!Hash::check($value, $user->password))
                         $fail('The ' . $attribute . ' is invalid.');
                 }],
@@ -184,9 +185,10 @@ class MahasiswaProfileController extends Controller
     }
 
 
-    public function update_avatar(Request $request){
+    public function update_avatar(Request $request)
+    {
         $this->authAction('update', 'json');
-        if($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
@@ -208,7 +210,7 @@ class MahasiswaProfileController extends Controller
             if ($user) {
                 try {
 
-                    if (!empty($user->avatar_dir)){
+                    if (!empty($user->avatar_dir)) {
                         Storage::disk('public')->delete($user->avatar_dir);
                     }
 

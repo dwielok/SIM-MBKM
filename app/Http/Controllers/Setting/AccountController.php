@@ -19,7 +19,7 @@ class AccountController extends Controller
 
     public function __construct()
     {
-        $this->menuCode  = 'SETTING.ACCOUNT';
+
         $this->menuUrl   = url('setting/account');     // set URL untuk menu ini
         $this->menuTitle = 'Akun Pengguna';                       // set nama menu
         $this->viewPath  = 'setting.account.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
@@ -27,6 +27,8 @@ class AccountController extends Controller
 
     public function index()
     {
+        $user = auth()->user();
+        $this->menuCode  = $user->group_id == 4  ? 'SETTING.ACCOUNT.2' :  'SETTING.ACCOUNT';
         $this->authAction('read');
         $this->authCheckDetailAccess();
 
@@ -59,6 +61,8 @@ class AccountController extends Controller
 
     public function update_password(Request $request)
     {
+        $user = auth()->user();
+        $this->menuCode  = $user->group_id == 4  ? 'SETTING.ACCOUNT.2' :  'SETTING.ACCOUNT';
         $this->authAction('update', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
@@ -121,6 +125,8 @@ class AccountController extends Controller
 
     public function update_avatar(Request $request)
     {
+        $user = auth()->user();
+        $this->menuCode  = $user->group_id == 4  ? 'SETTING.ACCOUNT.2' :  'SETTING.ACCOUNT';
         $this->authAction('update', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 

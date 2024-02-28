@@ -36,4 +36,9 @@ class ProdiModel extends AppModel
         //  Model => columnFK
         //'App\Models\Master\EmployeeModel' => 'jabatan_id'
     ];
+
+    public function jurusan()
+    {
+        return $this->belongsTo(JurusanModel::class, 'jurusan_id');
+    }
 }
