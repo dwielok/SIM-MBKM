@@ -28,7 +28,7 @@ class AccountController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $this->menuCode  = $user->group_id == 4  ? 'SETTING.ACCOUNT.2' :  'SETTING.ACCOUNT';
+        $this->menuCode  = $user->group_id != 1  ? 'SETTING.ACCOUNT.2' :  'SETTING.ACCOUNT';
         $this->authAction('read');
         $this->authCheckDetailAccess();
 
