@@ -37,7 +37,7 @@ class MahasiswaProfileController extends Controller
 
         // untuk set aktif menu pada sidebar
         $activeMenu = [
-            'l1' => 'profile',              // menu aktif untuk level 1, berdasarkan class yang ada di sidebar
+            'l1' => 'setting-profile',              // menu aktif untuk level 1, berdasarkan class yang ada di sidebar
             'l2' => null,              // menu aktif untuk level 2, berdasarkan class yang ada di sidebar
             'l3' => null               // menu aktif untuk level 3, berdasarkan class yang ada di sidebar
         ];
