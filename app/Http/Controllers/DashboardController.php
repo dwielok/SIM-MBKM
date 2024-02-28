@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Master\PerusahaanModel;
+use App\Models\Master\ProdiModel;
+use App\Models\Setting\UserModel;
+use App\Models\Transaction\BeritaModel;
 use App\Models\View\BeritaView;
 use App\Models\View\DosenProposalView;
 use App\Models\View\DosenQuotaProdiView;
 use App\Models\View\DosenQuotaView;
 use App\Models\View\RekapDosenProdiView;
 use App\Models\View\RekapMahasiswaProdiView;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use DataTables;
-
+use Yajra\DataTables\Facades\DataTables;
 
 class DashboardController extends Controller
 {
@@ -87,7 +90,10 @@ class DashboardController extends Controller
 
     private function index_mahasiswa($breadcrumb, $activeMenu, $page)
     {
-        return $this->index_default($breadcrumb, $activeMenu, $page);
+        return view($this->viewPath . 'mahasiswa')
+            ->with('breadcrumb', (object) $breadcrumb)
+            ->with('activeMenu', (object) $activeMenu)
+            ->with('page', (object) $page);
     }
 
     private function index_perusahaan($breadcrumb, $activeMenu, $page)
@@ -95,10 +101,10 @@ class DashboardController extends Controller
         $perusahaan = PerusahaanModel::where('user_id', Auth::user()->user_id)->first();
 
         return view('dashboard.perusahaan')
-        ->with('breadcrumb', (object) $breadcrumb)
-        ->with('activeMenu', (object) $activeMenu)
-        ->with('page', (object) $page)
-        ->with('perusahaan', $perusahaan);
+            ->with('breadcrumb', (object) $breadcrumb)
+            ->with('activeMenu', (object) $activeMenu)
+            ->with('page', (object) $page)
+            ->with('perusahaan', $perusahaan);
     }
 
     public function quota_dosen(Request $request)
@@ -119,14 +125,20 @@ class DashboardController extends Controller
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data  = BeritaView::selectRaw("berita_uid, prodi_code, kategori_name, berita_judul, date_format(created_at, '%d %b %Y %H:%i') as tanggal, created_by")
-            ->where('jurusan_id', getJurusanID())
+        $data  = BeritaModel::with('prodi')
             ->where(function ($query) {
                 $query->where('prodi_id', getProdiID())
                     ->orWhereNull('prodi_id');
             })
             ->where('berita_status', '1')
             ->orderBy('created_at', 'desc')->get();
+
+        $data = $data->map(function ($item) {
+            $item->tanggal = Carbon::parse($item->created_at)->format('d/m/Y');
+            $item->created_by = UserModel::where('user_id', $item->created_by)->first()->name;
+
+            return $item;
+        });
 
         return DataTables::of($data)
             ->addIndexColumn()
@@ -138,7 +150,10 @@ class DashboardController extends Controller
         $this->authAction('read', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data  = BeritaView::where('berita_uid', $uid)->first();
+        $data  = BeritaModel::where('berita_uid', $uid)->first();
+        $data->tanggal = Carbon::parse($data->created_at)->format('d/m/Y');
+        $data->created_by = UserModel::where('user_id', $data->created_by)->first()->name;
+        $data->prodi = $data->prodi_id != NULL ? ProdiModel::where('prodi_id', $data->prodi_id)->first()->prodi_name : NULL;
 
         return (!$data) ? $this->showModalError() :
             view($this->viewPath . 'detail_berita')

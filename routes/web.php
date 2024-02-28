@@ -52,6 +52,9 @@ Route::group(['prefix' => 'mahasiswa', 'middleware' => ['auth']], function () {
     Route::put('profile/password', [MahasiswaProfileController::class, 'update_password']);
 });
 
+Route::post('berita', [DashboardController::class, 'berita']);
+Route::get('berita/{uid}', [DashboardController::class, 'berita_detail']);
+
 Route::get('kota', [KabupatenController::class, 'getKota']);
 
 Route::resource('dummy', DummyController::class);
