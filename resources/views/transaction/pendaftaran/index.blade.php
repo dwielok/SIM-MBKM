@@ -198,8 +198,9 @@
                                         if (row.magang_tipe == 0 || row.magang_tipe == 1 && row
                                             .is_accept == 1 || row.magang_tipe == 2) {
                                             buttons +=
-                                                `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
-                                                `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_reject" class="ajax_modal btn btn-xs btn-danger tooltips text-white" data-placement="left" data-original-title="Reject" ><i class="fa fa-times"></i></a> `;
+                                                // `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
+                                                // `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
+                                                `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm" class="ajax_modal btn btn-xs btn-primary tooltips text-white" data-placement="left" data-original-title="Acc/Reject" ><i class="fa fa-vote-yea"></i></a> `;
                                         }
                                     }
                                 @endif

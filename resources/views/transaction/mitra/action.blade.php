@@ -58,7 +58,7 @@ $is_edit = isset($data);
                             @foreach ($prodis as $prodi)
                                 @php
                                     if (isset($data->mitra_prodi)) {
-                                        $prodi_value = json_decode($data->mitra_prodi);
+                                        $prodi_value = explode(',', $data->mitra_prodi);
                                     } else {
                                         $prodi_value = [];
                                     }

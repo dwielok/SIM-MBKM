@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use stdClass;
+use Symfony\Component\VarDumper\Cloner\Data;
 use Yajra\DataTables\Facades\DataTables;
 
 class MitraController extends Controller
@@ -64,18 +65,21 @@ class MitraController extends Controller
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         $data  = MitraModel::with('kegiatan')
-            ->with('periode')
-            ->get();
+            ->with('periode');
+        // ->get();
 
         if (auth()->user()->group_id != 1) {
             //data in mitra with column mitra_prodi is [1,2,3,etc]
             //how to get with getProdiId() include with mitra_prodi
             $prodi_id = auth()->user()->getProdiId();
-            $data = $data->filter(function ($item) use ($prodi_id) {
-                return in_array($prodi_id, json_decode($item->mitra_prodi));
-            });
-        }
 
+            // $data = $data->filter(function ($item) use ($prodi_id) {
+            //     dd($prodi_id, json_decode($item->mitra_prodi));
+            //     return in_array($prodi_id, json_decode($item->mitra_prodi));
+            // });
+            $data->whereRaw('find_in_set(?, mitra_prodi)', $prodi_id);
+        }
+        $data = $data->get();
         $data = $data->map(function ($item) {
             //TODO: get jumlah pendaftar
             $item['mitra_jumlah_pendaftar'] = Magang::where('mitra_id', $item->mitra_id)
@@ -159,11 +163,11 @@ class MitraController extends Controller
             // $request['user_id'] = $insert->user_id;
 
             if (auth()->user()->group_id == 1) {
-                $request['mitra_prodi'] = json_encode($request->prodi_arr);
+                $request['mitra_prodi'] = implode(',', $request->prodi_arr);
                 // unset($request['periode_arr']);
                 unset($request['prodi_arr']);
             } else {
-                $request['mitra_prodi'] = json_encode([auth()->user()->getProdiId()]);
+                $request['mitra_prodi'] = auth()->user()->getProdiId();
             }
 
             $kota = KabupatenModel::find($request['kota_id']);
@@ -246,7 +250,7 @@ class MitraController extends Controller
             $request['mitra_alamat'] = $kota->nama_kab_kota;
 
             if (auth()->user()->group_id == 1) {
-                $request['mitra_prodi'] = json_encode($request->prodi_arr);
+                $request['mitra_prodi'] = implode(',', $request->prodi_arr);
                 // unset($request['periode_arr']);
                 unset($request['prodi_arr']);
             }
@@ -349,9 +353,9 @@ class MitraController extends Controller
             // });
             $prodis = ProdiModel::where('prodi_id', $prodi_id)->get();
         } else {
-            $prodi_arr = $mitra->mitra_prodi;
+            $prodi_arr = explode(',', $mitra->mitra_prodi);
             //get prodi by $prodi_arr
-            $prodis = ProdiModel::whereIn('prodi_id', json_decode($prodi_arr))->get();
+            $prodis = ProdiModel::whereIn('prodi_id', $prodi_arr)->get();
         }
         $prodis = $prodis->map(function ($item) use ($id) {
             $item['kuota'] = MitraKuotaModel::where('mitra_id', $id)

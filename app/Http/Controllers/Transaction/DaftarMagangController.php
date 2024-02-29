@@ -63,8 +63,21 @@ class DaftarMagangController extends Controller
 
         $data  = MitraModel::with('kegiatan')
             ->with('periode')
-            ->where('status', 1)
-            ->get();
+            ->where('status', 1);
+        // ->get();
+        if (auth()->user()->group_id != 1) {
+            //data in mitra with column mitra_prodi is [1,2,3,etc]
+            //how to get with getProdiId() include with mitra_prodi
+            $prodi_id = auth()->user()->getProdiId();
+
+            // $data = $data->filter(function ($item) use ($prodi_id) {
+            //     dd($prodi_id, json_decode($item->mitra_prodi));
+            //     return in_array($prodi_id, json_decode($item->mitra_prodi));
+            // });
+            $data->whereRaw('find_in_set(?, mitra_prodi)', $prodi_id);
+        }
+
+        $data = $data->get();
 
         $data = $data->map(function ($item) {
             //TODO: get jumlah pendaftar
@@ -332,9 +345,9 @@ class DaftarMagangController extends Controller
             }
 
 
-            $mahasiswa=MahasiswaModel::where('user_id',Auth::user()->user_id)->first();
-                $request['mitra_prodi'] = $mahasiswa->prodi_id;
-                $request['periode_id'] = PeriodeModel::where('is_current', 1)->first()->periode_id;
+            $mahasiswa = MahasiswaModel::where('user_id', Auth::user()->user_id)->first();
+            $request['mitra_prodi'] = $mahasiswa->prodi_id;
+            $request['periode_id'] = PeriodeModel::where('is_current', 1)->first()->periode_id;
 
             $kota = KabupatenModel::find($request['kota_id']);
             $request['mitra_alamat'] = $kota->nama_kab_kota;

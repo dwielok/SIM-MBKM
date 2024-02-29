@@ -114,11 +114,13 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     //pendaftaran (role koordinator)
     Route::resource('pendaftaran', PendaftaranController::class)->parameter('pendaftaran', 'id');
     Route::post('pendaftaran/list', [PendaftaranController::class, 'list']);
-    Route::get('pendaftaran/{id}/delete', [PendaftaranController::class, 'confirm']);
-    Route::get('pendaftaran/{id}/confirm_approve', [PendaftaranController::class, 'confirm_approve']);
-    Route::get('pendaftaran/{id}/confirm_reject', [PendaftaranController::class, 'confirm_reject']);
-    Route::put('pendaftaran/{id}/approve', [PendaftaranController::class, 'approve']);
-    Route::put('pendaftaran/{id}/reject', [PendaftaranController::class, 'reject']);
+    Route::get('pendaftaran/{id}/delete', [PendaftaranController::class, 'delete']);
+    // Route::get('pendaftaran/{id}/confirm_approve', [PendaftaranController::class, 'confirm_approve']);
+    // Route::get('pendaftaran/{id}/confirm_approve', [PendaftaranController::class, 'confirm_approve']);
+    Route::get('pendaftaran/{id}/confirm', [PendaftaranController::class, 'confirm']);
+    Route::put('pendaftaran/{id}/confirm', [PendaftaranController::class, 'confirm_action']);
+    // Route::put('pendaftaran/{id}/approve', [PendaftaranController::class, 'approve']);
+    // Route::put('pendaftaran/{id}/reject', [PendaftaranController::class, 'reject']);
 
     //persetujuan kelompok
     Route::resource('persetujuan-kelompok', PersetujuanKelompokController::class)->parameter('persetujuan-kelompok', 'id');
@@ -133,11 +135,10 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     Route::resource('lihat-status-pendaftaran', LihatStatusPendaftaranController::class)->parameter('lihat-status-pendaftaran', 'id');
     Route::post('lihat-status-pendaftaran/list', [LihatStatusPendaftaranController::class, 'list']);
 
-     //lihat status
-     Route::resource('lihat-status-pengajuan', LihatStatusPengajuanController::class)->parameter('lihat-status-pengajuan', 'id');
-     Route::post('lihat-status-pengajuan/list', [LihatStatusPengajuanController::class, 'list']);
+    //lihat status
+    Route::resource('lihat-status-pengajuan', LihatStatusPengajuanController::class)->parameter('lihat-status-pengajuan', 'id');
+    Route::post('lihat-status-pengajuan/list', [LihatStatusPengajuanController::class, 'list']);
     Route::get('lihat-status-pengajuan/{id}/alasan', [LihatStatusPengajuanController::class, 'alasan']);
-
 });
 
 //kuota with url mitra/{id}/kuota
