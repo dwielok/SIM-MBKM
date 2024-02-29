@@ -25,6 +25,7 @@ class MitraModel extends AppModel
         'mitra_alamat',
         'mitra_website',
         'mitra_deskripsi',
+        'mitra_skema',
         'mitra_durasi',
         'provinsi_id',
         'kota_id',

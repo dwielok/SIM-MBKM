@@ -29,6 +29,7 @@
                                         <th>Nama Mitra</th>
                                         <th>Alamat</th>
                                         <th>Website</th>
+                                        <th>Skema</th>
                                         <th>Durasi</th>
                                         <th>Jumlah Pendaftar</th>
                                         <th>Status</th>
@@ -120,6 +121,27 @@
                         //             break;
                         //     }
                         // }
+                    },
+                    {
+                        "mData": "mitra_skema",
+                        "sClass": "",
+                        "sWidth": "5%",
+                        "bSortable": true,
+                        "bSearchable": false,
+                        "mRender": function(data, type, row, meta) {
+                            const skema = data == '' ? [] : data.split(',')
+                            if (skema.length == 0) {
+                                return ''
+                            } else {
+                                let html = ''
+                                html += '<ul class="p-0">'
+                                skema.map((data, index) => {
+                                    html += '<li>' + data + '</li>'
+                                })
+                                html += '</ul>'
+                                return html
+                            }
+                        }
                     },
                     {
                         "mData": "mitra_durasi",
