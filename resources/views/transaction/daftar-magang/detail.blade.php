@@ -45,6 +45,19 @@
                             </select>
                         </td>
                     </tr>
+                    <tr>
+                        <th class="w-25 text-right">Skema</th>
+                        <th class="w-1">:</th>
+                        <td class="w-74">
+                            <select data-testid="partner-category" class="form-control form-control-sm"
+                                id="magang_skema" name="magang_skema">
+                                <option value="" disabled selected>Pilih Skema</option>
+                                @foreach ($mitra->skema as $s)
+                                    <option value="{{ $s }}">{{ $s }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                    </tr>
                 </table>
                 <table class="table table-sm mb-0" id="mahasiswa_select">
                     <tr>

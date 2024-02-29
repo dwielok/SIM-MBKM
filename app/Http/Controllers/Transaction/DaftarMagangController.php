@@ -99,6 +99,8 @@ class DaftarMagangController extends Controller
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         $data = MitraModel::find($id);
+        $data['skema'] = explode(',', $data->mitra_skema);
+
         $page = [
             'title' => 'Detail ' . $this->menuTitle
         ];
@@ -173,6 +175,7 @@ class DaftarMagangController extends Controller
             ->with('id', $id)
             ->with('data', $data)
             ->with('datas', $datas)
+            ->with('mitra', $data)
             ->with('url', $this->menuUrl . '/' . $id . '/daftar')
             ->with('mahasiswa_id', $mahasiswa_id)
             ->with('mahasiswas', $mahasiswas)
@@ -230,7 +233,12 @@ class DaftarMagangController extends Controller
                 }
             }
 
-            $kode = 'P-' . rand(1000, 9999);
+            $count = Magang::selectRaw('magang_kode, count(*) as count')
+                ->groupBy('magang_kode')
+                ->get();
+            $count = count($count);
+
+            $kode = 'P-' . str_pad($count + 1, 3, '0', STR_PAD_LEFT);
 
             $request['mahasiswa_id'] = $id_mahasiswa;
             $request['mitra_id'] = $id_mitra;
@@ -258,7 +266,12 @@ class DaftarMagangController extends Controller
                 ]);
             }
 
-            $kode = 'P-' . rand(1000, 9999);
+            $count = Magang::selectRaw('magang_kode, count(*) as count')
+                ->groupBy('magang_kode')
+                ->get();
+            $count = count($count);
+
+            $kode = 'P-' . str_pad($count + 1, 3, '0', STR_PAD_LEFT);
 
             foreach ($mahasiswa as $index => $m) {
                 $idx = $index;

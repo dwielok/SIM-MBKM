@@ -23,6 +23,7 @@ class Magang extends AppModel
         'periode_id',
         'prodi_id',
         'magang_kode',
+        'magang_skema',
         'magang_tipe',
         'is_accept',
         'status',
