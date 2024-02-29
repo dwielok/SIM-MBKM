@@ -81,7 +81,7 @@ $is_edit = isset($data);
                 @endif
                 <div class="form-group required row mb-2">
                     <label class="col-sm-3 control-label col-form-label">Skema</label>
-                    <div class="col-sm-9 d-flex flex-column text-left pr-0">
+                    <div class="col-sm-9 d-flex flex-column text-left pr-0 justify-content-center">
                         <div id="skema_form">
                             @if (isset($data->skema))
                                 @foreach ($data->skema as $key => $skema)
@@ -189,10 +189,12 @@ $is_edit = isset($data);
 
         $('#tambah_skema').click(function() {
             let form = $('#skema_form')
-            let count = $('input[name="skema_arr[]"]').length
-            form.append('<div class=" d-inline">' +
+            let count = $('input[name="skema_arr[]"]').length + 1
+            form.append('<div class="d-flex flex-row align-items-center">' +
                 '<input name="skema_arr[]" value="" type="text" class="form-control form-control-sm mb-1" id="skema_' +
-                count++ + '" />' +
+                count + '" />' +
+                '<a class="ml-2 mr-5 cursor-pointer" id="remove-btn" data-key="' + count +
+                '"><i class="text-danger fa fa-trash"></i></a>' +
                 '</div>')
         })
 
