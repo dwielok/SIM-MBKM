@@ -170,6 +170,10 @@ class MitraController extends Controller
                 $request['mitra_prodi'] = auth()->user()->getProdiId();
             }
 
+            $request['mitra_skema'] = implode(',', $request->skema_arr);
+
+            unset($request['skema_arr']);
+
             $kota = KabupatenModel::find($request['kota_id']);
             $request['mitra_alamat'] = $kota->nama_kab_kota;
             $request['status'] = 1;
@@ -199,6 +203,7 @@ class MitraController extends Controller
         ];
 
         $data = MitraModel::find($id);
+        $data['skema'] = explode(',', $data->mitra_skema);
 
         $provinsis = ProvinsiModel::all();
         $periodes = PeriodeModel::where('is_active', 1)->get();
@@ -254,6 +259,10 @@ class MitraController extends Controller
                 // unset($request['periode_arr']);
                 unset($request['prodi_arr']);
             }
+
+            $request['mitra_skema'] = implode(',', $request->skema_arr);
+
+            unset($request['skema_arr']);
 
             $res = MitraModel::updateData($id, $request);
 
