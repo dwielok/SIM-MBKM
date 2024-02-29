@@ -25,6 +25,9 @@ use App\Http\Controllers\Setting\MenuController;
 use App\Http\Controllers\Setting\ProfileController;
 use App\Http\Controllers\Setting\UserController;
 use App\Http\Controllers\Transaction\QuotaDosenController;
+use App\Http\Controllers\Transaction\KuotaDosenSIBController;
+use App\Http\Controllers\Transaction\KuotaDosenTIController;
+use App\Http\Controllers\Transaction\KuotaDosenPPLSController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'master', 'middleware' => ['auth']], function () {
@@ -107,4 +110,12 @@ Route::group(['prefix' => 'setting', 'middleware' => ['auth']], function () {
     Route::resource('user', UserController::class)->parameter('user', 'id');
     Route::post('user/list', [UserController::class, 'list']);
     Route::get('user/{id}/delete', [UserController::class, 'confirm']);
+});
+Route::group(['prefix' => 'kuota', 'middleware' => ['auth']], function () {
+    //group
+    Route::resource('dosen', KuotaDosenSIBController::class)->parameter('kuota', 'id');
+    Route::post('dosen/list', [KuotaDosenSIBController::class, 'list']);
+
+    // Route::get('group/{id}/delete', [GroupController::class, 'confirm']);
+    // Route::put('group/{id}/menu', [GroupController::class, 'menu_save']);
 });

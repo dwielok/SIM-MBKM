@@ -19,18 +19,6 @@ $is_edit = isset($data);
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group required mb-2">
-                            <label class="control-label">Prodi</label>
-                            <select id="prodi_id" name="prodi_id"
-                                class="form-control form-control-sm select2_combobox">
-                                <option value="">- Pilih -</option>
-                                @foreach ($prodi as $r)
-                                    <option value="{{ $r->prodi_id }}">{{ $r->prodi_code . ' - ' . $r->prodi_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
                         <div class="form-group mb-2">
                             <label class="control-label">NIP Dosen</label>
                             <input type="text" class="form-control form-control-sm" id="dosen_nip" name="dosen_nip"
@@ -85,32 +73,32 @@ $is_edit = isset($data);
 
                         <div class="form-group mb-2">
                             <label class="control-label">Sinta Dosen</label>
-                            <input type="number" class="form-control form-control-sm" id="sinta_id" name="sinta_id"
+                            <input type="text" class="form-control form-control-sm" id="sinta_id" name="sinta_id"
                                 value="{{ isset($data->sinta_id) ? $data->sinta_id : '' }}" />
                         </div>
 
                         <div class="form-group mb-2">
                             <label class="control-label">Scholar Dosen</label>
-                            <input type="number" class="form-control form-control-sm" id="scholar_id" name="scholar_id"
+                            <input type="text" class="form-control form-control-sm" id="scholar_id" name="scholar_id"
                                 value="{{ isset($data->scholar_id) ? $data->scholar_id : '' }}" />
                         </div>
 
                         <div class="form-group mb-2">
                             <label class="control-label">Scopus Dosen</label>
-                            <input type="number" class="form-control form-control-sm" id="scopus_id" name="scopus_id"
+                            <input type="text" class="form-control form-control-sm" id="scopus_id" name="scopus_id"
                                 value="{{ isset($data->scopus_id) ? $data->scopus_id : '' }}" />
                         </div>
 
                         <div class="form-group mb-2">
                             <label class="control-label">Researchgate Dosen</label>
-                            <input type="number" class="form-control form-control-sm" id="researchgate_id"
+                            <input type="text" class="form-control form-control-sm" id="researchgate_id"
                                 name="researchgate_id"
                                 value="{{ isset($data->researchgate_id) ? $data->researchgate_id : '' }}" />
                         </div>
 
                         <div class="form-group mb-2">
                             <label class="control-label">Orcid Dosen</label>
-                            <input type="number" class="form-control form-control-sm" id="orcid_id"
+                            <input type="text" class="form-control form-control-sm" id="orcid_id"
                                 name="orcid_id" value="{{ isset($data->orcid_id) ? $data->orcid_id : '' }}" />
                         </div>
                     </div>
@@ -127,14 +115,8 @@ $is_edit = isset($data);
 <script>
     $(document).ready(function() {
         unblockUI();
-        @if ($is_edit)
-            $('#prodi_id').val('{{ $data->prodi_id }}').trigger('change');
-        @endif
         $("#form-master").validate({
             rules: {
-                prodi_id: {
-                    required: true,
-                },
                 dosen_name: {
                     required: true,
                 },

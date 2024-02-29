@@ -29,7 +29,6 @@ class MDosen extends Migration
             $table->string('scopus_id')->nullable()->url();
             $table->string('researchgate_id')->nullable()->url();
             $table->string('orcid_id')->nullable()->url();
-            $table->unsignedBigInteger('prodi_id')->index();
             $table->unsignedBigInteger('user_id')->index();
             $table->dateTime('created_at')->nullable()->useCurrent();
             $table->integer('created_by')->nullable()->index();
@@ -38,7 +37,6 @@ class MDosen extends Migration
             $table->dateTime('deleted_at')->nullable()->index();
             $table->integer('deleted_by')->nullable()->index();
 
-            $table->foreign('prodi_id')->references('prodi_id')->on('m_prodi');
             $table->foreign('user_id')->references('user_id')->on('s_user');
         });
     }

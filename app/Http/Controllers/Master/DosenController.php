@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Master\DosenModel;
 use App\Models\Setting\UserModel;
 use App\Models\Master\ProdiModel;
+use App\Models\Transaction\KuotaDosenModel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -92,7 +93,6 @@ class DosenController extends Controller
                 'dosen_phone' => ['required', 'numeric', 'digits_between:8,15', 'unique:m_dosen,dosen_phone'],
                 'dosen_gender' => 'required|in:L,P',
                 'dosen_tahun' => 'required|integer',
-                'prodi_id' => 'required|integer',
                 // Add other rules for DosenModel fields
             ];
             $validator = Validator::make($request->all(), $rules);
@@ -120,8 +120,50 @@ class DosenController extends Controller
             $insert = UserModel::create($user);
             $request['user_id'] = $insert->user_id;
             // Create DosenModel
-            $dosen = DosenModel::insertData($request);
+            // $dosen = DosenModel::insertData($request);
+            $dosen = DosenModel::create([
+                'dosen_name' => $request->input('dosen_name'),
+                'dosen_email' => $request->input('dosen_email'),
+                'dosen_phone' => $request->input('dosen_phone'),
+                'dosen_gender' => $request->input('dosen_gender'),
+                'dosen_tahun' => $request->input('dosen_tahun'),
+                'user_id' => $insert->user_id,
+                'sinta_id' => $request->input('sinta_id') ?? null,
+                'scholar_id' => $request->input('scholar_id') ?? null,
+                'scopus_id' => $request->input('scopus_id') ?? null,
+                'researchgate_id' => $request->input('researchgate_id') ?? null,
+                'orcid_id' => $request->input('orcid_id') ?? null,
+                // fill other fields as needed
+            ]);
 
+            // Jika data dosen berhasil dibuat
+            if ($dosen) {
+                // Ambil dosen_id dari model DosenModel yang baru dibuat
+                $dosenId = $dosen->dosen_id;
+
+                // Buat data KuotaDosenModel dengan dosen_id yang sudah diperoleh
+                $kuotaDosen = [
+                    'dosen_id' => $dosenId,
+                    'count_advisor_TI' => 0, // Atur kuota awal di sini
+                    'count_advisor_SIB' => 0, // Atur kuota awal di sini
+                    'count_advisor_PPLS' => 0, // Atur kuota awal di sini
+                ];
+                $insertkuota = KuotaDosenModel::create($kuotaDosen);
+
+                // Response JSON
+                return response()->json([
+                    'stat' => $insertkuota !== null,
+                    'mc' => $insertkuota !== null,
+                    'msg' => $insertkuota !== null ? $this->getMessage('insert.success') : $this->getMessage('insert.failed')
+                ]);
+            } else {
+                // Jika pembuatan DosenModel gagal
+                return response()->json([
+                    'stat' => false,
+                    'mc' => false,
+                    'msg' => $this->getMessage('insert.failed')
+                ]);
+            }
             return response()->json([
                 'stat' => $dosen,
                 'mc' => $dosen,
@@ -144,14 +186,12 @@ class DosenController extends Controller
         ];
 
         $data = DosenModel::find($id);
-        $prodi = ProdiModel::selectRaw("prodi_id, prodi_name, prodi_code")->get();
 
         return (!$data) ? $this->showModalError() :
             view($this->viewPath . 'action')
             ->with('page', (object) $page)
             ->with('id', $id)
-            ->with('data', $data)
-            ->with('prodi', $prodi);
+            ->with('data', $data);
     }
 
     public function update(Request $request, $id)
@@ -176,7 +216,6 @@ class DosenController extends Controller
                 ],
                 'dosen_gender' => 'required|in:L,P',
                 'dosen_tahun' => 'required|integer',
-                'prodi_id' => 'required|integer',
                 // Add other rules for DosenModel fields
             ];
 

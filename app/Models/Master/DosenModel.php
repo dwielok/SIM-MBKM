@@ -3,6 +3,7 @@
 namespace App\Models\Master;
 
 use App\Models\AppModel;
+use App\Models\Transaction\KuotaDosenModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -31,7 +32,6 @@ class DosenModel extends AppModel{
         'scopus_id',
         'researchgate_id',
         'orcid_id',
-        'prodi_id',
         'user_id',
         'created_at',
         'created_by',
@@ -40,6 +40,11 @@ class DosenModel extends AppModel{
         'deleted_at',
         'deleted_by',
     ];
+
+    public function kuotaDosen()
+    {
+        return $this->hasOne(KuotaDosenModel::class, 'dosen_id', 'dosen_id'); // Atau hasMany jika satu dosen memiliki banyak kuota
+    }
 
     protected static $cascadeDelete = false;   //  True: Force Delete from Parent (cascade)
     protected static $childModel = [
