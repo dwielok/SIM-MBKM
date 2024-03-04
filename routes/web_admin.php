@@ -26,6 +26,7 @@ use App\Http\Controllers\Setting\GroupController;
 use App\Http\Controllers\Setting\MenuController;
 use App\Http\Controllers\Setting\ProfileController;
 use App\Http\Controllers\Setting\UserController;
+use App\Http\Controllers\Transaction\BeritaController as TransactionBeritaController;
 use App\Http\Controllers\Transaction\DaftarMagangController;
 use App\Http\Controllers\Transaction\LihatStatusPendaftaranController;
 use App\Http\Controllers\Transaction\LihatStatusPengajuanController;
@@ -139,6 +140,11 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     Route::resource('lihat-status-pengajuan', LihatStatusPengajuanController::class)->parameter('lihat-status-pengajuan', 'id');
     Route::post('lihat-status-pengajuan/list', [LihatStatusPengajuanController::class, 'list']);
     Route::get('lihat-status-pengajuan/{id}/alasan', [LihatStatusPengajuanController::class, 'alasan']);
+
+    //berita
+    Route::resource('berita', TransactionBeritaController::class)->parameter('berita', 'id');
+    Route::post('berita/list', [TransactionBeritaController::class, 'list']);
+    Route::get('berita/{id}/delete', [TransactionBeritaController::class, 'confirm']);
 });
 
 //kuota with url mitra/{id}/kuota
