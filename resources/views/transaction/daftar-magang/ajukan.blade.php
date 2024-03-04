@@ -30,7 +30,7 @@ $is_edit = isset($data);
                         </select>
                     </div>
                 </div>
-               
+
                 <div class="form-group required row mb-2">
                     <label class="col-sm-3 control-label col-form-label">Nama Mitra</label>
                     <div class="col-sm-9">
@@ -38,7 +38,24 @@ $is_edit = isset($data);
                             value="{{ isset($data->mitra_nama) ? $data->mitra_nama : '' }}" />
                     </div>
                 </div>
-
+                <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Skema</label>
+                    <div class="col-sm-9 d-flex flex-column text-left pr-0 justify-content-center">
+                        <div id="skema_form">
+                            @if (isset($data->skema))
+                                @foreach ($data->skema as $key => $skema)
+                                    <div class="d-flex flex-row align-items-center">
+                                        <input name="skema_arr[]" value="{{ $skema }}" type="text"
+                                            class="form-control form-control-sm mb-1" id="skema_{{ $key }}" />
+                                        <a class="ml-2 mr-5 cursor-pointer" id="remove-btn"
+                                            data-key="{{ $key }}"><i class="text-danger fa fa-trash"></i></a>
+                                    </div>
+                                @endforeach
+                            @endif
+                        </div>
+                        <small id="tambah_skema" class="text-success cursor-pointer">+ Tambah Skema</small>
+                    </div>
+                </div>
                 <div class="form-group required row mb-2">
                     <label class="col-sm-3 control-label col-form-label">Durasi</label>
                     <div class="col-sm-9">
@@ -128,6 +145,23 @@ $is_edit = isset($data);
 <script>
     $(document).ready(function() {
         unblockUI();
+
+        $('#tambah_skema').click(function() {
+            let form = $('#skema_form')
+            let count = $('input[name="skema_arr[]"]').length + 1
+            form.append('<div class="d-flex flex-row align-items-center">' +
+                '<input name="skema_arr[]" value="" type="text" class="form-control form-control-sm mb-1" id="skema_' +
+                count + '" />' +
+                '<a class="ml-2 mr-5 cursor-pointer" id="remove-btn" data-key="' + count +
+                '"><i class="text-danger fa fa-trash"></i></a>' +
+                '</div>')
+        })
+
+        $(document).on('click', '#remove-btn', function() {
+            var key = $(this).data('key');
+            console.log(key)
+            $('#skema_' + key).parent().remove();
+        });
 
         $('#provinsi_id').change(function() {
             var provinsi_id = $(this).val();
