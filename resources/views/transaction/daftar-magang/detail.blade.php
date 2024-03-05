@@ -132,7 +132,8 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Daftar</button>
+                <button type="submit" class="btn btn-primary"
+                    @if ($disabled) disabled @endif>Daftar</button>
                 <button type="button" data-dismiss="modal" class="btn btn-warning">Keluar</button>
             </div>
         </div>

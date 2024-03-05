@@ -98,7 +98,11 @@ class LihatStatusPendaftaranController extends Controller
             $magang = Magang::where('magang_kode', $data->magang_kode)->get();
             $id = $magang->pluck('magang_id');
             $dokumen = DokumenMagangModel::whereIn('magang_id', $id);
-            $anggota = Magang::whereIn('magang_id', $id)->with('mahasiswa')->where('magang_tipe', '=', 1)->get();
+            if ($data->magang_tipe == 0) {
+                $anggota = Magang::whereIn('magang_id', $id)->with('mahasiswa')->where('magang_tipe', '=', 1)->get();
+            } else {
+                $anggota = NULL;
+            }
         }
 
         // dd($dokumen->get());

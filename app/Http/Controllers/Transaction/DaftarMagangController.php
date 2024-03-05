@@ -103,6 +103,10 @@ class DaftarMagangController extends Controller
         $data = MitraModel::find($id);
         $data['skema'] = explode(',', $data->mitra_skema);
 
+        $dateString = $data->mitra_batas_pendaftaran;
+        $currentDate = date('Y-m-d');
+        $disabled = strtotime($dateString) < strtotime($currentDate);
+
         $page = [
             'title' => 'Detail ' . $this->menuTitle
         ];
@@ -185,6 +189,7 @@ class DaftarMagangController extends Controller
             ->with('url', $this->menuUrl . '/' . $id . '/daftar')
             ->with('mahasiswa_id', $mahasiswa_id)
             ->with('mahasiswas', $mahasiswas)
+            ->with('disabled', $disabled)
             ->with('action', 'POST');
     }
 
