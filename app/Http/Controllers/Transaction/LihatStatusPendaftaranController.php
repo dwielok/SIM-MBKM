@@ -103,33 +103,31 @@ class LihatStatusPendaftaranController extends Controller
         $datas = [
             [
                 "title" => "Proposal",
-                "value" => $dokumen->where('dokumen_magang_nama', 'PROPOSAL')->first() ? $dokumen->where('dokumen_magang_nama', 'PROPOSAL')->first()->dokumen_magang_file : "Belum Ada File",
-                "bold" => false,
-                "link" => $dokumen->where('dokumen_magang_nama', 'PROPOSAL')->first() ? TRUE : FALSE,
+                "nama" => "PROPOSAL"
             ],
             [
                 "title" => "Bukti Lolos",
-                "value" => $dokumen->where('dokumen_magang_nama', 'BUKTI LOLOS')->first() ? $dokumen->where('dokumen_magang_nama', 'BUKTI LOLOS')->first()->dokumen_magang_file : "Belum Ada File",
-                "bold" => false,
-                "link" => $dokumen->where('dokumen_magang_nama', 'BUKTI LOLOS')->first() ? TRUE : FALSE,
-            ],
+                "nama" => "BUKTI LOLOS"
+            ]
         ];
 
+        foreach ($datas as &$data) {
+            $dokumenItem = $dokumen->where('dokumen_magang_nama', $data['nama'])->first();
+            $data['value'] = $dokumenItem ? $dokumenItem->dokumen_magang_file : "Belum Ada File";
+            $data['bold'] = false;
+            $data['link'] = $dokumenItem ? true : false;
+            unset($data['nama']);
+        }
+
         if ($mitra->kegiatan->is_submit_proposal == 0) {
-            //remove kuota
             unset($datas[0]);
         }
 
-        //change to stdClass loop
+        // Convert to stdClass objects
         $datas = array_map(function ($item) {
-            $obj = new stdClass;
-            $obj->title = $item['title'];
-            $obj->value = $item['value'];
-            $obj->bold = $item['bold'];
-            $obj->link = $item['link'];
-            $obj->color = $item['color'] ?? null;
-            return $obj;
+            return (object) $item;
         }, $datas);
+
 
         return (!$data) ? $this->showModalError() :
             view($this->viewPath . 'detail')
