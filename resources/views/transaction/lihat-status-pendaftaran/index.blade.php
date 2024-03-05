@@ -31,8 +31,10 @@
                                         @endif
                                         <th>Nama Mitra</th>
                                         <th>Jenis Kegiatan</th>
+                                        <th>Skema</th>
                                         <th>Durasi</th>
                                         <th>Tipe Pendaftar</th>
+                                        <th>Detail</th>
                                         @if (auth()->user()->group_id != 4)
                                             <th>Persetujuan Anggota </th>
                                         @endif
@@ -109,6 +111,13 @@
                         "bSearchable": true
                     },
                     {
+                        "mData": "magang_skema",
+                        "sClass": "",
+                        "sWidth": "10%",
+                        "bSortable": true,
+                        "bSearchable": true,
+                    },
+                    {
                         "mData": "mitra.mitra_durasi",
                         "sClass": "",
                         "sWidth": "10%",
@@ -130,6 +139,16 @@
                             } else {
                                 return data == 0 ? 'Kelompok (Ketua)' : 'Kelompok (Anggota)'
                             }
+                        }
+                    },
+                    {
+                        "mData": "magang_id",
+                        "sClass": "pr-2",
+                        "sWidth": "8%",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mRender": function(data, type, row, meta) {
+                            return `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat detail" ><i class="fa fa-th"></i> Detail</a> `
                         }
                     },
                     @if (auth()->user()->group_id != 4)

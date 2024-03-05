@@ -136,6 +136,7 @@ class MitraController extends Controller
                 'mitra_nama' => 'required|string',
                 'mitra_website' => 'required',
                 'mitra_deskripsi' => 'required',
+                'mitra_batas_pendaftaran' => 'required',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -238,6 +239,7 @@ class MitraController extends Controller
                 // 'mitra_alamat' => 'required',
                 'mitra_website' => 'required',
                 'mitra_deskripsi' => 'required',
+                'mitra_batas_pendaftaran' => 'required'
             ];
 
             $validator = Validator::make($request->all(), $rules);

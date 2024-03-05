@@ -156,6 +156,14 @@ $is_edit = isset($data);
                     </div>
                 </div>
                 <div class="form-group required row mb-2">
+                    <label class="col-sm-3 control-label col-form-label">Batas Pendaftaran</label>
+                    <div class="col-sm-9">
+                        <input type="date" class="form-control form-control-sm" id="mitra_batas_pendaftaran"
+                            name="mitra_batas_pendaftaran"
+                            value="{{ isset($data->mitra_batas_pendaftaran) ? $data->mitra_batas_pendaftaran : '' }}" />
+                    </div>
+                </div>
+                <div class="form-group required row mb-2">
                     <label class="col-sm-3 control-label col-form-label">Deskripsi</label>
                     <div class="col-sm-9">
                         <textarea type="text" class="form-control form-control-sm" id="mitra_deskripsi" name="mitra_deskripsi">{{ isset($data->mitra_deskripsi) ? $data->mitra_deskripsi : '' }}</textarea>

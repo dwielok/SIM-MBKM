@@ -31,6 +31,7 @@ class MitraModel extends AppModel
         'kota_id',
         'status',
         'mitra_keterangan_ditolak',
+        'mitra_batas_pendaftaran',
         'created_at',
         'created_by',
         'updated_at',

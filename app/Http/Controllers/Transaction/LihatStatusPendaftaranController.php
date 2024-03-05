@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Transaction;
 
 use App\Http\Controllers\Controller;
+use App\Models\DokumenMagangModel;
+use App\Models\MitraModel;
 use App\Models\Transaction\Magang;
 use Illuminate\Http\Request;
+use stdClass;
 use Yajra\DataTables\Facades\DataTables;
 
 class LihatStatusPendaftaranController extends Controller
@@ -69,5 +72,78 @@ class LihatStatusPendaftaranController extends Controller
         return DataTables::of($data)
             ->addIndexColumn()
             ->make(true);
+    }
+
+    public function show($id)
+    {
+        $this->authAction('read', 'modal');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        $page = [
+            'title' => 'Detail ' . $this->menuTitle
+        ];
+
+        $data = Magang::find($id);
+
+        $mitra = MitraModel::where('mitra_id', $data->mitra_id)
+            ->with('kegiatan')
+            ->with('periode')
+            ->first();
+
+        if ($data->magang_tipe == 2) {
+            $id = $id;
+            $dokumen = DokumenMagangModel::where('magang_id', $id);
+            $anggota = NULL;
+        } else {
+            $magang = Magang::where('magang_kode', $data->magang_kode)->get();
+            $id = $magang->pluck('magang_id');
+            $dokumen = DokumenMagangModel::whereIn('magang_id', $id);
+            $anggota = Magang::whereIn('magang_id', $id)->with('mahasiswa')->where('magang_tipe', '=', 1)->get();
+        }
+
+        // dd($dokumen->get());
+
+
+        // dd($anggota);
+
+        $datas = [
+            [
+                "title" => "Proposal",
+                "value" => $dokumen->where('dokumen_magang_nama', 'PROPOSAL')->first() ? $dokumen->where('dokumen_magang_nama', 'PROPOSAL')->first()->dokumen_magang_file : "Belum Ada File",
+                "bold" => false,
+                "link" => $dokumen->where('dokumen_magang_nama', 'PROPOSAL')->first() ? TRUE : FALSE,
+            ],
+            [
+                "title" => "Bukti Lolos",
+                "value" => $dokumen->where('dokumen_magang_nama', 'BUKTI LOLOS')->first() ? $dokumen->where('dokumen_magang_nama', 'BUKTI LOLOS')->first()->dokumen_magang_file : "Belum Ada File",
+                "bold" => false,
+                "link" => $dokumen->where('dokumen_magang_nama', 'BUKTI LOLOS')->first() ? TRUE : FALSE,
+            ],
+        ];
+
+        if ($mitra->kegiatan->is_submit_proposal == 0) {
+            //remove kuota
+            unset($datas[0]);
+        }
+
+        //change to stdClass loop
+        $datas = array_map(function ($item) {
+            $obj = new stdClass;
+            $obj->title = $item['title'];
+            $obj->value = $item['value'];
+            $obj->bold = $item['bold'];
+            $obj->link = $item['link'];
+            $obj->color = $item['color'] ?? null;
+            return $obj;
+        }, $datas);
+
+        return (!$data) ? $this->showModalError() :
+            view($this->viewPath . 'detail')
+            ->with('page', (object) $page)
+            ->with('id', $id)
+            ->with('data', $data)
+            ->with('datas', $datas)
+            ->with('anggota', $anggota)
+            ->with('mitra', $data);
     }
 }

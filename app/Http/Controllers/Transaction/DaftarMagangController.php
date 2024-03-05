@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Transaction;
 
 use App\Http\Controllers\Controller;
+use App\Models\DokumenMagangModel;
 use App\Models\KabupatenModel;
 use App\Models\Master\KegiatanModel;
 use App\Models\Master\MahasiswaModel;
@@ -12,6 +13,7 @@ use App\Models\MitraKuotaModel;
 use App\Models\MitraModel;
 use App\Models\ProvinsiModel;
 use App\Models\Transaction\Magang;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -147,7 +149,11 @@ class DaftarMagangController extends Controller
                 "title" => "Kuota",
                 "value" => $kuota,
                 "bold" => false
-            ],
+            ], [
+                "title" => "Batas Pendaftaran",
+                "value" => Carbon::parse($mitra->mitra_batas_pendaftaran)->format('d M Y'),
+                "bold" => true
+            ]
         ];
 
         if ($mitra->kegiatan->is_kuota == 0) {
@@ -184,6 +190,8 @@ class DaftarMagangController extends Controller
 
     public function daftar(Request $request, $id_mitra)
     {
+        // dd($request->all());
+        // dd($file);
         $id_periode = PeriodeModel::where('is_current', 1)->first()->periode_id;
         $tipe_pendaftar = $request->tipe_pendaftar;
         $mahasiswa = $request->mahasiswa;
@@ -233,6 +241,25 @@ class DaftarMagangController extends Controller
                 }
             }
 
+            if (!$request->magang_skema) {
+                return response()->json([
+                    'stat' => false,
+                    'mc' => false, // close modal
+                    'msg' => 'Pilih skema terlebih dahulu'
+                ]);
+            }
+
+            if ($kegiatan->kegiatan->is_submit_proposal == 1) {
+                $file = $request->file('proposal');
+                if (!$file) {
+                    return response()->json([
+                        'stat' => false,
+                        'mc' => false, // close modal
+                        'msg' => 'Proposal belum diisi'
+                    ]);
+                }
+            }
+
             $count = Magang::selectRaw('magang_kode, count(*) as count')
                 ->groupBy('magang_kode')
                 ->get();
@@ -251,7 +278,27 @@ class DaftarMagangController extends Controller
             unset($request['mahasiswa']);
             unset($request['tipe_pendaftar']);
             // dd($request->all());
-            $res = Magang::insertData($request);
+            $res = Magang::insertData($request, ['proposal']);
+
+            //cek if $kegiatan is_proposal 1 then
+            if ($kegiatan->kegiatan->is_submit_proposal == 1) {
+                $file = $request->file('proposal');
+                if ($file) {
+                    $fileName = 'proposal_' . time() . '.' . $file->getClientOriginalExtension();
+                    //move to public/assets/
+                    $file->move(public_path('assets/proposal'), $fileName);
+                    // $request['dokumen_magang_file'] = $fileName;
+
+                    $magang_id = Magang::where('magang_kode', $kode)->first()->magang_id;
+
+                    DokumenMagangModel::create([
+                        'mahasiswa_id' => $id_mahasiswa,
+                        'magang_id' => $magang_id,
+                        'dokumen_magang_nama' => 'PROPOSAL',
+                        'dokumen_magang_file' => $fileName
+                    ]);
+                }
+            }
         } else {
             $cek = Magang::whereIn('mahasiswa_id', $mahasiswa)
                 ->where('periode_id', $id_periode)
@@ -264,6 +311,29 @@ class DaftarMagangController extends Controller
                     'mc' => false, // close modal
                     'msg' => 'Salah satu mahasiswa sudah mendaftar magang'
                 ]);
+            }
+
+            if (!$request->magang_skema) {
+                return response()->json([
+                    'stat' => false,
+                    'mc' => false, // close modal
+                    'msg' => 'Pilih skema terlebih dahulu'
+                ]);
+            }
+
+            $kegiatan = MitraModel::with('kegiatan')
+                ->where('mitra_id', $id_mitra)
+                ->first();
+
+            if ($kegiatan->kegiatan->is_submit_proposal == 1) {
+                $file = $request->file('proposal');
+                if (!$file) {
+                    return response()->json([
+                        'stat' => false,
+                        'mc' => false, // close modal
+                        'msg' => 'Proposal belum diisi'
+                    ]);
+                }
             }
 
             $count = Magang::selectRaw('magang_kode, count(*) as count')
@@ -297,7 +367,27 @@ class DaftarMagangController extends Controller
                 unset($request['mahasiswa']);
                 unset($request['tipe_pendaftar']);
                 // dd($request->all());
-                $res = Magang::insertData($request);
+                $res = Magang::insertData($request, ['proposal']);
+            }
+
+            //cek if $kegiatan is_proposal 1 then
+            if ($kegiatan->kegiatan->is_submit_proposal == 1) {
+                $file = $request->file('proposal');
+                if ($file) {
+                    $fileName = 'proposal_' . time() . '.' . $file->getClientOriginalExtension();
+                    //move to public/assets/
+                    $file->move(public_path('assets/proposal'), $fileName);
+                    // $request['dokumen_magang_file'] = $fileName;
+
+                    $magang_id = Magang::where('magang_kode', $kode)->first()->magang_id;
+
+                    DokumenMagangModel::create([
+                        'mahasiswa_id' => $id_mahasiswa,
+                        'magang_id' => $magang_id,
+                        'dokumen_magang_nama' => 'PROPOSAL',
+                        'dokumen_magang_file' => $fileName
+                    ]);
+                }
             }
         }
 
