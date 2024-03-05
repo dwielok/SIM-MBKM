@@ -91,24 +91,14 @@ class LihatStatusPendaftaranController extends Controller
             ->first();
 
         if ($data->magang_tipe == 2) {
-            $id = $id;
             $dokumen = DokumenMagangModel::where('magang_id', $id);
             $anggota = NULL;
         } else {
             $magang = Magang::where('magang_kode', $data->magang_kode)->get();
             $id = $magang->pluck('magang_id');
             $dokumen = DokumenMagangModel::whereIn('magang_id', $id);
-            if ($data->magang_tipe == 0) {
-                $anggota = Magang::whereIn('magang_id', $id)->with('mahasiswa')->where('magang_tipe', '=', 1)->get();
-            } else {
-                $anggota = NULL;
-            }
+            $anggota = ($data->magang_tipe == 0) ? Magang::whereIn('magang_id', $id)->with('mahasiswa')->where('magang_tipe', '=', 1)->get() : NULL;
         }
-
-        // dd($dokumen->get());
-
-
-        // dd($anggota);
 
         $datas = [
             [
