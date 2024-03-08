@@ -106,6 +106,7 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
 
     //daftar magang
     Route::resource('daftar-magang', DaftarMagangController::class)->parameter('daftar-magang', 'id');
+    Route::get('daftar-magang/{encrpyt}', [DaftarMagangController::class, 'show']);
     Route::post('daftar-magang/list', [DaftarMagangController::class, 'list']);
     Route::get('daftar-magang/{id}/delete', [DaftarMagangController::class, 'confirm']);
     Route::post('daftar-magang/{id}/daftar', [DaftarMagangController::class, 'daftar']);

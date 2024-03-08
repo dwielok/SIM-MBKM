@@ -168,6 +168,26 @@ $is_edit = isset($data);
         unblockUI();
         loadFile();
 
+        $('#mitra_deskripsi').summernote({
+            tabsize: 2,
+            height: 200,
+            dialogsInBody: true,
+            codeviewFilter: true,
+            codeviewIframeFilter: true,
+            popover: {
+                air: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']],
+                ]
+            }
+        });
+
         $('#tambah_skema').click(function() {
             let form = $('#skema_form')
             let count = $('input[name="skema_arr[]"]').length + 1

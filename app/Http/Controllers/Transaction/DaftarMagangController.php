@@ -16,6 +16,7 @@ use App\Models\Transaction\Magang;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 use stdClass;
 use Yajra\DataTables\Facades\DataTables;
@@ -94,6 +95,9 @@ class DaftarMagangController extends Controller
                 ->first();
 
             $item['mitra_kuota'] = ($item['mitra_kuota']) ? $item['mitra_kuota']->kuota : 0;
+
+            $item['encrypt_mitra_id'] = Crypt::encrypt($item->mitra_id);
+
             return $item;
         });
 
@@ -107,6 +111,8 @@ class DaftarMagangController extends Controller
         $this->authAction('read', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
+        $id = Crypt::decrypt($id);
+
         $data = MitraModel::find($id);
         $data['skema'] = explode(',', $data->mitra_skema);
 
@@ -114,8 +120,20 @@ class DaftarMagangController extends Controller
         $currentDate = date('Y-m-d');
         $disabled = strtotime($dateString) < strtotime($currentDate);
 
+        $breadcrumb = [
+            'title' => $this->menuTitle,
+            'list'  => ['Transaksi', 'Daftar Magang']
+        ];
+
+        $activeMenu = [
+            'l1' => 'transaction',
+            'l2' => 'transaksi-daftar-magang',
+            'l3' => null
+        ];
+
         $page = [
-            'title' => 'Detail ' . $this->menuTitle
+            'url' => $this->menuUrl,
+            'title' => $this->menuTitle
         ];
 
         $mitra = MitraModel::where('mitra_id', $id)
@@ -135,35 +153,35 @@ class DaftarMagangController extends Controller
             [
                 "title" => "Nama Kegiatan",
                 "value" => $mitra->kegiatan->kegiatan_nama,
-                "bold" => false
+                "textarea" => false
             ],
             [
                 "title" => "Nama Mitra",
                 "value" => $mitra->mitra_nama,
-                "bold" => true
+                "textarea" => false
             ],
             [
                 "title" => "Periode",
                 "value" => $mitra->periode->periode_nama,
-                "bold" => false
+                "textarea" => false
             ],
             [
                 "title" => "Deskripsi",
                 "value" => $mitra->mitra_deskripsi,
-                "bold" => false
+                "textarea" => true
             ],
             [
                 "title" => "Durasi",
                 "value" => $mitra->mitra_durasi . ' bulan',
-                "bold" => true
+                "textarea" => false
             ], [
                 "title" => "Kuota",
                 "value" => $kuota,
-                "bold" => false
+                "textarea" => false
             ], [
                 "title" => "Batas Pendaftaran",
                 "value" => Carbon::parse($mitra->mitra_batas_pendaftaran)->format('d M Y'),
-                "bold" => true
+                "textarea" => false
             ]
         ];
 
@@ -177,7 +195,7 @@ class DaftarMagangController extends Controller
             $obj = new stdClass;
             $obj->title = $item['title'];
             $obj->value = $item['value'];
-            $obj->bold = $item['bold'];
+            $obj->textarea = $item['textarea'];
             $obj->color = $item['color'] ?? null;
             return $obj;
         }, $datas);
@@ -186,8 +204,7 @@ class DaftarMagangController extends Controller
         $mahasiswas = MahasiswaModel::where('prodi_id', $prodi_id)
             ->get();
 
-        return (!$data) ? $this->showModalError() :
-            view($this->viewPath . 'detail')
+        return view($this->viewPath . 'daftar')
             ->with('page', (object) $page)
             ->with('id', $id)
             ->with('data', $data)
@@ -197,6 +214,9 @@ class DaftarMagangController extends Controller
             ->with('mahasiswa_id', $mahasiswa_id)
             ->with('mahasiswas', $mahasiswas)
             ->with('disabled', $disabled)
+            ->with('breadcrumb', (object) $breadcrumb)
+            ->with('activeMenu', (object) $activeMenu)
+            ->with('page', (object) $page)
             ->with('action', 'POST');
     }
 

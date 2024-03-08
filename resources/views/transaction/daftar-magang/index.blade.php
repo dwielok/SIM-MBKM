@@ -144,7 +144,7 @@
                         }
                     },
                     {
-                        "mData": "mitra_id",
+                        "mData": "encrypt_mitra_id",
                         "sClass": "pr-2",
                         "sWidth": "8%",
                         "bSortable": false,
@@ -154,7 +154,7 @@
                             @if ($allowAccess->update)
                                 // if (row.kegiatan.is_kuota == 1) {
                                 buttons +=
-                                    `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat detail" ><i class="fa fa-th"></i> Detail</a> `
+                                    `<a href="{{ $page->url }}/${data}" class=" btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat detail" >Daftar</a> `
                                 // }
                             @endif
                             return buttons;
