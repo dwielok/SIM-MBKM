@@ -134,7 +134,6 @@ class MitraController extends Controller
                 'kegiatan_id' => 'required',
                 'periode_id' => 'required',
                 'mitra_nama' => 'required|string',
-                'mitra_website' => 'required',
                 'mitra_deskripsi' => 'required',
                 'mitra_batas_pendaftaran' => 'required',
             ];
@@ -179,7 +178,17 @@ class MitraController extends Controller
             $request['mitra_alamat'] = $kota->nama_kab_kota;
             $request['status'] = 1;
 
-            $res = MitraModel::insertData($request);
+            $file = $request->file('flyer');
+            if (!$file) {
+                $request['mitra_flyer'] = NULL;
+            } else {
+                $fileName = 'flyer_' . time() . '.' . $file->getClientOriginalExtension();
+                //move to public/assets/
+                $file->move(public_path('assets/flyer'), $fileName);
+                $request['mitra_flyer'] = $fileName;
+            }
+
+            $res = MitraModel::insertData($request, ['flyer']);
 
 
 
@@ -236,8 +245,6 @@ class MitraController extends Controller
                 'kegiatan_id' => 'required',
                 'periode_id' => 'required',
                 'mitra_nama' => 'required|string',
-                // 'mitra_alamat' => 'required',
-                'mitra_website' => 'required',
                 'mitra_deskripsi' => 'required',
                 'mitra_batas_pendaftaran' => 'required'
             ];
@@ -266,7 +273,17 @@ class MitraController extends Controller
 
             unset($request['skema_arr']);
 
-            $res = MitraModel::updateData($id, $request);
+            $file = $request->file('flyer');
+            if (!$file) {
+                $request['mitra_flyer'] = MitraModel::where('mitra_id', $id)->first()->mitra_flyer;
+            } else {
+                $fileName = 'flyer_' . time() . '.' . $file->getClientOriginalExtension();
+                //move to public/assets/
+                $file->move(public_path('assets/flyer'), $fileName);
+                $request['mitra_flyer'] = $fileName;
+            }
+
+            $res = MitraModel::updateData($id, $request, ['flyer']);
 
             // $id_perusahaan = MitraModel::where('perusahaan_id', $id)->first();
 

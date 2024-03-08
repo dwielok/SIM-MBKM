@@ -25,8 +25,9 @@ class DMitra extends Migration
             $table->tinyInteger('mitra_durasi');
             $table->integer('provinsi_id');
             $table->integer('kota_id');
-            $table->string('mitra_website', 100);
+            $table->string('mitra_website', 100)->nullable();
             $table->text('mitra_deskripsi');
+            $table->string('mitra_flyer')->nullable();
             $table->text('mitra_skema');
             $table->tinyInteger('status')->default(0)->comment('0: Pending, 1: Diterima, 2: Ditolak');
             $table->text('mitra_keterangan_ditolak')->nullable();

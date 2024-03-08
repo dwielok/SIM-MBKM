@@ -108,8 +108,8 @@ class PendaftaranController extends Controller
                 "bold" => false
             ],
             [
-                "title" => "Bukti Lolos",
-                "value" => $dokumen->where('dokumen_magang_nama', 'BUKTI LOLOS')->first() ? $dokumen->where('dokumen_magang_nama', 'BUKTI LOLOS')->first()->dokumen_magang_file : "Belum Ada File",
+                "title" => "Surat Balasan",
+                "value" => $dokumen->where('dokumen_magang_nama', 'SURAT_BALASAN')->first() ? $dokumen->where('dokumen_magang_nama', 'SURAT_BALASAN')->first()->dokumen_magang_file : "Belum Ada File",
                 "bold" => false
             ],
         ];

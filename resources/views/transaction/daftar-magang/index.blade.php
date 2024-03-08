@@ -30,7 +30,7 @@
                                         <th>Alamat</th>
                                         <th>Website</th>
                                         <th>Durasi</th>
-                                        <th>Jumlah Pendaftar</th>
+                                        <th>Kuota</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -129,11 +129,19 @@
                         }
                     },
                     {
-                        "mData": "mitra_jumlah_pendaftar",
+                        "mData": "mitra_kuota",
                         "sClass": "",
                         "sWidth": "15%",
                         "bSortable": true,
-                        "bSearchable": true
+                        "bSearchable": true,
+                        "mRender": function(data, type, row, meta) {
+                            const jumlah = row.mitra_jumlah_pendaftar + '/' + data;
+                            if (data == 0 || data == row.mitra_jumlah_pendaftar) {
+                                return '<span class="badge badge-danger">' + jumlah + '</span>'
+                            } else {
+                                return jumlah
+                            }
+                        }
                     },
                     {
                         "mData": "mitra_id",
@@ -160,7 +168,7 @@
 
             $('.dataTables_filter input').unbind().bind('keyup', function(e) {
                 if (e.keyCode == 13) {
-                    dataMaster.search($(this).val()).draw();
+                    dataMaster.search($(this).val().toLowerCase()).draw();
                 }
             });
         });

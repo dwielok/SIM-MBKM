@@ -21,6 +21,7 @@ class DokumenMagangModel extends Model
         'magang_id',
         'dokumen_magang_nama',
         'dokumen_magang_file',
+        'dokumen_magang_status',
         'created_at',
         'created_by',
         'updated_at',

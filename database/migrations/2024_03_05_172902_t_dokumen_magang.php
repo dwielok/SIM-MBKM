@@ -21,6 +21,7 @@ class TDokumenMagang extends Migration
             $table->foreign('magang_id')->references('magang_id')->on('t_magang');
             $table->string('dokumen_magang_nama');
             $table->string('dokumen_magang_file');
+            $table->tinyInteger('dokumen_magang_status')->nullable();
             $table->dateTime('created_at')->nullable()->useCurrent();
             $table->integer('created_by')->nullable()->index();
             $table->dateTime('updated_at')->nullable();

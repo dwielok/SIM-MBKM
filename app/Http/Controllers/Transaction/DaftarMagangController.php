@@ -63,6 +63,8 @@ class DaftarMagangController extends Controller
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
+        $prodi_id = MahasiswaModel::where('user_id', Auth::user()->user_id)->first()->prodi_id;
+
         $data  = MitraModel::with('kegiatan')
             ->with('periode')
             ->where('status', 1);
@@ -81,12 +83,17 @@ class DaftarMagangController extends Controller
 
         $data = $data->get();
 
-        $data = $data->map(function ($item) {
+        $data = $data->map(function ($item) use ($prodi_id) {
             //TODO: get jumlah pendaftar
             $item['mitra_jumlah_pendaftar'] = Magang::where('mitra_id', $item->mitra_id)
                 ->where('periode_id', PeriodeModel::where('is_current', 1)->first()->periode_id)
                 ->where('status', 1)
                 ->count();
+            $item['mitra_kuota'] = MitraKuotaModel::where('mitra_id', $item->mitra_id)
+                ->where('prodi_id', $prodi_id)
+                ->first();
+
+            $item['mitra_kuota'] = ($item['mitra_kuota']) ? $item['mitra_kuota']->kuota : 0;
             return $item;
         });
 
@@ -437,7 +444,6 @@ class DaftarMagangController extends Controller
             $rules = [
                 'kegiatan_id' => 'required',
                 'mitra_nama' => 'required|string',
-                'mitra_website' => 'required',
                 'mitra_deskripsi' => 'required',
             ];
 
@@ -461,7 +467,23 @@ class DaftarMagangController extends Controller
             $request['mitra_alamat'] = $kota->nama_kab_kota;
             $request['status'] = 0;
 
-            $res = MitraModel::insertData($request);
+            $request['mitra_skema'] = implode(',', $request->skema_arr);
+
+            unset($request['skema_arr']);
+
+            $file = $request->file('flyer');
+            if (!$file) {
+                $request['mitra_flyer'] = NULL;
+            } else {
+                $fileName = 'flyer_' . time() . '.' . $file->getClientOriginalExtension();
+                //move to public/assets/
+                $file->move(public_path('assets/flyer'), $fileName);
+                $request['mitra_flyer'] = $fileName;
+            }
+
+            // dd($request);
+
+            $res = MitraModel::insertData($request, ['flyer']);
 
 
 

@@ -106,8 +106,8 @@ class LihatStatusPendaftaranController extends Controller
                 "nama" => "PROPOSAL"
             ],
             [
-                "title" => "Bukti Lolos",
-                "nama" => "BUKTI LOLOS"
+                "title" => "Surat Balasan",
+                "nama" => "SURAT_BALASAN"
             ]
         ];
 
