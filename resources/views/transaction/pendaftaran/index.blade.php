@@ -161,7 +161,7 @@
                                 if (row.magang_tipe == "2") {
                                     return '';
                                 } else {
-                                    return `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/anggota" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat anggota" ><i class="fa fa-th"></i> Detail</a> `
+                                    return `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/anggota" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat anggota Kelompok" ><i class="fa fa-th"></i> Detail</a> `
                                 }
                             }
                         },
