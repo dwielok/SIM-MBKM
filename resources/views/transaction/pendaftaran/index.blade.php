@@ -36,7 +36,7 @@
                                         <th>Tipe Pendaftar</th>
                                         @if (auth()->user()->group_id != 4)
                                             <th>Dokumen</th>
-                                            <th>Persetujuan Anggota </th>
+                                            <th>Anggota </th>
                                         @endif
                                         <th>Status</th>
                                         @if (auth()->user()->group_id != 4)
@@ -137,7 +137,7 @@
                             if (data == 2) {
                                 return 'Individu';
                             } else {
-                                return data == 0 ? 'Kelompok (Ketua)' : 'Kelompok (Anggota)'
+                                return 'Kelompok';
                             }
                         }
                     },
@@ -149,10 +149,10 @@
                             "bSortable": false,
                             "bSearchable": false,
                             "mRender": function(data, type, row, meta) {
-                                return `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat detail" ><i class="fa fa-th"></i> Detail</a> `
+                                return `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat dokumen" ><i class="fa fa-th"></i> Detail</a> `
                             }
                         }, {
-                            "mData": "is_accept",
+                            "mData": "magang_id",
                             "sClass": "",
                             "sWidth": "10%",
                             "bSortable": true,
@@ -161,20 +161,7 @@
                                 if (row.magang_tipe == "2") {
                                     return '';
                                 } else {
-                                    switch (data) {
-                                        case 0:
-                                            return '<span class="badge badge-warning">Menunggu</span>';
-                                            break;
-                                        case 1:
-                                            return '<span class="badge badge-success">Menerima</span>';
-                                            break;
-                                        case 2:
-                                            return '<span class="badge badge-danger">Menolak</span>';
-                                            break;
-                                        default:
-                                            return '';
-                                            break;
-                                    }
+                                    return `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/anggota" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat anggota" ><i class="fa fa-th"></i> Detail</a> `
                                 }
                             }
                         },

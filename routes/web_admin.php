@@ -117,6 +117,7 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     Route::resource('pendaftaran', PendaftaranController::class)->parameter('pendaftaran', 'id');
     Route::post('pendaftaran/list', [PendaftaranController::class, 'list']);
     Route::get('pendaftaran/{id}/delete', [PendaftaranController::class, 'delete']);
+    Route::get('pendaftaran/{id}/anggota', [PendaftaranController::class, 'anggota']);
     // Route::get('pendaftaran/{id}/confirm_approve', [PendaftaranController::class, 'confirm_approve']);
     // Route::get('pendaftaran/{id}/confirm_approve', [PendaftaranController::class, 'confirm_approve']);
     Route::get('pendaftaran/{id}/confirm', [PendaftaranController::class, 'confirm']);

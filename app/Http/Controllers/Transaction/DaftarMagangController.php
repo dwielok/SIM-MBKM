@@ -399,7 +399,7 @@ class DaftarMagangController extends Controller
                 unset($request['mahasiswa']);
                 unset($request['tipe_pendaftar']);
                 // dd($request->all());
-                $res = Magang::insertData($request, ['proposal']);
+                $res = Magang::insertData($request, ['proposal', 'files']);
             }
 
             //cek if $kegiatan is_proposal 1 then

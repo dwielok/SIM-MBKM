@@ -58,7 +58,8 @@ class PendaftaranController extends Controller
             ->with('mitra')
             ->with('periode')
             ->with('prodi')
-            ->with('mitra.kegiatan');
+            ->with('mitra.kegiatan')
+            ->where('magang_tipe', '!=', 1);
 
         if (auth()->user()->group_id == 1) {
             $data = $data->get();
@@ -135,6 +136,39 @@ class PendaftaranController extends Controller
             ->with('id', $id)
             ->with('data', $data)
             ->with('datas', $datas)
+            ->with('mitra', $data);
+    }
+
+    public function anggota($id)
+    {
+        $this->authAction('read', 'modal');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        $page = [
+            'title' => 'Anggota ' . $this->menuTitle
+        ];
+
+        $data = Magang::find($id);
+
+
+        if ($data->magang_tipe == 2) {
+            $anggota = NULL;
+            $ketua = NULL;
+        } else {
+            $magang = Magang::where('magang_kode', $data->magang_kode)->get();
+            $id = $magang->pluck('magang_id');
+            $ketua = ($data->magang_tipe == 0) ? Magang::whereIn('magang_id', $id)->with('mahasiswa')->where('magang_tipe', '=', 0)->get() : NULL;
+            $anggota = ($data->magang_tipe == 0) ? Magang::whereIn('magang_id', $id)->with('mahasiswa')->where('magang_tipe', '=', 1)->get() : NULL;
+        }
+
+
+        return (!$data) ? $this->showModalError() :
+            view($this->viewPath . 'anggota')
+            ->with('page', (object) $page)
+            ->with('id', $id)
+            ->with('data', $data)
+            ->with('ketua', $ketua)
+            ->with('anggota', $anggota)
             ->with('mitra', $data);
     }
 
