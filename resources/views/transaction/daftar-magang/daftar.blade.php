@@ -200,8 +200,7 @@
                                                         Diupload</small>
                                                 </div>
                                             </div>
-                                            <a class="btn btn-primary text-white"
-                                                onclick="stepper1.previous()">Previous</a>
+                                            <a class="btn btn-primary text-white" onclick="stepper1.previous()">Back</a>
                                             <button class="btn btn-warning" type="submit">Konfirmasi</button>
                                         </div>
                                     @endif

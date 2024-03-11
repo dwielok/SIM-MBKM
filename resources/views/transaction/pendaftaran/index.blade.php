@@ -39,9 +39,9 @@
                                             <th>Anggota </th>
                                         @endif
                                         <th>Status</th>
-                                        @if (auth()->user()->group_id != 4)
+                                        {{-- @if (auth()->user()->group_id != 4)
                                             <th>#</th>
-                                        @endif
+                                        @endif --}}
                                     </tr>
                                 </thead>
                             </table>
@@ -190,28 +190,28 @@
                         }
                     },
                     @if (auth()->user()->group_id != 4)
-                        {
-                            "mData": "magang_id",
-                            "sClass": "pr-2",
-                            "sWidth": "8%",
-                            "bSortable": false,
-                            "bSearchable": false,
-                            "mRender": function(data, type, row, meta) {
-                                var buttons = '';
-                                @if ($allowAccess->update)
-                                    if (row.status == 0) {
-                                        if (row.magang_tipe == 0 || row.magang_tipe == 1 && row
-                                            .is_accept == 1 || row.magang_tipe == 2) {
-                                            buttons +=
-                                                // `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
-                                                // `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
-                                                `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm" class="ajax_modal btn btn-xs btn-primary tooltips text-white" data-placement="left" data-original-title="Acc/Reject" ><i class="fa fa-vote-yea"></i></a> `;
-                                        }
-                                    }
-                                @endif
-                                return buttons;
-                            }
-                        },
+                        // {
+                        //     "mData": "magang_id",
+                        //     "sClass": "pr-2",
+                        //     "sWidth": "8%",
+                        //     "bSortable": false,
+                        //     "bSearchable": false,
+                        //     "mRender": function(data, type, row, meta) {
+                        //         var buttons = '';
+                        //         @if ($allowAccess->update)
+                        //             if (row.status == 0) {
+                        //                 if (row.magang_tipe == 0 || row.magang_tipe == 1 && row
+                        //                     .is_accept == 1 || row.magang_tipe == 2) {
+                        //                     buttons +=
+                        //                         // `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
+                        //                         // `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
+                        //                         `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm" class="ajax_modal btn btn-xs btn-primary tooltips text-white" data-placement="left" data-original-title="Acc/Reject" ><i class="fa fa-vote-yea"></i></a> `;
+                        //                 }
+                        //             }
+                        //         @endif
+                        //         return buttons;
+                        //     }
+                        // },
                     @endif
                 ],
                 "fnDrawCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
