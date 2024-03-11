@@ -19,6 +19,26 @@
                         </div>
                     </div>
                     <div class="card-body p-0">
+                        <!-- untuk Filter data -->
+                        <div id="filter" class="form-horizontal filter-date p-2 border-bottom">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group form-group-sm row text-sm mb-0">
+                                        <label class="col-md-1 col-form-label">Filter</label>
+                                        <div class="col-md-4">
+                                            <select
+                                                class="form-control form-control-sm w-100 filter_combobox filter_program">
+                                                <option value="">- Semua -</option>
+                                                @foreach ($programs as $d)
+                                                    <option value="{{ $d->program_id }}">{{ $d->program_nama }}</option>
+                                                @endforeach
+                                            </select>
+                                            <small class="form-text text-muted">Program Kegiatan</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="table-responsive">
                             <table class="table table-striped table-hover table-full-width" id="table_master">
                                 <thead>
@@ -55,7 +75,10 @@
                 "ajax": {
                     "url": "{{ $page->url }}/list",
                     "dataType": "json",
-                    "type": "POST"
+                    "type": "POST",
+                    "data": function(d) {
+                        d.program = $('.filter_program').val();
+                    },
                 },
                 "aoColumns": [{
                         "mData": "no",
@@ -168,8 +191,14 @@
 
             $('.dataTables_filter input').unbind().bind('keyup', function(e) {
                 if (e.keyCode == 13) {
-                    dataMaster.search($(this).val().toLowerCase()).draw();
+                    dataMaster.search($(this).val(), {
+                        caseInsensitive: true
+                    }).draw();
                 }
+            });
+
+            $('.filter_program').change(function() {
+                dataMaster.draw();
             });
         });
     </script>

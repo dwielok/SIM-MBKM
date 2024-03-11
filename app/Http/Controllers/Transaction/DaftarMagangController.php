@@ -9,6 +9,7 @@ use App\Models\Master\KegiatanModel;
 use App\Models\Master\MahasiswaModel;
 use App\Models\Master\PeriodeModel;
 use App\Models\Master\ProdiModel;
+use App\Models\Master\ProgramModel;
 use App\Models\MitraKuotaModel;
 use App\Models\MitraModel;
 use App\Models\ProvinsiModel;
@@ -52,10 +53,13 @@ class DaftarMagangController extends Controller
             'title' => $this->menuTitle
         ];
 
+        $programs = ProgramModel::all();
+
         return view($this->viewPath . 'index')
             ->with('breadcrumb', (object) $breadcrumb)
             ->with('activeMenu', (object) $activeMenu)
             ->with('page', (object) $page)
+            ->with('programs', $programs)
             ->with('allowAccess', $this->authAccessKey());
     }
 
@@ -67,8 +71,17 @@ class DaftarMagangController extends Controller
         $prodi_id = MahasiswaModel::where('user_id', Auth::user()->user_id)->first()->prodi_id;
 
         $data  = MitraModel::with('kegiatan')
+            ->with('kegiatan.program')
             ->with('periode')
             ->where('status', 1);
+
+        $programId = $request->program;
+        if ($programId) {
+            $data = $data->whereHas('kegiatan.program', function ($query) use ($programId) {
+                $query->where('program_id', $programId);
+            });
+        }
+
         // ->get();
         if (auth()->user()->group_id != 1) {
             //data in mitra with column mitra_prodi is [1,2,3,etc]
@@ -310,7 +323,7 @@ class DaftarMagangController extends Controller
             unset($request['mahasiswa']);
             unset($request['tipe_pendaftar']);
             // dd($request->all());
-            $res = Magang::insertData($request, ['proposal']);
+            $res = Magang::insertData($request, ['proposal', 'files']);
 
             //cek if $kegiatan is_proposal 1 then
             if ($kegiatan->kegiatan->is_submit_proposal == 1) {
