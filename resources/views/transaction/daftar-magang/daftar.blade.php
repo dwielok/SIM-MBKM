@@ -90,53 +90,74 @@
                                         </div>
                                         <div id="mahasiswa_select">
                                             <div class="form-group row mb-2">
-                                                <label class="col-12 col-md-2 control-label col-form-label">Mahasiswa
-                                                    1</label>
-                                                <div class="col-12 col-md-10">
-                                                    <select data-testid="partner-category"
-                                                        class="form-control select2_combobox form-control-sm mahasiswa-1"
-                                                        id="mahasiswa_1" name="mahasiswa[]" readonly>
-                                                        <option value="" selected>Pilih Mahasiswa 1</option>
-                                                        @foreach ($me as $item)
-                                                            <option value="{{ $item->mahasiswa_id }}"
-                                                                {{ $item->mahasiswa_id == $mahasiswa_id ? 'selected' : '' }}>
-                                                                {{ $item->nim }} -
-                                                                {{ $item->nama_mahasiswa }}</option>
-                                                        @endforeach
-                                                    </select>
+                                                <label class="col-12 col-md-2 control-label col-form-label">Anggota</label>
+                                                <div class="col-12 col-md-6" id="add_member">
+                                                    <table class="table table-striped table-sm text-sm mb-0"
+                                                        style="table-layout:fixed;width:100%;" id="table-mhs">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width: 14%">No</th>
+                                                                <th style="width: 22%">NIM</th>
+                                                                <th style="width: 45%">Nama Mahasiswa</th>
+                                                                <th style="width: 14%">Kelas</th>
+                                                                <th style="width: 5%"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>1</td>
+                                                                <td>{{ $saya->nim }}</td>
+                                                                <td>{{ $saya->nama_mahasiswa }}</td>
+                                                                <td>{{ $saya->kelas }}</td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group mb-2">
+                                                        <label class="control-label col-form-label">Cari Mahasiswa</label>
+                                                        <div class="input-group input-group-sm">
+                                                            <input type="text" class="form-control form-control-sm"
+                                                                id="search" autocomplete="off" />
+                                                            <span class="input-group-append">
+                                                                <button type="button" class="btn btn-info btn-flat"
+                                                                    id="btn-cari-mhs">
+                                                                    <i class="fa fa-search"></i>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row mb-2">
+                                                        <input type="hidden" class="form-control form-control-sm"
+                                                            id="mhs_id" disabled readonly />
+                                                        <label class="col-sm-3 control-label col-form-label">NIM</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" class="form-control form-control-sm"
+                                                                id="mhs_nim" disabled readonly />
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row mb-2">
+                                                        <label class="col-sm-3 control-label col-form-label">Nama</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" class="form-control form-control-sm"
+                                                                id="mhs_nama" disabled readonly />
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row mb-2">
+                                                        <label class="col-sm-3 control-label col-form-label">Kelas</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" class="form-control form-control-sm"
+                                                                id="mhs_kelas" disabled readonly />
+                                                        </div>
+                                                    </div>
+                                                    <button type="button" id="btn-tambah-mhs"
+                                                        class="btn btn-primary">Tambah</button>
                                                 </div>
                                             </div>
-                                            <div class="form-group row mb-2">
-                                                <label class="col-12 col-md-2 control-label col-form-label">Mahasiswa
-                                                    2</label>
-                                                <div class="col-12 col-md-10">
-                                                    <select data-testid="partner-category2"
-                                                        class="form-control select2_combobox form-control-sm mahasiswa-2"
-                                                        id="mahasiswa_2" name="mahasiswa[]">
-                                                        <option value="" selected>Pilih Mahasiswa 2</option>
-                                                        @foreach ($mahasiswas as $item)
-                                                            <option value="{{ $item->mahasiswa_id }}">
-                                                                {{ $item->nim }} -
-                                                                {{ $item->nama_mahasiswa }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row mb-2">
-                                                <label class="col-12 col-md-2 control-label col-form-label">Mahasiswa
-                                                    3</label>
-                                                <div class="col-12 col-md-10">
-                                                    <select data-testid="partner-category"
-                                                        class="form-control select2_combobox form-control-sm mahasiswa-3"
-                                                        id="mahasiswa_3" name="mahasiswa[]">
-                                                        <option value="" selected>Pilih Mahasiswa 3</option>
-                                                        @foreach ($mahasiswas as $item)
-                                                            <option value="{{ $item->mahasiswa_id }}">
-                                                                {{ $item->nim }} -
-                                                                {{ $item->nama_mahasiswa }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
+                                            <div id="data-mhs">
+                                                <input type="hidden" class="form-control form-control-sm"
+                                                    name="mahasiswa[]" value="{{ $saya->mahasiswa_id }}" />
                                             </div>
                                         </div>
                                         <a class="btn btn-primary text-white" onclick="stepper1.previous()">Back</a>
@@ -217,6 +238,7 @@
         $(document).ready(function() {
             // unblockUI();
             // bsCustomFileInput.init();
+            $('#btn-tambah-mhs').attr('disabled', true)
 
             $('#mitra_deskripsi').summernote("disable");
 
@@ -257,6 +279,70 @@
                     }
                 });
                 return false;
+            });
+
+            $("#btn-cari-mhs").click(function() {
+                $('.form-message').html('');
+                const nim = $('#search').val()
+
+                $.ajax({
+                    url: "{{ url('mahasiswa') }}" + "/" + nim + "/cari",
+                    type: "GET",
+                    success: function(response) {
+                        // Handle the success response here
+                        console.log(response);
+                        if (response.stat) {
+                            $('#btn-tambah-mhs').attr('disabled', false)
+                            $('#mhs_id').val(response.data.mahasiswa_id)
+                            $('#mhs_nim').val(response.data.nim)
+                            $('#mhs_nama').val(response.data.nama_mahasiswa)
+                            $('#mhs_kelas').val(response.data.kelas)
+                        } else {
+                            setFormMessage('.form-message', response);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle errors here
+                        console.error(xhr.responseText);
+                    }
+                });
+            })
+
+            $('#btn-tambah-mhs').click(function() {
+                var rowCount = $('#table-mhs tbody tr').length;
+
+                if (rowCount > 2) return
+
+                const mhs_id = $('#mhs_id').val()
+                const nim = $('#mhs_nim').val()
+                const nama = $('#mhs_nama').val()
+                const kelas = $('#mhs_kelas').val()
+                $('#table-mhs tbody').append(`
+                    <tr>
+                        <td>${rowCount + 1}</td>
+                        <td>${nim}</td>
+                        <td>${nama}</td>
+                        <td>${kelas}</td>
+                        <td><a class="cursor-pointer" id="remove-mhs" data-id="${rowCount +1}"><i class="fa fa-trash text-danger"></i></a></td>
+                    </tr>
+                `);
+                $('#data-mhs').append(`
+                    <input type="hidden" class="form-control form-control-sm" name="mahasiswa[]" value="${mhs_id}" data-id="${rowCount+1}" />
+                `);
+                $('#btn-tambah-mhs').attr('disabled', true)
+                $('#mhs_nim').val('')
+                $('#mhs_nama').val('')
+                $('#mhs_kelas').val('')
+                $('#search').val('')
+            })
+
+            $(document).on('click', '#remove-mhs', function() {
+                const index = $(this).data('id')
+                console.log(index)
+                //remove index <tr></tr> in table #table-mhs
+                $(`#table-mhs tbody tr:eq(${index-1})`).remove();
+                //remove too in <input name="mahasiswa[]" with data-id=index
+                $(`#data-mhs input[name="mahasiswa[]"][data-id="${index}"]`).remove();
             });
         });
     </script>

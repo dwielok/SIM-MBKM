@@ -173,3 +173,5 @@ Route::group(['prefix' => 'setting', 'middleware' => ['auth']], function () {
     Route::post('user/list', [UserController::class, 'list']);
     Route::get('user/{id}/delete', [UserController::class, 'confirm']);
 });
+
+Route::get('mahasiswa/{nim}/cari', [MahasiswaController::class, 'cari']);
