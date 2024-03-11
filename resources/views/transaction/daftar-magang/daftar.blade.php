@@ -115,44 +115,57 @@
                                                     </table>
                                                 </div>
                                                 <div class="col-12 col-md-4">
-                                                    <div class="form-group mb-2">
-                                                        <label class="control-label col-form-label">Cari Mahasiswa</label>
-                                                        <div class="input-group input-group-sm">
-                                                            <input type="text" class="form-control form-control-sm"
-                                                                id="search" autocomplete="off" />
-                                                            <span class="input-group-append">
-                                                                <button type="button" class="btn btn-info btn-flat"
-                                                                    id="btn-cari-mhs">
-                                                                    <i class="fa fa-search"></i>
-                                                                </button>
-                                                            </span>
+                                                    <div class="card">
+                                                        <div class="card-body">
+                                                            <div class="form-group mb-2">
+                                                                <label class="control-label col-form-label">Cari
+                                                                    Mahasiswa</label>
+                                                                <div class="input-group input-group-sm">
+                                                                    <input type="text"
+                                                                        class="form-control form-control-sm" id="search"
+                                                                        autocomplete="off" />
+                                                                    <span class="input-group-append">
+                                                                        <button type="button"
+                                                                            class="btn btn-info btn-flat"
+                                                                            id="btn-cari-mhs">
+                                                                            <i class="fa fa-search"></i>
+                                                                        </button>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group row mb-2">
+                                                                <input type="hidden" class="form-control form-control-sm"
+                                                                    id="mhs_id" disabled readonly />
+                                                                <label
+                                                                    class="col-sm-3 control-label col-form-label">NIM</label>
+                                                                <div class="col-sm-9">
+                                                                    <input type="text"
+                                                                        class="form-control form-control-sm"
+                                                                        id="mhs_nim" disabled readonly />
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group row mb-2">
+                                                                <label
+                                                                    class="col-sm-3 control-label col-form-label">Nama</label>
+                                                                <div class="col-sm-9">
+                                                                    <input type="text"
+                                                                        class="form-control form-control-sm"
+                                                                        id="mhs_nama" disabled readonly />
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group row mb-2">
+                                                                <label
+                                                                    class="col-sm-3 control-label col-form-label">Kelas</label>
+                                                                <div class="col-sm-9">
+                                                                    <input type="text"
+                                                                        class="form-control form-control-sm"
+                                                                        id="mhs_kelas" disabled readonly />
+                                                                </div>
+                                                            </div>
+                                                            <button type="button" id="btn-tambah-mhs"
+                                                                class="btn btn-primary float-right">Tambah</button>
                                                         </div>
                                                     </div>
-                                                    <div class="form-group row mb-2">
-                                                        <input type="hidden" class="form-control form-control-sm"
-                                                            id="mhs_id" disabled readonly />
-                                                        <label class="col-sm-3 control-label col-form-label">NIM</label>
-                                                        <div class="col-sm-9">
-                                                            <input type="text" class="form-control form-control-sm"
-                                                                id="mhs_nim" disabled readonly />
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row mb-2">
-                                                        <label class="col-sm-3 control-label col-form-label">Nama</label>
-                                                        <div class="col-sm-9">
-                                                            <input type="text" class="form-control form-control-sm"
-                                                                id="mhs_nama" disabled readonly />
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row mb-2">
-                                                        <label class="col-sm-3 control-label col-form-label">Kelas</label>
-                                                        <div class="col-sm-9">
-                                                            <input type="text" class="form-control form-control-sm"
-                                                                id="mhs_kelas" disabled readonly />
-                                                        </div>
-                                                    </div>
-                                                    <button type="button" id="btn-tambah-mhs"
-                                                        class="btn btn-primary">Tambah</button>
                                                 </div>
                                             </div>
                                             <div id="data-mhs">
@@ -318,7 +331,7 @@
                 const nama = $('#mhs_nama').val()
                 const kelas = $('#mhs_kelas').val()
                 $('#table-mhs tbody').append(`
-                    <tr>
+                    <tr data-id="${rowCount+1}">
                         <td>${rowCount + 1}</td>
                         <td>${nim}</td>
                         <td>${nama}</td>
@@ -340,7 +353,7 @@
                 const index = $(this).data('id')
                 console.log(index)
                 //remove index <tr></tr> in table #table-mhs
-                $(`#table-mhs tbody tr:eq(${index-1})`).remove();
+                $(`#table-mhs tr[data-id="${index}"]`).remove();
                 //remove too in <input name="mahasiswa[]" with data-id=index
                 $(`#data-mhs input[name="mahasiswa[]"][data-id="${index}"]`).remove();
             });
