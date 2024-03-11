@@ -214,7 +214,12 @@ class DaftarMagangController extends Controller
         }, $datas);
 
         $mahasiswa_id = MahasiswaModel::where('user_id', Auth::user()->user_id)->first()->mahasiswa_id;
+        $me = MahasiswaModel::where('mahasiswa_id', $mahasiswa_id)->get();
         $mahasiswas = MahasiswaModel::where('prodi_id', $prodi_id)
+            ->whereNotIn('mahasiswa_id', function ($query) {
+                $query->select('mahasiswa_id')
+                    ->from('t_magang');
+            })
             ->get();
 
         return view($this->viewPath . 'daftar')
@@ -226,6 +231,7 @@ class DaftarMagangController extends Controller
             ->with('url', $this->menuUrl . '/' . $id . '/daftar')
             ->with('mahasiswa_id', $mahasiswa_id)
             ->with('mahasiswas', $mahasiswas)
+            ->with('me', $me)
             ->with('disabled', $disabled)
             ->with('breadcrumb', (object) $breadcrumb)
             ->with('activeMenu', (object) $activeMenu)

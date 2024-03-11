@@ -77,7 +77,7 @@
                                         <a class="btn btn-primary text-white" onclick="stepper1.next()">Simpan</a>
                                     </div>
                                     <div id="test-l-2" class="content">
-                                        <div class="form-group row mb-2">
+                                        <div class="form-group required row mb-2">
                                             <label class="col-12 col-md-2 control-label col-form-label">Peran</label>
                                             <div class="col-12 col-md-10">
                                                 <select data-testid="partner-category" class="form-control form-control-sm"
@@ -97,7 +97,7 @@
                                                         class="form-control select2_combobox form-control-sm mahasiswa-1"
                                                         id="mahasiswa_1" name="mahasiswa[]" readonly>
                                                         <option value="" selected>Pilih Mahasiswa 1</option>
-                                                        @foreach ($mahasiswas as $item)
+                                                        @foreach ($me as $item)
                                                             <option value="{{ $item->mahasiswa_id }}"
                                                                 {{ $item->mahasiswa_id == $mahasiswa_id ? 'selected' : '' }}>
                                                                 {{ $item->nim }} -
