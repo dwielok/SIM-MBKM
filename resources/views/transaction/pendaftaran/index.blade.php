@@ -176,6 +176,9 @@
                                 return '<span class="badge badge-danger">Menolak Undangan</span>';
                             } else {
                                 switch (data) {
+                                    case 3:
+                                        return '<span class="badge badge-primary">Terdaftar</span>';
+                                        break;
                                     case 2:
                                         return '<span class="badge badge-danger">Ditolak</span>';
                                         break;

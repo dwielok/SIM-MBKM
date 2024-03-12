@@ -23,8 +23,7 @@
                                                 $status = '<span class="ml-2 badge badge-success">Menerima</span>';
                                                 break;
                                             case '2':
-                                                $status =
-                                                    '<span class="ml-2 accent-bluebadge badge-danger">Menolak</span>';
+                                                $status = '<span class="ml-2 badge badge-danger">Menolak</span>';
                                                 break;
                                             default:
                                                 $status = '';

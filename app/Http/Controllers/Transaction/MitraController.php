@@ -84,7 +84,7 @@ class MitraController extends Controller
             //TODO: get jumlah pendaftar
             $item['mitra_jumlah_pendaftar'] = Magang::where('mitra_id', $item->mitra_id)
                 ->where('periode_id', PeriodeModel::where('is_current', 1)->first()->periode_id)
-                ->where('status', 1)
+                ->whereIn('status', [1, 3])
                 ->count();
 
             return $item;

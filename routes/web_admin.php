@@ -122,6 +122,8 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     // Route::get('pendaftaran/{id}/confirm_approve', [PendaftaranController::class, 'confirm_approve']);
     Route::get('pendaftaran/{id}/confirm', [PendaftaranController::class, 'confirm']);
     Route::put('pendaftaran/{id}/confirm', [PendaftaranController::class, 'confirm_action']);
+    Route::post('pendaftaran/confirm_proposal', [PendaftaranController::class, 'confirm_proposal']);
+    Route::post('pendaftaran/confirm_sb', [PendaftaranController::class, 'confirm_sb']);
     // Route::put('pendaftaran/{id}/approve', [PendaftaranController::class, 'approve']);
     // Route::put('pendaftaran/{id}/reject', [PendaftaranController::class, 'reject']);
 
@@ -137,6 +139,8 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     //lihat status
     Route::resource('lihat-status-pendaftaran', LihatStatusPendaftaranController::class)->parameter('lihat-status-pendaftaran', 'id');
     Route::post('lihat-status-pendaftaran/list', [LihatStatusPendaftaranController::class, 'list']);
+    Route::get('lihat-status-pendaftaran/{encrpyt}', [LihatStatusPendaftaranController::class, 'lengkapi']);
+    Route::post('lihat-status-pendaftaran/{id}/suratbalasan', [LihatStatusPendaftaranController::class, 'suratbalasan']);
 
     //lihat status
     Route::resource('lihat-status-pengajuan', LihatStatusPengajuanController::class)->parameter('lihat-status-pengajuan', 'id');

@@ -94,10 +94,24 @@ class PendaftaranController extends Controller
         if ($data->magang_tipe == 2) {
             $id = $id;
             $dokumen = DokumenMagangModel::where('magang_id', $id);
+            $proposal = DokumenMagangModel::where('magang_id', $id);
+            $surat_balasan = DokumenMagangModel::where('magang_id', $id);
+            $aksi_proposal = true;
         } else {
             $magang = Magang::where('magang_kode', $data->magang_kode)->get();
             $id = $magang->pluck('magang_id');
             $dokumen = DokumenMagangModel::whereIn('magang_id', $id);
+            $proposal = DokumenMagangModel::whereIn('magang_id', $id);
+            $surat_balasan = DokumenMagangModel::whereIn('magang_id', $id);
+            //search if any is_accept = 0 then throw false
+            $mag = Magang::where('magang_kode', $data->magang_kode)->where('magang_tipe', 1)->where('is_accept', 0)->count();
+            // dd($aksi_proposal);
+            //jika lebih dari 0 maka return false
+            if ($mag > 0) {
+                $aksi_proposal = FALSE;
+            } else {
+                $aksi_proposal = TRUE;
+            }
         }
 
         // dd($dokumen->get());
@@ -105,13 +119,19 @@ class PendaftaranController extends Controller
         $datas = [
             [
                 "title" => "Proposal",
-                "value" => $dokumen->where('dokumen_magang_nama', 'PROPOSAL')->first() ? $dokumen->where('dokumen_magang_nama', 'PROPOSAL')->first()->dokumen_magang_file : "Belum Ada File",
-                "bold" => false
+                "value" => $proposal->where('dokumen_magang_nama', 'PROPOSAL')->first() ? $proposal->where('dokumen_magang_nama', 'PROPOSAL')->first()->dokumen_magang_file : "Belum Ada File",
+                "bold" => false,
+                'aksi' => $aksi_proposal,
+                'dokumen' => $proposal->where('dokumen_magang_nama', 'PROPOSAL')->first(),
+                'type' => 'p'
             ],
             [
                 "title" => "Surat Balasan",
-                "value" => $dokumen->where('dokumen_magang_nama', 'SURAT_BALASAN')->first() ? $dokumen->where('dokumen_magang_nama', 'SURAT_BALASAN')->first()->dokumen_magang_file : "Belum Ada File",
-                "bold" => false
+                "value" => $surat_balasan->where('dokumen_magang_nama', 'SURAT_BALASAN')->first() ? $surat_balasan->where('dokumen_magang_nama', 'SURAT_BALASAN')->first()->dokumen_magang_file : "Belum Ada File",
+                "bold" => false,
+                'aksi' => true,
+                'dokumen' => $surat_balasan->where('dokumen_magang_nama', 'SURAT_BALASAN')->first(),
+                'type' => 'sb'
             ],
         ];
 
@@ -126,6 +146,9 @@ class PendaftaranController extends Controller
             $obj->title = $item['title'];
             $obj->value = $item['value'];
             $obj->bold = $item['bold'];
+            $obj->aksi = $item['aksi'];
+            $obj->dokumen = $item['dokumen'];
+            $obj->type = $item['type'];
             $obj->color = $item['color'] ?? null;
             return $obj;
         }, $datas);
@@ -136,6 +159,7 @@ class PendaftaranController extends Controller
             ->with('id', $id)
             ->with('data', $data)
             ->with('datas', $datas)
+            ->with('surat_balasan', $surat_balasan->where('dokumen_magang_nama', 'SURAT_BALASAN')->first())
             ->with('mitra', $data);
     }
 
@@ -299,6 +323,58 @@ class PendaftaranController extends Controller
                 'stat' => $res,
                 'mc' => $res, // close modal
                 'msg' => ($res) ? 'Magang berhasil direject.' : 'Magang gagal direject.'
+            ]);
+        }
+
+        return redirect('/');
+    }
+
+    public function confirm_proposal(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+
+            $id = $request->id;
+            $status = $request->status;
+            $status_text = $status == 3 ? "diterima" : "ditolak";
+
+            $request['status'] = $status; // [0: pending, 1: approved, 2: rejected, 3:terdaftar]
+
+            $kode_magang = DokumenMagangModel::with('magang')->where('dokumen_magang_id', $id)->first()->magang->magang_kode;
+            // dd($kode_magang);
+            //update status Magang where magang_kode = $kode_magang
+            $res = Magang::where('magang_kode', $kode_magang)->update(['status' => $status]);
+            $res = DokumenMagangModel::where('dokumen_magang_id', $id)->where('dokumen_magang_nama', 'PROPOSAL')->update(['dokumen_magang_status' => $status == 3 ? 1 : 0]);
+
+            return response()->json([
+                'stat' => $status == 3 ? 1 : 0,
+                'mc' => $res, // close modal
+                'msg' => ($res) ? "Proposal berhasil $status_text." : "Proposal gagal $status_text."
+            ]);
+        }
+
+        return redirect('/');
+    }
+
+    public function confirm_sb(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+
+            $id = $request->id;
+            $status = $request->status;
+            $status_text = $status == 1 ? "diterima" : "ditolak";
+
+            $request['status'] = $status; // [0: pending, 1: approved, 2: rejected, 3:terdaftar]
+
+            $kode_magang = DokumenMagangModel::with('magang')->where('dokumen_magang_id', $id)->first()->magang->magang_kode;
+            // dd($kode_magang);
+            //update status Magang where magang_kode = $kode_magang
+            $res = Magang::where('magang_kode', $kode_magang)->update(['status' => $status]);
+            $res = DokumenMagangModel::where('dokumen_magang_id', $id)->where('dokumen_magang_nama', 'SURAT_BALASAN')->update(['dokumen_magang_status' => $status == 1 ? 1 : 0]);
+
+            return response()->json([
+                'stat' => $status == 1 ? 1 : 0,
+                'mc' => $res, // close modal
+                'msg' => ($res) ? "Surat balasan berhasil $status_text." : "Surat balasan gagal $status_text."
             ]);
         }
 

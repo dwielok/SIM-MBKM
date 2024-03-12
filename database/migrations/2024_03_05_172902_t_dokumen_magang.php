@@ -20,6 +20,7 @@ class TDokumenMagang extends Migration
             $table->unsignedBigInteger('magang_id');
             $table->foreign('magang_id')->references('magang_id')->on('t_magang');
             $table->string('dokumen_magang_nama');
+            $table->tinyInteger('dokumen_magang_tipe')->comment('1=diterima,2=ditolak|untuk surat balasan');
             $table->string('dokumen_magang_file');
             $table->tinyInteger('dokumen_magang_status')->nullable();
             $table->dateTime('created_at')->nullable()->useCurrent();

@@ -92,7 +92,7 @@
                         "sClass": "",
                         "sWidth": "10%",
                         "bSortable": true,
-                        "bSearchable": true
+                        "bSearchable": true,
                     },
                     {
                         "mData": "periode.periode_nama",

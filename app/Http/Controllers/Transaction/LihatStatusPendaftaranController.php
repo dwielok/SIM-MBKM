@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\DokumenMagangModel;
 use App\Models\MitraModel;
 use App\Models\Transaction\Magang;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use stdClass;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -68,6 +70,12 @@ class LihatStatusPendaftaranController extends Controller
             $prodi_id = auth()->user()->getProdiId();
             $data = $data->where('prodi_id', $prodi_id)->get();
         }
+
+        $data = $data->map(function ($item) {
+            $item['encrypt_magang_id'] = Crypt::encrypt($item->magang_id);
+            $item['proposal'] = DokumenMagangModel::where('magang_id', $item->magang_id)->where('dokumen_magang_nama', 'PROPOSAL')->first();
+            return $item;
+        });
 
         return DataTables::of($data)
             ->addIndexColumn()
@@ -137,5 +145,141 @@ class LihatStatusPendaftaranController extends Controller
             ->with('datas', $datas)
             ->with('anggota', $anggota)
             ->with('mitra', $data);
+    }
+
+    public function lengkapi($id)
+    {
+        $this->authAction('read', 'modal');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        $id = Crypt::decrypt($id);
+
+        $data = Magang::find($id);
+
+        $kode_magang = $data->magang_kode;
+
+        //find Magang with same kode_magang then show mahaasiswa
+
+        $anggotas = Magang::where('magang_kode', $kode_magang)
+            ->with('mahasiswa')
+            ->get();
+
+        $dateString = $data->mitra_batas_pendaftaran;
+        $currentDate = date('Y-m-d');
+        $disabled = strtotime($dateString) < strtotime($currentDate);
+
+        $breadcrumb = [
+            'title' => $this->menuTitle,
+            'list'  => ['Transaksi', 'Lihat Status Pendafatran']
+        ];
+
+        $activeMenu = [
+            'l1' => 'transaction',
+            'l2' => 'transaksi-lihat-status-pendaftaran',
+            'l3' => null
+        ];
+
+        $page = [
+            'url' => $this->menuUrl,
+            'title' => $this->menuTitle
+        ];
+
+        $magang = Magang::where('magang_id', $id)
+            ->with('mitra')
+            ->with('mitra.kegiatan')
+            ->with('periode')
+            ->first();
+
+        $datas = [
+            [
+                "title" => "Nama Kegiatan",
+                "value" => $magang->mitra->kegiatan->kegiatan_nama,
+                "textarea" => false
+            ],
+            [
+                "title" => "Nama Mitra",
+                "value" => $magang->mitra->mitra_nama,
+                "textarea" => false
+            ],
+            [
+                "title" => "Periode",
+                "value" => $magang->mitra->periode->periode_nama,
+                "textarea" => false
+            ],
+            [
+                "title" => "Durasi",
+                "value" => $magang->mitra->mitra_durasi . ' bulan',
+                "textarea" => false
+            ],  [
+                "title" => "Skema",
+                "value" => $magang->magang_skema,
+                "textarea" => false
+            ],  [
+                "title" => "Tanggal Pendaftaran",
+                "value" => Carbon::parse($magang->mitra->mitra_batas_pendaftaran)->format('d M Y'),
+                "textarea" => false
+            ]
+        ];
+
+        //change to stdClass loop
+        $datas = array_map(function ($item) {
+            $obj = new stdClass;
+            $obj->title = $item['title'];
+            $obj->value = $item['value'];
+            $obj->textarea = $item['textarea'];
+            $obj->color = $item['color'] ?? null;
+            return $obj;
+        }, $datas);
+
+        return view($this->viewPath . 'update')
+            ->with('page', (object) $page)
+            ->with('id', $id)
+            ->with('data', $data)
+            ->with('datas', $datas)
+            ->with('magang', $data)
+            ->with('url', $this->menuUrl . '/' . $id . '/suratbalasan')
+            ->with('disabled', $disabled)
+            ->with('breadcrumb', (object) $breadcrumb)
+            ->with('activeMenu', (object) $activeMenu)
+            ->with('anggotas', $anggotas)
+            ->with('page', (object) $page)
+            ->with('action', 'POST');
+    }
+
+    public function suratbalasan(Request $request, $id_magang)
+    {
+
+        $file = $request->file('surat_balasan');
+        if ($file) {
+            $fileName = 'suratbalasan' . time() . '.' . $file->getClientOriginalExtension();
+            //move to public/assets/
+            $file->move(public_path('assets/suratbalasan'), $fileName);
+            // $request['dokumen_magang_file'] = $fileName;
+
+            $id_mahasiswa = $request->mahasiswa_id;
+
+            $res = DokumenMagangModel::create([
+                'mahasiswa_id' => $id_mahasiswa,
+                'magang_id' => $id_magang,
+                'dokumen_magang_tipe' => $request->dokumen_magang_tipe,
+                'dokumen_magang_nama' => 'SURAT_BALASAN',
+                'dokumen_magang_file' => $fileName
+            ]);
+            return response()->json([
+                'stat' => $res,
+                'mc' => $res, // close modal
+                'msg' => $res ? 'Berhasil upload surat balasan' : 'Gagal upload surat balasan'
+            ]);
+        } else {
+            return response()->json([
+                'stat' => false,
+                'mc' => false,
+                'msg' => 'Pilih file terlebih dahulu'
+            ]);
+        }
+
+
+
+        // dd($request->all(), $id_mitra, $id_periode, $tipe_pendaftar, $id_mahasiswa);
     }
 }

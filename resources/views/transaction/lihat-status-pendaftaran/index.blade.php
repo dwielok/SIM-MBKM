@@ -35,6 +35,7 @@
                                         <th>Durasi</th>
                                         <th>Tipe Pendaftar</th>
                                         <th>Detail</th>
+                                        <th>Update</th>
                                         @if (auth()->user()->group_id != 4)
                                             <th>Persetujuan Anggota </th>
                                         @endif
@@ -151,6 +152,21 @@
                             return `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat detail" ><i class="fa fa-th"></i> Detail</a> `
                         }
                     },
+                    {
+                        "mData": "encrypt_magang_id",
+                        "sClass": "pr-2",
+                        "sWidth": "8%",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mRender": function(data, type, row, meta) {
+                            if (row.magang_tipe != 1 && row.status != 1 && row.proposal
+                                .dokumen_magang_status == 1) {
+                                return `<a href="{{ $page->url }}/${data}" class=" btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Update" >Update</a> `
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
                     @if (auth()->user()->group_id != 4)
                         {
                             "mData": "is_accept",
@@ -190,6 +206,9 @@
                                 return '<span class="badge badge-danger">Menolak Undangan</span>';
                             } else {
                                 switch (data) {
+                                    case 3:
+                                        return '<span class="badge badge-primary">Terdaftar</span>';
+                                        break;
                                     case 2:
                                         return '<span class="badge badge-danger">Ditolak</span>';
                                         break;

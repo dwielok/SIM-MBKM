@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Master\MahasiswaModel;
+use App\Models\Transaction\Magang;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -20,6 +22,7 @@ class DokumenMagangModel extends Model
         'mahasiswa_id',
         'magang_id',
         'dokumen_magang_nama',
+        'dokumen_magang_tipe',
         'dokumen_magang_file',
         'dokumen_magang_status',
         'created_at',
@@ -35,4 +38,14 @@ class DokumenMagangModel extends Model
         //  Model => columnFK
         // 'App\Models\Master\DosenModel' => 'jurusan_id'
     ];
+
+    public function mahasiswa()
+    {
+        return $this->belongsTo(MahasiswaModel::class, 'mahasiswa_id', 'mahasiswa_id');
+    }
+
+    public function magang()
+    {
+        return $this->belongsTo(Magang::class, 'magang_id', 'magang_id');
+    }
 }
