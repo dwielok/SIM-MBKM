@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Transaction;
 
 use App\Http\Controllers\Controller;
 use App\Models\DokumenMagangModel;
+use App\Models\Master\PeriodeModel;
 use App\Models\MitraModel;
 use App\Models\Transaction\Magang;
 use Illuminate\Http\Request;
@@ -53,12 +54,14 @@ class PendaftaranController extends Controller
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
+        $active_periode = PeriodeModel::where('is_current', 1)->first();
 
         $data  = Magang::with('mahasiswa')
             ->with('mitra')
             ->with('periode')
             ->with('prodi')
             ->with('mitra.kegiatan')
+            ->where('periode_id', $active_periode->periode_id)
             ->where('magang_tipe', '!=', 1);
 
         if (auth()->user()->group_id == 1) {
