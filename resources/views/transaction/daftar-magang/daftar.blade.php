@@ -32,7 +32,7 @@
                                             <span class="bs-stepper-label">Peran</span>
                                         </button>
                                     </div>
-                                    @if ($mitra->kegiatan->is_submit_proposal == 1)
+                                    {{-- @if ($mitra->kegiatan->is_submit_proposal == 1)
                                         <div class="line"></div>
                                         <div class="step" data-target="#test-l-3">
                                             <button type="button" class="btn step-trigger">
@@ -40,7 +40,7 @@
                                                 <span class="bs-stepper-label">Proposal</span>
                                             </button>
                                         </div>
-                                    @endif
+                                    @endif --}}
                                 </div>
                                 <div class="bs-stepper-content">
                                     <div id="test-l-1" class="content">
@@ -125,8 +125,7 @@
                                                                         class="form-control form-control-sm" id="search"
                                                                         autocomplete="off" />
                                                                     <span class="input-group-append">
-                                                                        <button type="button"
-                                                                            class="btn btn-info btn-flat"
+                                                                        <button type="button" class="btn btn-info btn-flat"
                                                                             id="btn-cari-mhs">
                                                                             <i class="fa fa-search"></i>
                                                                         </button>
@@ -174,13 +173,13 @@
                                             </div>
                                         </div>
                                         <a class="btn btn-primary text-white" onclick="stepper1.previous()">Back</a>
-                                        @if ($mitra->kegiatan->is_submit_proposal == 1)
+                                        {{-- @if ($mitra->kegiatan->is_submit_proposal == 1)
                                             <a class="btn btn-primary text-white" onclick="stepper1.next()">Simpan</a>
-                                        @else
-                                            <button class="btn btn-warning text-dark" type="submit">Konfirmasi</button>
-                                        @endif
+                                        @else --}}
+                                        <button class="btn btn-warning text-dark" type="submit">Konfirmasi</button>
+                                        {{-- @endif --}}
                                     </div>
-                                    @if ($mitra->kegiatan->is_submit_proposal == 1)
+                                    {{-- @if ($mitra->kegiatan->is_submit_proposal == 1)
                                         <div id="test-l-3" class="content">
                                             <div class="form-group row mb-2 required">
                                                 <label
@@ -203,7 +202,7 @@
                                             <a class="btn btn-primary text-white" onclick="stepper1.previous()">Back</a>
                                             <button class="btn btn-warning" type="submit">Konfirmasi</button>
                                         </div>
-                                    @endif
+                                    @endif --}}
                                 </div>
                             </div>
                         </form>
@@ -323,12 +322,34 @@
             $('#btn-tambah-mhs').click(function() {
                 var rowCount = $('#table-mhs tbody tr').length;
 
-                if (rowCount > 2) return
+                if (rowCount > 2) return setFormMessage('.form-message', {
+                    stat: false,
+                    mc: false,
+                    msg: 'Maksimal 3 mahasiswa'
+                });
 
                 const mhs_id = $('#mhs_id').val()
                 const nim = $('#mhs_nim').val()
                 const nama = $('#mhs_nama').val()
                 const kelas = $('#mhs_kelas').val()
+
+                var nimExists = false;
+                $('#table-mhs tbody tr').each(function() {
+                    if ($(this).find('td:eq(1)').text() === nim) {
+                        nimExists = true;
+                        return false; // Break out of the loop
+                    }
+                });
+
+                if (nimExists) {
+                    setFormMessage('.form-message', {
+                        stat: false,
+                        mc: false,
+                        msg: 'NIM sudah ada'
+                    });
+                    return;
+                }
+
                 $('#table-mhs tbody').append(`
                     <tr data-id="${rowCount+1}">
                         <td>${rowCount + 1}</td>
