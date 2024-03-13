@@ -1,7 +1,7 @@
 @extends('layouts.template')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="container-fluid" id="container-daftar">
         <div class="row">
             <section class="col-lg-12">
                 <div class="card card-outline card-{{ $theme->card_outline }}">
@@ -12,140 +12,182 @@
                         </h3>
                     </div>
                     <div class="card-body p-0">
-                        <form method="post" action="{{ $url }}" role="form" class="form-horizontal"
-                            id="form-kuota" enctype="multipart/form-data">
-                            @csrf
-                            {!! method_field($action) !!}
-                            <div class="form-message text-center"></div>
-                            <div id="stepper1" class="bs-stepper">
-                                <div class="bs-stepper-header">
-                                    <div class="step" data-target="#test-l-1">
-                                        <button type="button" class="btn step-trigger">
-                                            <span class="bs-stepper-circle">1</span>
-                                            <span class="bs-stepper-label">Mitra</span>
-                                        </button>
-                                    </div>
-                                    <div class="line"></div>
-                                    <div class="step" data-target="#test-l-2">
-                                        <button type="button" class="btn step-trigger">
-                                            <span class="bs-stepper-circle">2</span>
-                                            <span class="bs-stepper-label">Peran</span>
-                                        </button>
-                                    </div>
-
-                                    <div class="line"></div>
-                                    <div class="step" data-target="#test-l-3">
-                                        <button type="button" class="btn step-trigger">
-                                            <span class="bs-stepper-circle">3</span>
-                                            <span class="bs-stepper-label">Surat Balasan</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="bs-stepper-content">
-                                    <div id="test-l-1" class="content">
-                                        @foreach ($datas as $data)
-                                            <div class="form-group row mb-2">
-                                                <label
-                                                    class="col-12 col-md-2 control-label col-form-label">{{ $data->title }}</label>
-                                                <div class="col-12 col-md-10">
-                                                    @if ($data->textarea)
-                                                        <textarea readonly disabled type="text" class="form-control form-control-sm" id="mitra_deskripsi">{!! $data->value ? $data->value : '' !!}</textarea>
-                                                    @else
-                                                        <input disabled="" type="text"
-                                                            class="form-control form-control-sm" id="judul"
-                                                            name="judul" value="{!! $data->value !!}">
-                                                    @endif
-                                                </div>
-
-                                            </div>
-                                        @endforeach
-                                        <a class="btn btn-primary text-white" onclick="stepper1.next()">Simpan</a>
-                                    </div>
-                                    <div id="test-l-2" class="content">
-                                        <div class="form-group row mb-2">
-                                            <label class="col-12 col-md-2 control-label col-form-label">Peran</label>
-                                            <div class="col-12 col-md-10">
-                                                <select data-testid="partner-category" class="form-control form-control-sm"
-                                                    readonly disabled>
-                                                    <option value="2"
-                                                        @if ($magang->magang_tipe == 2) selected @endif>Individu</option>
-                                                    <option value="0"
-                                                        @if ($magang->magang_tipe == 0) selected @endif>Kelompok</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row mb-2">
-                                            <label class="col-12 col-md-2 control-label col-form-label">Anggota</label>
-                                            <div class="col-12 col-md-10" id="add_member">
-                                                <table class="table table-striped table-sm text-sm mb-0"
-                                                    style="table-layout:fixed;width:100%;" id="table-mhs">
-                                                    <thead>
-                                                        <tr>
-                                                            <th style="width: 14%">No</th>
-                                                            <th style="width: 22%">NIM</th>
-                                                            <th style="width: 45%">Nama Mahasiswa</th>
-                                                            <th style="width: 14%">Kelas</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach ($anggotas as $key => $a)
-                                                            <tr>
-                                                                <td>{{ $key + 1 }}</td>
-                                                                <td>{{ $a->mahasiswa->nim }}</td>
-                                                                <td>{{ $a->mahasiswa->nama_mahasiswa }}</td>
-                                                                <td>{{ $a->mahasiswa->kelas }}</td>
-                                                            </tr>
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <a class="btn btn-primary text-white" onclick="stepper1.previous()">Back</a>
-                                        <a class="btn btn-primary text-white" onclick="stepper1.next()">Simpan</a>
-                                    </div>
-
-                                    <div id="test-l-3" class="content">
-                                        <input type="hidden" class="form-control form-control-sm" id="mahasiswa_id"
-                                            name="mahasiswa_id" value="{{ $magang->mahasiswa_id }}">
-                                        <div class="form-group required row mb-2">
-                                            <label class="col-sm-2 control-label col-form-label">Status</label>
-                                            <div class="col-sm-10 mt-2">
-                                                <div class="icheck-success d-inline mr-3">
-                                                    <input type="radio" id="radioActive" name="dokumen_magang_tipe"
-                                                        value="1">
-                                                    <label for="radioActive">Diterima </label>
-                                                </div>
-                                                <div class="icheck-danger d-inline mr-3">
-                                                    <input type="radio" id="radioFailed" name="dokumen_magang_tipe"
-                                                        value="0">
-                                                    <label for="radioFailed">Ditolak</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row mb-2 required">
-                                            <label class="col-12 col-md-2 control-label col-form-label">Surat
-                                                Balasan</label>
-                                            <div class="col-12 col-md-10">
-                                                <div class="form-control-sm custom-file">
-                                                    <input type="file" class="form-control-sm custom-file-input"
-                                                        data-target="0" id="berita_doc_0" name="surat_balasan"
-                                                        data-rule-filesize="1"
-                                                        data-rule-accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                                                        accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
-                                                    <label class="form-control-sm custom-file-label file_label_0"
-                                                        for="berita_doc_0">Choose
-                                                        file</label>
-                                                </div>
-                                                <small class="form-text text-muted">Pilih surat balasan untuk
-                                                    Diupload</small>
-                                            </div>
-                                        </div>
-                                        <a class="btn btn-primary text-white" onclick="stepper1.previous()">Back</a>
-                                        <button class="btn btn-warning" type="submit">Konfirmasi</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+                        <div class="form-message text-center"></div>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <th class="w-15 text-right">Magang ID</th>
+                                    <th class="w-1">:</th>
+                                    <td class="w-84">{{ $magang->magang_kode }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-15 text-right">Nama Kegiatan</th>
+                                    <th class="w-1">:</th>
+                                    <td class="w-84">{{ $magang->mitra->kegiatan->kegiatan_nama }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-15 text-right">Nama Mitra</th>
+                                    <th class="w-1">:</th>
+                                    <td class="w-84">
+                                        <i class="far fa-building text-md text-primary"></i>
+                                        {{ $magang->mitra->mitra_nama }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="w-15 text-right">Periode</th>
+                                    <th class="w-1">:</th>
+                                    <td class="w-84">{{ $magang->periode->periode_nama }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-15 text-right">Durasi</th>
+                                    <th class="w-1">:</th>
+                                    <td class="w-84">
+                                        <i class="far fa-clock text-md text-primary"></i>
+                                        {{ $magang->mitra->mitra_durasi }}
+                                        bulan
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="w-15 text-right">Skema</th>
+                                    <th class="w-1">:</th>
+                                    <td class="w-84">{{ $magang->magang_skema }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-15 text-right">Tanggal Pendaftaran</th>
+                                    <th class="w-1">:</th>
+                                    <td class="w-84">
+                                        <i class="far fa-calendar-alt text-md text-primary"></i>
+                                        {{ \Carbon\Carbon::parse($magang->mitra->mitra_batas_pendaftaran)->format('d M Y') }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="w-15 text-right">Anggota</th>
+                                    <th class="w-1">:</th>
+                                    <td class="w-84">
+                                        <table class="table table-sm text-sm table-bordered"
+                                            style="table-layout:fixed;width:100%;" id="table-mhs">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 14%">No</th>
+                                                    <th style="width: 22%">NIM</th>
+                                                    <th style="width: 45%">Nama Mahasiswa</th>
+                                                    <th style="width: 14%">Kelas</th>
+                                                    <th style="width: 14%">Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($anggotas as $key => $a)
+                                                    <tr>
+                                                        <td>{{ $key + 1 }}</td>
+                                                        <td>{{ $a->mahasiswa->nim }}</td>
+                                                        <td>{{ $a->mahasiswa->nama_mahasiswa }}@if ($a->magang_tipe == 0)
+                                                                <span class="badge badge-pill badge-primary">Ketua</span>
+                                                            @endif
+                                                        </td>
+                                                        <td>{{ $a->mahasiswa->kelas }}</td>
+                                                        <td>
+                                                            @if ($a->magang_tipe == 1)
+                                                                @if ($a->is_accept == 0)
+                                                                    <span
+                                                                        class="badge badge-pill badge-warning">Menunggu</span>
+                                                                @elseif ($a->is_accept == 1)
+                                                                    <span
+                                                                        class="badge badge-pill badge-success">Menerima</span>
+                                                                @elseif ($a->is_accept == 2)
+                                                                    <span
+                                                                        class="badge badge-pill badge-danger">Menolak</span>
+                                                                @endif
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                @if (!$magang->proposal_exist)
+                                    @if ($magang->ketua)
+                                        <tr>
+                                            <th class="w-15 text-right">Berkas Proposal</th>
+                                            <th class="w-1">:</th>
+                                            <td class="w-84 py-2">
+                                                @if (!$magang->can_upload_proposal)
+                                                    <span class="badge badge-danger">Belum bisa upload dikarenakan ada
+                                                        anggota yang belum menerima ajakan</span>
+                                                @else
+                                                    <form method="post" action="{{ route('dokumen.upload_proposal') }}"
+                                                        role="form" class="form-horizontal" id="form-proposal"
+                                                        enctype="multipart/form-data">
+                                                        @csrf
+                                                        <div class="d-flex">
+                                                            <div class="form-control-sm custom-file">
+                                                                <input type="hidden" value="{{ $magang->magang_id }}"
+                                                                    name="magang_id" />
+                                                                <input type="file"
+                                                                    class="form-control-sm custom-file-input"
+                                                                    data-target="0" id="proposal" name="proposal"
+                                                                    data-rule-filesize="1"
+                                                                    data-rule-accept="application/pdf"
+                                                                    accept="application/pdf" />
+                                                                <label
+                                                                    class="form-control-sm custom-file-label file_label_0"
+                                                                    for="proposal">Choose
+                                                                    file</label>
+                                                            </div>
+                                                            <button type="submit"
+                                                                class="ml-2 btn btn-sm btn-primary text-white">Upload</button>
+                                                        </div>
+                                                        <small class="form-text text-muted">Pilih file proposal dengan
+                                                            format
+                                                            .pdf</small>
+                                                    </form>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endif
+                                @else
+                                    <tr>
+                                        <th class="w-15 text-right">Berkas Proposal</th>
+                                        <th class="w-1">:</th>
+                                        <td class="w-84 py-2">
+                                            <table class="table table-sm text-sm table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center w-5 p-1">No</th>
+                                                        <th>Nama Berkas</th>
+                                                        <th>Keterangan</th>
+                                                        <th>Status</th>
+                                                        <th><em>Last Update</em></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-center w-5 p-1">1</td>
+                                                        <td>
+                                                            <a
+                                                                href="{{ asset('assets/proposal/' . $magang->proposal->dokumen_magang_file) }}">{{ $magang->proposal->dokumen_magang_file }}</a>
+                                                        </td>
+                                                        <td>-</td>
+                                                        <td>
+                                                            @if ($magang->proposal->dokumen_magang_status == '1')
+                                                                <span class="badge badge-success">Disetujui</span>
+                                                            @elseif ($magang->proposal->dokumen_magang_status == '0')
+                                                                <span class="badge badge-danger">Ditolak</span>
+                                                            @else
+                                                                <span class="badge badge-warning">Menunggu</span>
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            {{ \Carbon\Carbon::parse($magang->proposal->created_at)->format('d M Y H:i') }}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </section>
@@ -191,6 +233,25 @@
             // bsCustomFileInput.init();
 
             loadFile()
+
+            $("#form-proposal").submit(function() {
+                $('.form-message').html('');
+                let blc = '#container-daftar';
+                blockUI(blc);
+                $(this).ajaxSubmit({
+                    dataType: 'json',
+                    success: function(data) {
+                        refreshToken(data);
+                        unblockUI(blc);
+                        setFormMessage('.form-message', data);
+                        if (data.stat) {
+                            //reload this page
+                            window.location.reload();
+                        }
+                    }
+                });
+                return false;
+            });
 
             $("#form-kuota").submit(function() {
                 $('.form-message').html('');

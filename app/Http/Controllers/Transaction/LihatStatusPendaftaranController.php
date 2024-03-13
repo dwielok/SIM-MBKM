@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Transaction;
 
 use App\Http\Controllers\Controller;
 use App\Models\DokumenMagangModel;
+use App\Models\Master\MahasiswaModel;
 use App\Models\MitraModel;
 use App\Models\Transaction\Magang;
 use Carbon\Carbon;
@@ -187,59 +188,44 @@ class LihatStatusPendaftaranController extends Controller
             'title' => $this->menuTitle
         ];
 
+        $id_mahasiswa = MahasiswaModel::where('user_id', auth()->user()->user_id)->first()->mahasiswa_id;
+
         $magang = Magang::where('magang_id', $id)
             ->with('mitra')
             ->with('mitra.kegiatan')
             ->with('periode')
             ->first();
-
-        $datas = [
-            [
-                "title" => "Nama Kegiatan",
-                "value" => $magang->mitra->kegiatan->kegiatan_nama,
-                "textarea" => false
-            ],
-            [
-                "title" => "Nama Mitra",
-                "value" => $magang->mitra->mitra_nama,
-                "textarea" => false
-            ],
-            [
-                "title" => "Periode",
-                "value" => $magang->mitra->periode->periode_nama,
-                "textarea" => false
-            ],
-            [
-                "title" => "Durasi",
-                "value" => $magang->mitra->mitra_durasi . ' bulan',
-                "textarea" => false
-            ],  [
-                "title" => "Skema",
-                "value" => $magang->magang_skema,
-                "textarea" => false
-            ],  [
-                "title" => "Tanggal Pendaftaran",
-                "value" => Carbon::parse($magang->mitra->mitra_batas_pendaftaran)->format('d M Y'),
-                "textarea" => false
-            ]
-        ];
-
-        //change to stdClass loop
-        $datas = array_map(function ($item) {
-            $obj = new stdClass;
-            $obj->title = $item['title'];
-            $obj->value = $item['value'];
-            $obj->textarea = $item['textarea'];
-            $obj->color = $item['color'] ?? null;
-            return $obj;
-        }, $datas);
+        $mag = Magang::where('magang_kode', $data->magang_kode)->where('magang_tipe', 1)->where('is_accept', 0)->count();
+        // dd($aksi_proposal);
+        //jika lebih dari 0 maka return false
+        if ($mag > 0) {
+            $magang->can_upload_proposal = FALSE;
+        } else {
+            $magang->can_upload_proposal = TRUE;
+        }
+        //check if me is magang_tipe is not 0 and 2 then visible to upload proposal
+        $me = Magang::where('magang_kode', $data->magang_kode)->where('mahasiswa_id', $id_mahasiswa)->first();
+        if ($me->magang_tipe == 0 || $me->magang_tipe == 2) {
+            $magang->ketua = TRUE;
+        } else {
+            $magang->ketua = FALSE;
+        }
+        $check = Magang::where('magang_kode', $kode_magang)->get();
+        $id_joined = $check->pluck('magang_id');
+        $proposal = DokumenMagangModel::whereIn('magang_id', $id_joined)->where('dokumen_magang_nama', 'PROPOSAL')->first();
+        if ($proposal) {
+            $magang->proposal_exist = TRUE;
+            $magang->proposal = $proposal;
+        } else {
+            $magang->proposal_exist = FALSE;
+            $magang->proposal = NULL;
+        }
 
         return view($this->viewPath . 'update')
             ->with('page', (object) $page)
             ->with('id', $id)
             ->with('data', $data)
-            ->with('datas', $datas)
-            ->with('magang', $data)
+            ->with('magang', $magang)
             ->with('url', $this->menuUrl . '/' . $id . '/suratbalasan')
             ->with('disabled', $disabled)
             ->with('breadcrumb', (object) $breadcrumb)

@@ -34,15 +34,16 @@
                                         <th>Skema</th>
                                         <th>Durasi</th>
                                         <th>Tipe Pendaftar</th>
-                                        <th>Detail</th>
-                                        <th>Update</th>
-                                        @if (auth()->user()->group_id != 4)
+                                        {{-- <th>Detail</th>
+                                        <th>Update</th> --}}
+                                        {{-- @if (auth()->user()->group_id != 4)
                                             <th>Persetujuan Anggota </th>
-                                        @endif
+                                        @endif --}}
                                         <th>Status</th>
                                         @if (auth()->user()->group_id != 4)
                                             <th>#</th>
                                         @endif
+                                        <th>#</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -142,31 +143,31 @@
                             }
                         }
                     },
-                    {
-                        "mData": "magang_id",
-                        "sClass": "pr-2",
-                        "sWidth": "8%",
-                        "bSortable": false,
-                        "bSearchable": false,
-                        "mRender": function(data, type, row, meta) {
-                            return `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat detail" ><i class="fa fa-th"></i> Detail</a> `
-                        }
-                    },
-                    {
-                        "mData": "encrypt_magang_id",
-                        "sClass": "pr-2",
-                        "sWidth": "8%",
-                        "bSortable": false,
-                        "bSearchable": false,
-                        "mRender": function(data, type, row, meta) {
-                            if (row.magang_tipe != 1 && row.status != 1 && row.proposal
-                                .dokumen_magang_status == 1) {
-                                return `<a href="{{ $page->url }}/${data}" class=" btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Update" >Update</a> `
-                            } else {
-                                return '';
-                            }
-                        }
-                    },
+                    // {
+                    //     "mData": "magang_id",
+                    //     "sClass": "pr-2",
+                    //     "sWidth": "8%",
+                    //     "bSortable": false,
+                    //     "bSearchable": false,
+                    //     "mRender": function(data, type, row, meta) {
+                    //         return `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat detail" ><i class="fa fa-th"></i> Detail</a> `
+                    //     }
+                    // },
+                    // {
+                    //     "mData": "encrypt_magang_id",
+                    //     "sClass": "pr-2",
+                    //     "sWidth": "8%",
+                    //     "bSortable": false,
+                    //     "bSearchable": false,
+                    //     "mRender": function(data, type, row, meta) {
+                    //         if (row.magang_tipe != 1 && row.status != 1 && row.proposal
+                    //             .dokumen_magang_status == 1) {
+                    //             return `<a href="{{ $page->url }}/${data}" class=" btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Update" >Update</a> `
+                    //         } else {
+                    //             return '';
+                    //         }
+                    //     }
+                    // },
                     @if (auth()->user()->group_id != 4)
                         {
                             "mData": "is_accept",
@@ -220,6 +221,16 @@
                                         break;
                                 }
                             }
+                        }
+                    },
+                    {
+                        "mData": "encrypt_magang_id",
+                        "sClass": "pr-2",
+                        "sWidth": "8%",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mRender": function(data, type, row, meta) {
+                            return `<a href="{{ $page->url }}/${data}" class=" btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Detail" ><i class="fa fa-th"></i> Detail</a> `
                         }
                     },
                     @if (auth()->user()->group_id != 4)

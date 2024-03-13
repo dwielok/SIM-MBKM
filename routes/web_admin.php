@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DokumenController;
 use App\Http\Controllers\Master\BeritaController;
 use App\Http\Controllers\Master\DosenCircleController;
 use App\Http\Controllers\Master\DosenController;
@@ -179,3 +180,5 @@ Route::group(['prefix' => 'setting', 'middleware' => ['auth']], function () {
 });
 
 Route::get('mahasiswa/{nim}/cari', [MahasiswaController::class, 'cari']);
+Route::post('dokumen/upload_proposal', [DokumenController::class, 'upload_proposal'])->name('dokumen.upload_proposal');
+Route::post('dokumen/upload_surat_balasan', [DokumenController::class, 'upload_surat_balasan'])->name('dokumen.upload_surat_balasan');

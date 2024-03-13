@@ -280,11 +280,8 @@
                         unblockUI(blc);
                         setFormMessage('.form-message', data);
                         if (data.stat) {
-                            if (typeof dataDetail != 'undefined') dataDetail.draw();
-                            if (typeof dataMaster != 'undefined') dataMaster.draw(false);
-                            if (typeof tableFile != 'undefined') tableFile.draw();
-                            if (typeof tableQuiz != 'undefined') tableQuiz.draw();
-                            if (typeof tableAssignment != 'undefined') tableAssignment.draw();
+                            window.location.href =
+                                "{{ url('transaksi/lihat-status-pendaftaran') }}"
                         }
                         closeModal($modal, data);
                     }
@@ -345,7 +342,7 @@
                     setFormMessage('.form-message', {
                         stat: false,
                         mc: false,
-                        msg: 'NIM sudah ada'
+                        msg: 'Mahasiswa sudah ada di daftar'
                     });
                     return;
                 }

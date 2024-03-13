@@ -300,16 +300,16 @@ class DaftarMagangController extends Controller
                 ]);
             }
 
-            if ($kegiatan->kegiatan->is_submit_proposal == 1) {
-                $file = $request->file('proposal');
-                if (!$file) {
-                    return response()->json([
-                        'stat' => false,
-                        'mc' => false, // close modal
-                        'msg' => 'Proposal belum diisi'
-                    ]);
-                }
-            }
+            // if ($kegiatan->kegiatan->is_submit_proposal == 1) {
+            //     $file = $request->file('proposal');
+            //     if (!$file) {
+            //         return response()->json([
+            //             'stat' => false,
+            //             'mc' => false, // close modal
+            //             'msg' => 'Proposal belum diisi'
+            //         ]);
+            //     }
+            // }
 
             $count = Magang::selectRaw('magang_kode, count(*) as count')
                 ->groupBy('magang_kode')
