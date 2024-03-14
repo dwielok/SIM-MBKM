@@ -35,7 +35,7 @@
                                         <th>Durasi</th>
                                         <th>Tipe Pendaftar</th>
                                         @if (auth()->user()->group_id != 4)
-                                            <th>Dokumen</th>
+                                            <th>Validasi Proposal</th>
                                             <th>Anggota </th>
                                         @endif
                                         <th>Status</th>
@@ -149,7 +149,7 @@
                             "bSortable": false,
                             "bSearchable": false,
                             "mRender": function(data, type, row, meta) {
-                                return `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat dokumen" ><i class="fa fa-th"></i> Detail</a> `
+                                return `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/validasi_proposal" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat dokumen" ><i class="fa fa-th"></i> Detail</a> `
                             }
                         }, {
                             "mData": "magang_id",

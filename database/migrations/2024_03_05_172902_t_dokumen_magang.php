@@ -23,6 +23,7 @@ class TDokumenMagang extends Migration
             $table->tinyInteger('dokumen_magang_tipe')->comment('1=diterima,2=ditolak|untuk surat balasan');
             $table->string('dokumen_magang_file');
             $table->tinyInteger('dokumen_magang_status')->nullable();
+            $table->text('dokumen_magang_keterangan')->nullable();
             $table->dateTime('created_at')->nullable()->useCurrent();
             $table->integer('created_by')->nullable()->index();
             $table->dateTime('updated_at')->nullable();

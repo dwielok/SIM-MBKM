@@ -88,14 +88,11 @@
                                                         <td>
                                                             @if ($a->magang_tipe == 1)
                                                                 @if ($a->is_accept == 0)
-                                                                    <span
-                                                                        class="badge badge-pill badge-warning">Menunggu</span>
+                                                                    <span class="badge badge badge-warning">Menunggu</span>
                                                                 @elseif ($a->is_accept == 1)
-                                                                    <span
-                                                                        class="badge badge-pill badge-success">Menerima</span>
+                                                                    <span class="badge badge badge-success">Menerima</span>
                                                                 @elseif ($a->is_accept == 2)
-                                                                    <span
-                                                                        class="badge badge-pill badge-danger">Menolak</span>
+                                                                    <span class="badge badge badge-danger">Menolak</span>
                                                                 @endif
                                                             @endif
                                                         </td>
@@ -137,7 +134,7 @@
                                                             <button type="submit"
                                                                 class="ml-2 btn btn-sm btn-primary text-white">Upload</button>
                                                         </div>
-                                                        <small class="form-text text-muted">Pilih file proposal dengan
+                                                        <small class="form-text text-danger">Pilih file proposal dengan
                                                             format
                                                             .pdf</small>
                                                     </form>
@@ -155,9 +152,9 @@
                                                     <tr>
                                                         <th class="text-center w-5 p-1">No</th>
                                                         <th>Nama Berkas</th>
-                                                        <th>Keterangan</th>
-                                                        <th>Status</th>
                                                         <th><em>Last Update</em></th>
+                                                        <th>Status</th>
+                                                        <th>Keterangan</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -167,7 +164,9 @@
                                                             <a
                                                                 href="{{ asset('assets/proposal/' . $magang->proposal->dokumen_magang_file) }}">{{ $magang->proposal->dokumen_magang_file }}</a>
                                                         </td>
-                                                        <td>-</td>
+                                                        <td>
+                                                            {{ \Carbon\Carbon::parse($magang->proposal->created_at)->format('d M Y H:i') }}
+                                                        </td>
                                                         <td>
                                                             @if ($magang->proposal->dokumen_magang_status == '1')
                                                                 <span class="badge badge-success">Disetujui</span>
@@ -178,7 +177,7 @@
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            {{ \Carbon\Carbon::parse($magang->proposal->created_at)->format('d M Y H:i') }}
+                                                            {{ $magang->proposal->dokumen_magang_keterangan ?? '-' }}
                                                         </td>
                                                     </tr>
                                                 </tbody>

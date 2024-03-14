@@ -123,6 +123,7 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     // Route::get('pendaftaran/{id}/confirm_approve', [PendaftaranController::class, 'confirm_approve']);
     Route::get('pendaftaran/{id}/confirm', [PendaftaranController::class, 'confirm']);
     Route::put('pendaftaran/{id}/confirm', [PendaftaranController::class, 'confirm_action']);
+    Route::get('pendaftaran/{id}/validasi_proposal', [PendaftaranController::class, 'validasi_proposal']);
     Route::post('pendaftaran/confirm_proposal', [PendaftaranController::class, 'confirm_proposal']);
     Route::post('pendaftaran/confirm_sb', [PendaftaranController::class, 'confirm_sb']);
     // Route::put('pendaftaran/{id}/approve', [PendaftaranController::class, 'approve']);

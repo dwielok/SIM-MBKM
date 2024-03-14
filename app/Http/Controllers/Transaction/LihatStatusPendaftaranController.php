@@ -19,7 +19,7 @@ class LihatStatusPendaftaranController extends Controller
     {
         $this->menuCode  = 'TRANSACTION.LIHAT.STATUS.PENDAFTARAN';
         $this->menuUrl   = url('transaksi/lihat-status-pendaftaran');     // set URL untuk menu ini
-        $this->menuTitle = 'Lihat Status Pendafatran';                       // set nama menu
+        $this->menuTitle = 'Lihat Status Pendaftaran';                       // set nama menu
         $this->viewPath  = 'transaction.lihat-status-pendaftaran.';         // untuk menunjukkan direktori view. Diakhiri dengan tanda titik
     }
 
@@ -174,7 +174,7 @@ class LihatStatusPendaftaranController extends Controller
 
         $breadcrumb = [
             'title' => $this->menuTitle,
-            'list'  => ['Transaksi', 'Lihat Status Pendafatran']
+            'list'  => ['Transaksi', 'Lihat Status Pendaftaran']
         ];
 
         $activeMenu = [

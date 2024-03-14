@@ -332,6 +332,45 @@ class PendaftaranController extends Controller
         return redirect('/');
     }
 
+    public function validasi_proposal($id)
+    {
+
+        $page = [
+            'url' => $this->menuUrl,
+            'title' => 'Validasi Proposal ' . $this->menuTitle
+        ];
+
+        $data = Magang::find($id);
+
+        $kode_magang = $data->magang_kode;
+
+        //find Magang with same kode_magang then show mahaasiswa
+
+        $anggotas = Magang::where('magang_kode', $kode_magang)
+            ->with('mahasiswa')
+            ->get();
+
+        $magang = Magang::where('magang_id', $id)
+            ->with('mitra')
+            ->with('mitra.kegiatan')
+            ->with('periode')
+            ->first();
+        $check = Magang::where('magang_kode', $kode_magang)->get();
+        $id_joined = $check->pluck('magang_id');
+        $proposal = DokumenMagangModel::whereIn('magang_id', $id_joined)->where('dokumen_magang_nama', 'PROPOSAL')->first();
+        $magang->proposal = $proposal;
+
+        return view($this->viewPath . 'validasi_proposal')
+            ->with('page', (object) $page)
+            ->with('id', $id)
+            ->with('data', $data)
+            ->with('url', $this->menuUrl . '/' . $id . '/suratbalasan')
+            ->with('anggotas', $anggotas)
+            ->with('magang', $magang)
+            ->with('page', (object) $page)
+            ->with('action', 'POST');
+    }
+
     public function confirm_proposal(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
@@ -346,7 +385,7 @@ class PendaftaranController extends Controller
             // dd($kode_magang);
             //update status Magang where magang_kode = $kode_magang
             $res = Magang::where('magang_kode', $kode_magang)->update(['status' => $status]);
-            $res = DokumenMagangModel::where('dokumen_magang_id', $id)->where('dokumen_magang_nama', 'PROPOSAL')->update(['dokumen_magang_status' => $status == 3 ? 1 : 0]);
+            $res = DokumenMagangModel::where('dokumen_magang_id', $id)->where('dokumen_magang_nama', 'PROPOSAL')->update(['dokumen_magang_status' => $status == 3 ? 1 : 0, 'dokumen_magang_keterangan' => $request->keterangan]);
 
             return response()->json([
                 'stat' => $status == 3 ? 1 : 0,
