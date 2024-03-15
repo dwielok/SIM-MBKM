@@ -7,7 +7,7 @@
     "require": {
         "php": "^8.1",
         "barryvdh/laravel-debugbar": "*",
-        "barryvdh/laravel-dompdf": "^2.0",
+        "barryvdh/laravel-dompdf": "^2.1",
         "doctrine/dbal": "*",
         "ezyang/htmlpurifier": "^4.17",
         "guzzlehttp/guzzle": "^7.8",

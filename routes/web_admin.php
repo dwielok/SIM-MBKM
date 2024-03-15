@@ -27,6 +27,7 @@ use App\Http\Controllers\Setting\GroupController;
 use App\Http\Controllers\Setting\MenuController;
 use App\Http\Controllers\Setting\ProfileController;
 use App\Http\Controllers\Setting\UserController;
+use App\Http\Controllers\SuratPengantarController;
 use App\Http\Controllers\Transaction\BeritaController as TransactionBeritaController;
 use App\Http\Controllers\Transaction\DaftarMagangController;
 use App\Http\Controllers\Transaction\LihatStatusPendaftaranController;
@@ -183,3 +184,7 @@ Route::group(['prefix' => 'setting', 'middleware' => ['auth']], function () {
 Route::get('mahasiswa/{nim}/cari', [MahasiswaController::class, 'cari']);
 Route::post('dokumen/upload_proposal', [DokumenController::class, 'upload_proposal'])->name('dokumen.upload_proposal');
 Route::post('dokumen/upload_surat_balasan', [DokumenController::class, 'upload_surat_balasan'])->name('dokumen.upload_surat_balasan');
+
+Route::post('surat_pengantar/generate', [SuratPengantarController::class, 'generate'])->name('generate.surat_pengantar');
+
+Route::get('surat_pengantar/{kode}', [SuratPengantarController::class, 'index']);

@@ -1,3 +1,8 @@
+@php
+    setlocale(LC_TIME, 'id_ID');
+    \Carbon\Carbon::setLocale('id');
+@endphp
+
 @extends('layouts.template')
 
 @section('content')
@@ -102,88 +107,187 @@
                                         </table>
                                     </td>
                                 </tr>
-                                @if (!$magang->proposal_exist)
-                                    @if ($magang->ketua)
+                                @if ($magang->mitra->kegiatan->is_submit_proposal)
+
+                                    @if (!$magang->proposal_exist)
+                                        @if ($magang->ketua)
+                                            <tr>
+                                                <th class="w-15 text-right">Berkas Proposal</th>
+                                                <th class="w-1">:</th>
+                                                <td class="w-84 py-2">
+                                                    @if (!$magang->can_upload_proposal)
+                                                        <span class="badge badge-danger">Belum bisa upload dikarenakan ada
+                                                            anggota yang belum menerima ajakan</span>
+                                                    @else
+                                                        <form method="post"
+                                                            action="{{ route('dokumen.upload_proposal') }}" role="form"
+                                                            class="form-horizontal" id="form-proposal"
+                                                            enctype="multipart/form-data">
+                                                            @csrf
+                                                            <div class="d-flex">
+                                                                <div class="form-control-sm custom-file">
+                                                                    <input type="hidden" value="{{ $magang->magang_id }}"
+                                                                        name="magang_id" />
+                                                                    <input type="file"
+                                                                        class="form-control-sm custom-file-input"
+                                                                        data-target="0" id="proposal" name="proposal"
+                                                                        data-rule-filesize="1"
+                                                                        data-rule-accept="application/pdf"
+                                                                        accept="application/pdf" />
+                                                                    <label
+                                                                        class="form-control-sm custom-file-label file_label_0"
+                                                                        for="proposal">Choose
+                                                                        file</label>
+                                                                </div>
+                                                                <button type="submit"
+                                                                    class="ml-2 btn btn-sm btn-primary text-white">Upload</button>
+                                                            </div>
+                                                            <small class="form-text text-danger">Pilih file proposal dengan
+                                                                format
+                                                                .pdf</small>
+                                                        </form>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @else
                                         <tr>
                                             <th class="w-15 text-right">Berkas Proposal</th>
                                             <th class="w-1">:</th>
                                             <td class="w-84 py-2">
-                                                @if (!$magang->can_upload_proposal)
-                                                    <span class="badge badge-danger">Belum bisa upload dikarenakan ada
-                                                        anggota yang belum menerima ajakan</span>
-                                                @else
-                                                    <form method="post" action="{{ route('dokumen.upload_proposal') }}"
-                                                        role="form" class="form-horizontal" id="form-proposal"
-                                                        enctype="multipart/form-data">
-                                                        @csrf
-                                                        <div class="d-flex">
-                                                            <div class="form-control-sm custom-file">
-                                                                <input type="hidden" value="{{ $magang->magang_id }}"
-                                                                    name="magang_id" />
-                                                                <input type="file"
-                                                                    class="form-control-sm custom-file-input"
-                                                                    data-target="0" id="proposal" name="proposal"
-                                                                    data-rule-filesize="1"
-                                                                    data-rule-accept="application/pdf"
-                                                                    accept="application/pdf" />
-                                                                <label
-                                                                    class="form-control-sm custom-file-label file_label_0"
-                                                                    for="proposal">Choose
-                                                                    file</label>
-                                                            </div>
-                                                            <button type="submit"
-                                                                class="ml-2 btn btn-sm btn-primary text-white">Upload</button>
-                                                        </div>
-                                                        <small class="form-text text-danger">Pilih file proposal dengan
-                                                            format
-                                                            .pdf</small>
-                                                    </form>
-                                                @endif
+                                                <table class="table table-sm text-sm table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-center w-5 p-1">No</th>
+                                                            <th>Nama Berkas</th>
+                                                            <th><em>Last Update</em></th>
+                                                            <th>Status</th>
+                                                            <th>Keterangan</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="text-center w-5 p-1">1</td>
+                                                            <td>
+                                                                <a
+                                                                    href="{{ asset('assets/proposal/' . $magang->proposal->dokumen_magang_file) }}">{{ $magang->proposal->dokumen_magang_file }}</a>
+                                                            </td>
+                                                            <td>
+                                                                {{ \Carbon\Carbon::parse($magang->proposal->created_at)->format('d M Y H:i') }}
+                                                            </td>
+                                                            <td>
+                                                                @if ($magang->proposal->dokumen_magang_status == '1')
+                                                                    <span class="badge badge-success">Disetujui</span>
+                                                                @elseif ($magang->proposal->dokumen_magang_status == '0')
+                                                                    <span class="badge badge-danger">Ditolak</span>
+                                                                @else
+                                                                    <span class="badge badge-warning">Menunggu</span>
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                {{ $magang->proposal->dokumen_magang_keterangan ?? '-' }}
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </td>
                                         </tr>
+                                        @if (!$magang->surat_pengantar_exist)
+                                            {{-- must ketua --}}
+                                            @if ($magang->ketua)
+                                                <tr>
+                                                    <th class="w-15 text-right">Surat Pengantar</th>
+                                                    <th class="w-1">:</th>
+                                                    <td class="w-84 py-2">
+                                                        <form method="post"
+                                                            action="{{ route('generate.surat_pengantar') }}" role="form"
+                                                            class="form-horizontal" id="form-generate-sp">
+                                                            @csrf
+                                                            <div class="form-group required mb-0">
+                                                                <label
+                                                                    class="control-label col-form-label text-left font-weight-normal">Alamat
+                                                                    Mitra</label>
+                                                                <div class="">
+                                                                    <input type="hidden" name="magang_kode"
+                                                                        value="{{ $magang->magang_kode }}">
+                                                                    <textarea class="form-control form-control-sm" id="surat_pengantar_alamat_mitra" name="surat_pengantar_alamat_mitra"></textarea>
+                                                                    <small class="form-text text-muted">
+                                                                        Masukkan alamat lengkap mitra
+                                                                    </small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group required mb-0">
+                                                                <label
+                                                                    class="control-label col-form-label text-left font-weight-normal">Awal
+                                                                    Pelaksanaan</label>
+                                                                <div class="">
+                                                                    {{-- loop januari until desember --}}
+                                                                    <select class="form-control form-control-sm"
+                                                                        id="surat_pengantar_awal_pelaksanaan"
+                                                                        name="surat_pengantar_awal_pelaksanaan">
+                                                                        <option value="" disabled selected>Pilih
+                                                                            bulan</option>
+                                                                        @foreach ($bulans as $key => $bulan)
+                                                                            <option value="{{ $key + 1 }}">
+                                                                                {{ $bulan }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                    <small class="form-text text-muted">
+                                                                        Masukkan bulan awal pelaksanaan magang
+                                                                    </small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group mb-2">
+                                                                <label
+                                                                    class="control-label col-form-label text-left font-weight-normal">Akhir
+                                                                    Pelaksanaan</label>
+                                                                <div class="">
+                                                                    {{-- loop januari until desember --}}
+                                                                    <input type="hidden"
+                                                                        id="surat_pengantar_akhir_pelaksanaan"
+                                                                        name="surat_pengantar_akhir_pelaksanaan">
+                                                                    <select class="form-control form-control-sm"
+                                                                        id="surat_pengantar_akhir"
+                                                                        name="surat_pengantar_akhir" readonly disabled>
+                                                                        <option value="" disabled selected>Pilih
+                                                                            bulan awal pelaksanaan dahulu</option>
+                                                                        @foreach ($bulans as $key => $bulan)
+                                                                            <option value="{{ $key + 1 }}">
+                                                                                {{ $bulan }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <button type="submit"
+                                                                class="btn btn-sm btn-primary text-white">Generate</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            @else
+                                                <tr>
+                                                    <th class="w-15 text-right">Surat Pengantar</th>
+                                                    <th class="w-1">:</th>
+                                                    <td class="w-84 py-2">
+                                                        -
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                        @else
+                                            <tr>
+                                                <th class="w-15 text-right">Surat Pengantar</th>
+                                                <th class="w-1">:</th>
+                                                <td class="w-84 py-2">
+                                                    <a href="{{ url('surat_pengantar/' . $magang->magang_kode) }}"
+                                                        target="_blank"
+                                                        class="ml-2 btn btn-sm btn-success text-white text-decoration-none">
+                                                        <i class="fas fa-download"></i>
+                                                        Download</a>
+                                                </td>
+                                            </tr>
+                                        @endif
                                     @endif
-                                @else
-                                    <tr>
-                                        <th class="w-15 text-right">Berkas Proposal</th>
-                                        <th class="w-1">:</th>
-                                        <td class="w-84 py-2">
-                                            <table class="table table-sm text-sm table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="text-center w-5 p-1">No</th>
-                                                        <th>Nama Berkas</th>
-                                                        <th><em>Last Update</em></th>
-                                                        <th>Status</th>
-                                                        <th>Keterangan</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="text-center w-5 p-1">1</td>
-                                                        <td>
-                                                            <a
-                                                                href="{{ asset('assets/proposal/' . $magang->proposal->dokumen_magang_file) }}">{{ $magang->proposal->dokumen_magang_file }}</a>
-                                                        </td>
-                                                        <td>
-                                                            {{ \Carbon\Carbon::parse($magang->proposal->created_at)->format('d M Y H:i') }}
-                                                        </td>
-                                                        <td>
-                                                            @if ($magang->proposal->dokumen_magang_status == '1')
-                                                                <span class="badge badge-success">Disetujui</span>
-                                                            @elseif ($magang->proposal->dokumen_magang_status == '0')
-                                                                <span class="badge badge-danger">Ditolak</span>
-                                                            @else
-                                                                <span class="badge badge-warning">Menunggu</span>
-                                                            @endif
-                                                        </td>
-                                                        <td>
-                                                            {{ $magang->proposal->dokumen_magang_keterangan ?? '-' }}
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
                                 @endif
                             </tbody>
                         </table>
@@ -233,7 +337,41 @@
 
             loadFile()
 
+            // #surat_pengantar_awal_pelaksanaan on change will count the duration with $magang->mitra->mitra_durasi
+            // with mitra_durasi only number eg 6, then surat_pengantar_akhir_pelaksanaan will calculate the duration
+            // with adding 6 month from surat_pengantar_awal_pelaksanaan
+            //then if december, will count back to january, etc
+            $('#surat_pengantar_awal_pelaksanaan').on('change', function() {
+                const durasi = parseInt('{{ $magang->mitra->mitra_durasi }}')
+                const awal = parseInt($(this).val())
+                let akhir = awal + durasi
+                if (akhir > 12) {
+                    akhir = akhir - 12
+                }
+                $('#surat_pengantar_akhir').val(akhir - 1)
+                $('#surat_pengantar_akhir_pelaksanaan').val(akhir - 1)
+            })
+
             $("#form-proposal").submit(function() {
+                $('.form-message').html('');
+                let blc = '#container-daftar';
+                blockUI(blc);
+                $(this).ajaxSubmit({
+                    dataType: 'json',
+                    success: function(data) {
+                        refreshToken(data);
+                        unblockUI(blc);
+                        setFormMessage('.form-message', data);
+                        if (data.stat) {
+                            //reload this page
+                            window.location.reload();
+                        }
+                    }
+                });
+                return false;
+            });
+
+            $("#form-generate-sp").submit(function() {
                 $('.form-message').html('');
                 let blc = '#container-daftar';
                 blockUI(blc);

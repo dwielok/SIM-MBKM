@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DokumenMagangModel;
 use App\Models\Master\MahasiswaModel;
 use App\Models\MitraModel;
+use App\Models\SuratPengantarModel;
 use App\Models\Transaction\Magang;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -213,13 +214,27 @@ class LihatStatusPendaftaranController extends Controller
         $check = Magang::where('magang_kode', $kode_magang)->get();
         $id_joined = $check->pluck('magang_id');
         $proposal = DokumenMagangModel::whereIn('magang_id', $id_joined)->where('dokumen_magang_nama', 'PROPOSAL')->first();
+        $surat_pengantar = SuratPengantarModel::where('magang_kode', $kode_magang)->first();
         if ($proposal) {
             $magang->proposal_exist = TRUE;
             $magang->proposal = $proposal;
+            if ($surat_pengantar) {
+                $magang->surat_pengantar_exist = TRUE;
+                $magang->surat_pengantar = $surat_pengantar;
+            } else {
+                $magang->surat_pengantar_exist = FALSE;
+                $magang->surat_pengantar = NULL;
+            }
         } else {
             $magang->proposal_exist = FALSE;
             $magang->proposal = NULL;
+            $magang->surat_pengantar_exist = FALSE;
+            $magang->surat_pengantar = NULL;
         }
+
+        $bulans = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
 
         return view($this->viewPath . 'update')
             ->with('page', (object) $page)
@@ -231,6 +246,7 @@ class LihatStatusPendaftaranController extends Controller
             ->with('breadcrumb', (object) $breadcrumb)
             ->with('activeMenu', (object) $activeMenu)
             ->with('anggotas', $anggotas)
+            ->with('bulans', $bulans)
             ->with('page', (object) $page)
             ->with('action', 'POST');
     }
