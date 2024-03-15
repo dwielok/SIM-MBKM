@@ -37,7 +37,14 @@
 </head>
 
 <body>
-    {{-- <img src="{{ asset('assets/poltek.jpeg') }}" style="height: 80px;position: absolute;" /> --}}
+    @php
+        $img = asset('assets/poltek.jpeg');
+        $base_64 = base64_encode($img);
+        $img = 'data:image/png;base64,' . $base_64;
+    @endphp
+    {{-- <img src="{{ $img }}" style="height: 80px;position: absolute;" /> --}}
+    <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('assets/poltek.jpeg'))) }}"
+        class="app-image-style" style="height: 120px;position: absolute;top:10px" />
     <table align="center" border="0" cellpadding="1" class="main">
         <tbody>
             <tr>
@@ -206,7 +213,8 @@
                         <span
                             style="font-size: 16px;text-decoration:underline;line-height:1">{{ $anggotas[0]->periode->periode_direktur }}
                         </span><br />
-                        <span style="font-size: 16px;line-height:1">NIP. {{ $anggotas[0]->periode->periode_nip }}</span>
+                        <span style="font-size: 16px;line-height:1">NIP.
+                            {{ $anggotas[0]->periode->periode_nip }}</span>
 
                     </div>
                 </td>
