@@ -40,7 +40,7 @@ class DokumenController extends Controller
     }
     public function upload_surat_balasan(Request $request)
     {
-
+        // dd($request->all());
         $file = $request->file('surat_balasan');
         if ($file) {
             $fileName = 'surat_balasan_' . time() . '.' . $file->getClientOriginalExtension();
