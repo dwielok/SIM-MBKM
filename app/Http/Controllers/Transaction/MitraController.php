@@ -525,9 +525,9 @@ class MitraController extends Controller
             $res = MitraModel::updateData($id, $request);
 
             return response()->json([
-                'stat' => $res,
+                'stat' => $request->status == 1 ? TRUE : FALSE,
                 'mc' => $res, // close modal
-                'msg' => ($res) ? 'Perusahaan berhasil diapprove.' : 'Perusahaan gagal diapprove.'
+                'msg' => ($res) ? 'Perusahaan berhasil ' . ($request->status == 1 ? 'diapprove.' : 'direject.') : 'Perusahaan gagal ' . ($request->status == 1 ? 'diapprove.' : 'direject.')
             ]);
         }
 

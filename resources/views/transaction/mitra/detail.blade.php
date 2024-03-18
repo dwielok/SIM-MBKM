@@ -137,7 +137,7 @@
                                         </tr>
                                     </form>
                                 @endif
-                                @if ($mitra->status != 0)
+                                @if ($mitra->status == 1)
                                     <tr>
                                         <th class="w-15 text-right">Kuota</th>
                                         <th class="w-1">:</th>
@@ -205,9 +205,9 @@
                         refreshToken(data);
                         unblockUI(blc);
                         setFormMessage('.form-message', data);
-                        if (data.stat) {
-                            window.location.reload();
-                        }
+                        // if (data.stat) {
+                        // }
+                        window.location.reload();
                         // closeModal($modal, data);
                     }
                 });
