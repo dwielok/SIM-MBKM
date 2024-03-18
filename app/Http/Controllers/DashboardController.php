@@ -64,6 +64,9 @@ class DashboardController extends Controller
         };*/
 
         switch (Auth::user()->getRole()) {
+            case 'ADM':
+                return $this->index_admin($breadcrumb, $activeMenu, $page);
+                break;
             case 'KOM':
                 return $this->index_koordinator($breadcrumb, $activeMenu, $page);
                 break;
@@ -89,7 +92,28 @@ class DashboardController extends Controller
 
     private function index_admin($breadcrumb, $activeMenu, $page)
     {
-        return $this->index_default($breadcrumb, $activeMenu, $page);
+        $active_periode = PeriodeModel::where('is_current', 1)->first();
+
+        $count_pendaftar  = Magang::where('periode_id', $active_periode->periode_id)
+            ->count();
+
+        $count_mahasiswa = MahasiswaModel::count();
+
+        $count_mitra  = MitraModel::with('kegiatan')->with('periode');
+        $count_mitra = $count_mitra->count();
+
+        $count_diterima = Magang::where('periode_id', $active_periode->periode_id)
+            ->where('status', 1)
+            ->count();
+
+        return view($this->viewPath . 'koordinator')
+            ->with('breadcrumb', (object) $breadcrumb)
+            ->with('activeMenu', (object) $activeMenu)
+            ->with('count_pendaftar', $count_pendaftar)
+            ->with('count_mahasiswa', $count_mahasiswa)
+            ->with('count_mitra', $count_mitra)
+            ->with('count_diterima', $count_diterima)
+            ->with('page', (object) $page);
     }
 
     private function index_mahasiswa($breadcrumb, $activeMenu, $page)
