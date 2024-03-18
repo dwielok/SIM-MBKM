@@ -177,7 +177,7 @@
                             @if ($allowAccess->update)
                                 // if (row.kegiatan.is_kuota == 1) {
                                 buttons +=
-                                    `<a href="{{ $page->url }}/${data}" class=" btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat detail" >Daftar</a> `
+                                    `<a href="{{ $page->url }}/${data}/show" class=" btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat detail" >Daftar</a> `
                                 // }
                             @endif
                             return buttons;

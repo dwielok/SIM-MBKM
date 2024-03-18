@@ -105,7 +105,7 @@
                             <tr style="font-weight: bold">
                                 <td width="74" style="vertical-align: top"><span style="font-size: 16px;">Kepada
                                         Yth.</span></td>
-                                <td width="140"><span
+                                <td width="140" style="vertical-align: top"><span
                                         style="font-size: 16px;">{{ $sp->surat_pengantar_alamat_mitra }}</span>
                                 </td>
                                 <td width="11"></td>

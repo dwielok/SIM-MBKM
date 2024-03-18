@@ -260,7 +260,8 @@
                                                                     </select>
                                                                 </div>
                                                             </div>
-                                                            <button type="submit"
+                                                            <button id="generate-btn" type="button" data-toggle="modal"
+                                                                data-target="#d"
                                                                 class="btn btn-sm btn-primary text-white">Generate</button>
                                                         </form>
                                                     </td>
@@ -367,7 +368,13 @@
                                                         <td class="text-center w-5 p-1">1</td>
                                                         <td>
                                                             <a
-                                                                href="{{ asset('assets/suratbalasan/' . $magang->surat_balasan->dokumen_magang_file) }}">{{ $magang->surat_balasan->dokumen_magang_file }}</a>
+                                                                href="{{ asset('assets/suratbalasan/' . $magang->surat_balasan->dokumen_magang_file) }}">{{ $magang->surat_balasan->dokumen_magang_file }}
+                                                            </a>
+                                                            @if ($magang->surat_balasan->dokumen_magang_tipe == 1)
+                                                                <span class="badge badge-success">Diterima</span>
+                                                            @else
+                                                                <span class="badge badge-danger">Ditolak</span>
+                                                            @endif
                                                         </td>
                                                         <td>
                                                             {{ \Carbon\Carbon::parse($magang->surat_balasan->created_at)->format('d M Y H:i') }}
@@ -395,6 +402,36 @@
                     </div>
                 </div>
             </section>
+        </div>
+    </div>
+
+    <div class="modal fade" id="d">
+        <div id="modal-confirm-generate" class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Konfirmasi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="mb-0 form-message text-center"></div>
+                    <div class="alert alert-warning mb-0 rounded-0">
+                        Apakah anda yakin akan generate surat pengantar dengan detail sebagai berikut?
+                        <section class="landing">
+                            <div class="container">
+                                <dl class="row mb-0">
+
+                                </dl>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-warning">Keluar</button>
+                    <button type="button" class="btn btn-primary" id="btn-confirm">Ya, Yakin</button>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
@@ -437,6 +474,8 @@
             // bsCustomFileInput.init();
 
             loadFile()
+            // hide modal #modal-confirm-generate
+            // $('#modal-confirm-generate').modal('hide')
 
             // #surat_pengantar_awal_pelaksanaan on change will count the duration with $magang->mitra->mitra_durasi
             // with mitra_durasi only number eg 6, then surat_pengantar_akhir_pelaksanaan will calculate the duration
@@ -491,11 +530,46 @@
                 return false;
             });
 
-            $("#form-generate-sp").submit(function() {
+            $('#generate-btn').click(function() {
+                const awal = $('#surat_pengantar_awal_pelaksanaan').val()
+                const akhir = $('#surat_pengantar_akhir_pelaksanaan').val()
+                const alamat = $('#surat_pengantar_alamat_mitra').val()
+                if (awal == '' || akhir == '' || alamat == '') {
+                    alert('Lengkapi form terlebih dahulu')
+                    return
+                }
+                const info = {
+                    'Alamat Mitra': alamat,
+                    'Awal Pelaksanaan': $('#surat_pengantar_awal_pelaksanaan option:selected').text(),
+                    'Akhir Pelaksanaan': $('#surat_pengantar_akhir option:selected').text()
+                }
+                $('#modal-confirm-generate .modal-title').html('Konfirmasi Generate Surat Pengantar')
+                $('#modal-confirm-generate .modal-body .landing dl').html('')
+                $.each(info, function(k, v) {
+                    $('#modal-confirm-generate .modal-body .landing dl').append(`
+                        <dt class="col-sm-5 text-right"><strong>${k}:</strong></dt>
+                        <dd class="col-sm-7 mb-0">${v}</dd>
+                    `)
+                })
+                // $('#modal-confirm-generate .modal-footer button[type="submit"]').html('Generate')
+                $('#modal-confirm-generate').modal('show')
+            })
+
+            $("#btn-confirm").click(function() {
                 $('.form-message').html('');
                 let blc = '#container-daftar';
                 blockUI(blc);
+                const url = $('#form-generate-sp').attr('action')
+                //get the form data
+                const data = $('#form-generate-sp').serializeArray();
+                const method = 'POST'
+
+                console.log(url, data)
+                // return
                 $(this).ajaxSubmit({
+                    url: url,
+                    type: method,
+                    data: data,
                     dataType: 'json',
                     success: function(data) {
                         refreshToken(data);

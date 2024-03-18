@@ -265,6 +265,68 @@ class PendaftaranController extends Controller
             ], 'Konfirmasi Pendaftaran', 'Data pendaftar:', 'Ya, Approve', 'PUT');
     }
 
+    public function confirm_delete($id)
+    {
+        $this->authAction('delete', 'modal');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        $data = Magang::with('mahasiswa')
+            ->with('mitra')
+            ->with('periode')
+            ->with('prodi')
+            ->with('mitra.kegiatan')
+            ->where('magang_id', $id)
+            ->first();
+
+        $kode_magang = $data->magang_kode;
+
+        //find Magang with same kode_magang then show mahaasiswa
+
+        $data->anggotas = Magang::where('magang_kode', $kode_magang)
+            ->with('mahasiswa')
+            ->get();
+
+        return (!$data) ? $this->showModalError() :
+            $this->showModalConfirmCustom(
+                'transaction.pendaftaran.confirm',
+                $this->menuUrl . '/' . $id,
+                [
+                    'Magang ID' => $data->magang_kode,
+                    'Skema' => $data->magang_skema,
+                    'Mitra' => $data->mitra->mitra_nama,
+                    'Kegiatan' => $data->mitra->kegiatan->kegiatan_nama,
+                ],
+                'Konfirmasi Hapus Data',
+                'Apakah anda yakin ingin menghapus data berikut:',
+                'Ya, Hapus',
+                'DELETE',
+                $data
+            );
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $this->authAction('delete', 'json');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            $magang_kode = Magang::find($id)->magang_kode;
+
+            $res = [];
+            foreach (Magang::where('magang_kode', $magang_kode)->get() as $m) {
+                $res[] = Magang::deleteData($m->magang_id);
+            }
+
+            return response()->json([
+                'stat' => $res[0],
+                'mc' => $res[0], // close modal
+                'msg' => Magang::getDeleteMessage()
+            ]);
+        }
+
+        return redirect('/');
+    }
+
     public function confirm_action(Request $request, $id)
     {
         $this->authAction('update', 'json');
@@ -371,6 +433,47 @@ class PendaftaranController extends Controller
             ->with('action', 'POST');
     }
 
+    public function validasi_surat_balasan($id)
+    {
+
+        $page = [
+            'url' => $this->menuUrl,
+            'title' => 'Validasi Surat Balasan ' . $this->menuTitle
+        ];
+
+        $data = Magang::find($id);
+
+        $kode_magang = $data->magang_kode;
+
+        //find Magang with same kode_magang then show mahaasiswa
+
+        $anggotas = Magang::where('magang_kode', $kode_magang)
+            ->with('mahasiswa')
+            ->get();
+
+        $magang = Magang::where('magang_id', $id)
+            ->with('mitra')
+            ->with('mitra.kegiatan')
+            ->with('periode')
+            ->first();
+        $check = Magang::where('magang_kode', $kode_magang)->get();
+        $id_joined = $check->pluck('magang_id');
+        $surat_balasan = DokumenMagangModel::whereIn('magang_id', $id_joined)->where('dokumen_magang_nama', 'SURAT_BALASAN')->first();
+        $magang->surat_balasan = $surat_balasan;
+        $proposal = DokumenMagangModel::whereIn('magang_id', $id_joined)->where('dokumen_magang_nama', 'PROPOSAL')->first();
+        $magang->proposal = $proposal;
+
+        return view($this->viewPath . 'validasi_surat_balasan')
+            ->with('page', (object) $page)
+            ->with('id', $id)
+            ->with('data', $data)
+            ->with('url', $this->menuUrl . '/' . $id . '/suratbalasan')
+            ->with('anggotas', $anggotas)
+            ->with('magang', $magang)
+            ->with('page', (object) $page)
+            ->with('action', 'POST');
+    }
+
     public function confirm_proposal(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
@@ -399,6 +502,7 @@ class PendaftaranController extends Controller
 
     public function confirm_sb(Request $request)
     {
+        // dd($request->all());
         if ($request->ajax() || $request->wantsJson()) {
 
             $id = $request->id;
@@ -411,7 +515,7 @@ class PendaftaranController extends Controller
             // dd($kode_magang);
             //update status Magang where magang_kode = $kode_magang
             $res = Magang::where('magang_kode', $kode_magang)->update(['status' => $status]);
-            $res = DokumenMagangModel::where('dokumen_magang_id', $id)->where('dokumen_magang_nama', 'SURAT_BALASAN')->update(['dokumen_magang_status' => $status == 1 ? 1 : 0]);
+            $res = DokumenMagangModel::where('dokumen_magang_id', $id)->where('dokumen_magang_nama', 'SURAT_BALASAN')->update(['dokumen_magang_status' => $status == 1 ? 1 : 0, 'dokumen_magang_keterangan' => $request->keterangan]);
 
             return response()->json([
                 'stat' => $status == 1 ? 1 : 0,

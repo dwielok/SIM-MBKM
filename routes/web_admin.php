@@ -21,6 +21,7 @@ use App\Http\Controllers\Proposal\AdminPendaftaranSemproController;
 use App\Http\Controllers\Proposal\AdminProposalMahasiswaBermasalahController;
 use App\Http\Controllers\Proposal\AdminProposalMahasiswaController;
 use App\Http\Controllers\Proposal\AdminUsulanTopikController;
+use App\Http\Controllers\Report\DaftarMahasiswaDiterimaController;
 use App\Http\Controllers\Report\LogActivityController;
 use App\Http\Controllers\Setting\AccountController;
 use App\Http\Controllers\Setting\GroupController;
@@ -108,23 +109,24 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
 
     //daftar magang
     Route::resource('daftar-magang', DaftarMagangController::class)->parameter('daftar-magang', 'id');
-    Route::get('daftar-magang/{encrpyt}', [DaftarMagangController::class, 'show']);
     Route::post('daftar-magang/list', [DaftarMagangController::class, 'list']);
-    Route::get('daftar-magang/{id}/delete', [DaftarMagangController::class, 'confirm']);
-    Route::post('daftar-magang/{id}/daftar', [DaftarMagangController::class, 'daftar']);
     Route::get('daftar-magang/ajukan', [DaftarMagangController::class, 'ajukan']);
     Route::post('daftar-magang/ajukan', [DaftarMagangController::class, 'ajukan_action']);
+    Route::get('daftar-magang/{encrpyt}/show', [DaftarMagangController::class, 'show']);
+    Route::get('daftar-magang/{id}/delete', [DaftarMagangController::class, 'confirm']);
+    Route::post('daftar-magang/{id}/daftar', [DaftarMagangController::class, 'daftar']);
 
     //pendaftaran (role koordinator)
     Route::resource('pendaftaran', PendaftaranController::class)->parameter('pendaftaran', 'id');
     Route::post('pendaftaran/list', [PendaftaranController::class, 'list']);
-    Route::get('pendaftaran/{id}/delete', [PendaftaranController::class, 'delete']);
+    Route::get('pendaftaran/{id}/delete', [PendaftaranController::class, 'confirm_delete']);
     Route::get('pendaftaran/{id}/anggota', [PendaftaranController::class, 'anggota']);
     // Route::get('pendaftaran/{id}/confirm_approve', [PendaftaranController::class, 'confirm_approve']);
     // Route::get('pendaftaran/{id}/confirm_approve', [PendaftaranController::class, 'confirm_approve']);
     Route::get('pendaftaran/{id}/confirm', [PendaftaranController::class, 'confirm']);
     Route::put('pendaftaran/{id}/confirm', [PendaftaranController::class, 'confirm_action']);
     Route::get('pendaftaran/{id}/validasi_proposal', [PendaftaranController::class, 'validasi_proposal']);
+    Route::get('pendaftaran/{id}/validasi_surat_balasan', [PendaftaranController::class, 'validasi_surat_balasan']);
     Route::post('pendaftaran/confirm_proposal', [PendaftaranController::class, 'confirm_proposal']);
     Route::post('pendaftaran/confirm_sb', [PendaftaranController::class, 'confirm_sb']);
     // Route::put('pendaftaran/{id}/approve', [PendaftaranController::class, 'approve']);
@@ -156,6 +158,12 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     Route::get('berita/{id}/delete', [TransactionBeritaController::class, 'confirm']);
 });
 
+Route::group(['prefix' => 'laporan', 'middleware' => ['auth']], function () {
+    Route::resource('daftar-mahasiswa-diterima', DaftarMahasiswaDiterimaController::class)->parameter('daftar-mahasiswa-diterima', 'id');
+    Route::post('daftar-mahasiswa-diterima/list', [DaftarMahasiswaDiterimaController::class, 'list']);
+    Route::get('daftar-mahasiswa-diterima/{id}/delete', [DaftarMahasiswaDiterimaController::class, 'confirm']);
+});
+
 //kuota with url mitra/{id}/kuota
 Route::prefix('mitra/{id}')->group(function () {
     Route::resource('kuota', MitraKuotaController::class);
@@ -185,6 +193,7 @@ Route::get('mahasiswa/{nim}/cari', [MahasiswaController::class, 'cari']);
 Route::post('dokumen/upload_proposal', [DokumenController::class, 'upload_proposal'])->name('dokumen.upload_proposal');
 Route::post('dokumen/upload_surat_balasan', [DokumenController::class, 'upload_surat_balasan'])->name('dokumen.upload_surat_balasan');
 
+Route::get('daftar-mahasiswa-diterima/{id}/confirm', [SuratPengantarController::class, 'confirm']);
 Route::post('surat_pengantar/generate', [SuratPengantarController::class, 'generate'])->name('generate.surat_pengantar');
 
 Route::get('surat_pengantar/{kode}', [SuratPengantarController::class, 'index']);

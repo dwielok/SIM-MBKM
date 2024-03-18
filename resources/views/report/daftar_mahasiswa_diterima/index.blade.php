@@ -34,14 +34,10 @@
                                         <th>Skema</th>
                                         <th>Durasi</th>
                                         <th>Tipe Pendaftar</th>
-                                        @if (auth()->user()->group_id != 4)
-                                            <th>Validasi Proposal</th>
-                                            <th>Validasi Surat Balasan </th>
-                                        @endif
                                         <th>Status</th>
-                                        @if (auth()->user()->group_id != 4)
-                                            <th>#</th>
-                                        @endif
+                                        <th>#</th>
+                                        {{-- @if (auth()->user()->group_id != 4)
+                                        @endif --}}
                                     </tr>
                                 </thead>
                             </table>
@@ -141,35 +137,7 @@
                             }
                         }
                     },
-                    @if (auth()->user()->group_id != 4)
-                        {
-                            "mData": "magang_id",
-                            "sClass": "pr-2",
-                            "sWidth": "8%",
-                            "bSortable": false,
-                            "bSearchable": false,
-                            "mRender": function(data, type, row, meta) {
-                                if (!row.mitra.kegiatan.is_submit_proposal) {
-                                    return '';
-                                } else {
-                                    return `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/validasi_proposal" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat Proposal" ><i class="fa fa-th"></i> Detail</a> `
-                                }
-                            }
-                        }, {
-                            "mData": "magang_id",
-                            "sClass": "",
-                            "sWidth": "10%",
-                            "bSortable": true,
-                            "bSearchable": true,
-                            "mRender": function(data, type, row, meta) {
-                                if (1 == 2) {
-                                    return '';
-                                } else {
-                                    return `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/validasi_surat_balasan" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat Surat Balasan" ><i class="fa fa-th"></i> Detail</a> `
-                                }
-                            }
-                        },
-                    @endif {
+                    {
                         "mData": "status",
                         "sClass": "",
                         "sWidth": "10%",
@@ -196,7 +164,6 @@
                             }
                         }
                     },
-                    @if (auth()->user()->group_id != 4)
                     {
                         "mData": "magang_id",
                         "sClass": "pr-2",
@@ -215,29 +182,6 @@
                             @endif ;
                         }
                     },
-                        // {
-                        //     "mData": "magang_id",
-                        //     "sClass": "pr-2",
-                        //     "sWidth": "8%",
-                        //     "bSortable": false,
-                        //     "bSearchable": false,
-                        //     "mRender": function(data, type, row, meta) {
-                        //         var buttons = '';
-                        //         @if ($allowAccess->update)
-                        //             if (row.status == 0) {
-                        //                 if (row.magang_tipe == 0 || row.magang_tipe == 1 && row
-                        //                     .is_accept == 1 || row.magang_tipe == 2) {
-                        //                     buttons +=
-                        //                         // `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
-                        //                         // `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm_approve" class="ajax_modal btn btn-xs btn-success tooltips text-white" data-placement="left" data-original-title="Approve" ><i class="fa fa-check"></i></a> ` +
-                        //                         `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/confirm" class="ajax_modal btn btn-xs btn-primary tooltips text-white" data-placement="left" data-original-title="Acc/Reject" ><i class="fa fa-vote-yea"></i></a> `;
-                        //                 }
-                        //             }
-                        //         @endif
-                        //         return buttons;
-                        //     }
-                        // },
-                    @endif
                 ],
                 "fnDrawCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     $('a', this.fnGetNodes()).tooltip();
