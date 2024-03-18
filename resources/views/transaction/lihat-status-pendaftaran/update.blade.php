@@ -534,7 +534,11 @@
                 const akhir = $('#surat_pengantar_akhir_pelaksanaan').val()
                 const alamat = $('#surat_pengantar_alamat_mitra').val()
                 if (awal == '' || akhir == '' || alamat == '') {
-                    alert('Lengkapi form terlebih dahulu')
+                    setFormMessage('.form-message', {
+                        stat: false,
+                        mc: false,
+                        msg: 'Lengkapi form terlebih dahulu'
+                    });
                     return
                 }
                 const info = {
