@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Transaction;
 use App\Http\Controllers\Controller;
 use App\Models\KabupatenModel;
 use App\Models\Master\KegiatanModel;
+use App\Models\Master\MahasiswaModel;
 use App\Models\Master\PeriodeModel;
 use App\Models\Master\ProdiModel;
 use App\Models\MitraKuotaModel;
@@ -12,8 +13,10 @@ use App\Models\MitraModel;
 use App\Models\ProvinsiModel;
 use App\Models\Setting\UserModel;
 use App\Models\Transaction\Magang;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -86,6 +89,8 @@ class MitraController extends Controller
                 ->where('periode_id', PeriodeModel::where('is_current', 1)->first()->periode_id)
                 ->whereIn('status', [1, 3])
                 ->count();
+
+            $item['encrypt_mitra_id'] = Crypt::encrypt($item->mitra_id);
 
             return $item;
         });
@@ -307,6 +312,78 @@ class MitraController extends Controller
         $this->authAction('read', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
+        $id = Crypt::decrypt($id);
+
+        $data = MitraModel::find($id);
+        // $data['skema'] = explode(',', $data->mitra_skema);
+        // $data->mitra_skema = $data['skema'];
+
+        $dateString = $data->mitra_batas_pendaftaran;
+        $currentDate = date('Y-m-d');
+        $disabled = strtotime($dateString) < strtotime($currentDate);
+
+        $breadcrumb = [
+            'title' => $this->menuTitle,
+            'list'  => ['Transaksi', 'Mitra MBKM', 'Detail ' . $this->menuTitle]
+        ];
+
+        $activeMenu = [
+            'l1' => 'transaction',
+            'l2' => 'transaksi-mitra',
+            'l3' => null
+        ];
+
+        $page = [
+            'url' => $this->menuUrl,
+            'title' => 'Detail ' . $this->menuTitle
+        ];
+
+        $mitra = MitraModel::where('mitra_id', $id)
+            ->with('kegiatan')
+            ->with('periode')
+            ->first();
+
+        if (auth()->user()->group_id != 1) {
+            //data in mitra with column mitra_prodi is [1,2,3,etc]
+            //how to get with getProdiId() include with mitra_prodi
+            $prodi_id = auth()->user()->getProdiId();
+            // $data = $data->filter(function ($item) use ($prodi_id) {
+            //     return in_array($prodi_id, json_decode($item->mitra_prodi));
+            // });
+            $prodis = ProdiModel::where('prodi_id', $prodi_id)->get();
+        } else {
+            $prodi_arr = explode(',', $mitra->mitra_prodi);
+            //get prodi by $prodi_arr
+            $prodis = ProdiModel::whereIn('prodi_id', $prodi_arr)->get();
+        }
+        $prodis = $prodis->map(function ($item) use ($id) {
+            $item['kuota'] = MitraKuotaModel::where('mitra_id', $id)
+                ->where('prodi_id', $item->prodi_id)
+                ->first();
+            return $item;
+        });
+
+        return view($this->viewPath . 'detail')
+            ->with('page', (object) $page)
+            ->with('id', $id)
+            ->with('data', $data)
+            ->with('mitra', $data)
+            ->with('url', $this->menuUrl . '/' . $id . '/kuota')
+            ->with('disabled', $disabled)
+            ->with('breadcrumb', (object) $breadcrumb)
+            ->with('activeMenu', (object) $activeMenu)
+            ->with('page', (object) $page)
+            ->with('prodis', $prodis)
+            ->with('action', 'PUT');
+    }
+
+    public function show2($id)
+    {
+        $this->authAction('read', 'modal');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        $id = Crypt::decrypt($id);
+
         $data = MitraModel::find($id);
         $page = [
             'title' => 'Detail ' . $this->menuTitle
@@ -431,6 +508,26 @@ class MitraController extends Controller
                 'stat' => $res,
                 'mc' => $res, // close modal
                 'msg' => MitraModel::getDeleteMessage()
+            ]);
+        }
+
+        return redirect('/');
+    }
+
+    public function update_status(Request $request, $id)
+    {
+        $this->authAction('update', 'json');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        if ($request->ajax() || $request->wantsJson()) {
+
+            $request['status'] = $request->status; // [0: pending, 1: approved, 2: rejected]
+            $res = MitraModel::updateData($id, $request);
+
+            return response()->json([
+                'stat' => $res,
+                'mc' => $res, // close modal
+                'msg' => ($res) ? 'Perusahaan berhasil diapprove.' : 'Perusahaan gagal diapprove.'
             ]);
         }
 

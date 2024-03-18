@@ -60,6 +60,17 @@
 
                                             </div>
                                         @endforeach
+                                        <div class="form-group row mb-2">
+                                            <label class="col-12 col-md-2 control-label col-form-label">Flyer</label>
+                                            <div class="col-12 col-md-10">
+                                                @if ($mitra->mitra_flyer)
+                                                    <a href="{{ url('assets/flyer/' . $mitra->mitra_flyer) }}"
+                                                        target="_blank" class="">[Lihat Flyer]</a>
+                                                @else
+                                                    <span class="badge badge-danger">Tidak ada flyer</span>
+                                                @endif
+                                            </div>
+                                        </div>
                                         <div class="form-group row mb-2 required">
                                             <label class="col-12 col-md-2 control-label col-form-label">Skema</label>
                                             <div class="col-12 col-md-10">
@@ -125,7 +136,8 @@
                                                                         class="form-control form-control-sm" id="search"
                                                                         autocomplete="off" />
                                                                     <span class="input-group-append">
-                                                                        <button type="button" class="btn btn-info btn-flat"
+                                                                        <button type="button"
+                                                                            class="btn btn-info btn-flat"
                                                                             id="btn-cari-mhs">
                                                                             <i class="fa fa-search"></i>
                                                                         </button>

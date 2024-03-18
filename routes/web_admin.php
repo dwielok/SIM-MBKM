@@ -93,12 +93,14 @@ Route::group(['prefix' => 'master', 'middleware' => ['auth']], function () {
 Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     // mitra
     Route::resource('mitra', MitraController::class)->parameter('mitra', 'id');
+    Route::get('mitra/{encrpyt}/show', [MitraController::class, 'show']);
     Route::post('mitra/list', [MitraController::class, 'list']);
     Route::get('mitra/{id}/delete', [MitraController::class, 'confirm']);
-    Route::get('mitra/{id}/confirm_approve', [MitraController::class, 'confirm_approve']);
-    Route::get('mitra/{id}/confirm_reject', [MitraController::class, 'confirm_reject']);
-    Route::put('mitra/{id}/approve', [MitraController::class, 'approve']);
-    Route::put('mitra/{id}/reject', [MitraController::class, 'reject']);
+    // Route::get('mitra/{id}/confirm_approve', [MitraController::class, 'confirm_approve']);
+    // Route::get('mitra/{id}/confirm_reject', [MitraController::class, 'confirm_reject']);
+    Route::put('mitra/{id}/update_status', [MitraController::class, 'update_status'])->name('mitra.update.status');
+    // Route::put('mitra/{id}/approve', [MitraController::class, 'approve']);
+    // Route::put('mitra/{id}/reject', [MitraController::class, 'reject']);
     Route::put('mitra/{id}/kuota', [MitraController::class, 'set_kuota']);
     Route::get('mitra/{id}/alasan', [MitraController::class, 'alasan']);
 
