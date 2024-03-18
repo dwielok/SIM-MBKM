@@ -176,7 +176,8 @@
                                         {{-- @if ($mitra->kegiatan->is_submit_proposal == 1)
                                             <a class="btn btn-primary text-white" onclick="stepper1.next()">Simpan</a>
                                         @else --}}
-                                        <button class="btn btn-warning text-dark" type="submit">Konfirmasi</button>
+                                        <button id="konfirm-btn" class="btn btn-warning text-dark"
+                                            type="button">Konfirmasi</button>
                                         {{-- @endif --}}
                                     </div>
                                     {{-- @if ($mitra->kegiatan->is_submit_proposal == 1)
@@ -209,6 +210,35 @@
                     </div>
                 </div>
             </section>
+        </div>
+    </div>
+
+    <div class="modal fade" id="d">
+        <div id="modal-confirm-generate" class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Konfirmasi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="alert alert-warning mb-0 rounded-0">
+                        Apakah anda yakin mendaftar magang di
+                        <section class="landing">
+                            <div class="container">
+                                <dl class="row mb-0">
+
+                                </dl>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-warning">Keluar</button>
+                    <button type="button" class="btn btn-primary" id="btn-confirm">Ya, Yakin</button>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
@@ -269,9 +299,54 @@
                 }
             })
 
+            $('#konfirm-btn').click(function() {
+                var skema = $('#magang_skema').val()
+                var tipe = $('#tipe_pendaftar').val()
+                var mhs = $('#data-mhs input[name="mahasiswa[]"]').length
+                var msg = ''
+                if (skema == null) {
+                    msg += 'Skema belum dipilih<br>'
+                }
+                if (tipe == null) {
+                    msg += 'Tipe pendaftar belum dipilih<br>'
+                }
+                if (tipe == 0 && mhs == 0) {
+                    msg += 'Mahasiswa belum dipilih<br>'
+                }
+                if (msg != '') {
+                    setFormMessage('.form-message', {
+                        stat: false,
+                        mc: false,
+                        msg: msg
+                    });
+                    return;
+                }
+                const info = {
+                    'Mitra': '{{ $mitra->mitra_nama }}',
+                    'Skema': skema,
+                    'Tipe Pendaftar': tipe == 0 ? 'Kelompok' : 'Individu',
+                    'Jumlah Mahasiswa': mhs
+                }
+                $('#modal-confirm-generate .modal-title').html('Konfirmasi Pendaftaran')
+                $('#modal-confirm-generate .modal-body .landing dl').html('')
+                $.each(info, function(k, v) {
+                    $('#modal-confirm-generate .modal-body .landing dl').append(`
+                        <dt class="col-sm-5 text-right"><strong>${k}:</strong></dt>
+                        <dd class="col-sm-7 mb-0">${v}</dd>
+                    `)
+                })
+                $('#d').modal('show');
+            })
+
+            $('#btn-confirm').click(function() {
+                $('#form-kuota').submit();
+            })
+
             $("#form-kuota").submit(function() {
                 $('.form-message').html('');
                 let blc = '#modal-kuota';
+                //close modal #d
+                $('#d').modal('hide');
                 blockUI(blc);
                 $(this).ajaxSubmit({
                     dataType: 'json',

@@ -260,8 +260,7 @@
                                                                     </select>
                                                                 </div>
                                                             </div>
-                                                            <button id="generate-btn" type="button" data-toggle="modal"
-                                                                data-target="#d"
+                                                            <button id="generate-btn" type="button"
                                                                 class="btn btn-sm btn-primary text-white">Generate</button>
                                                         </form>
                                                     </td>
@@ -552,7 +551,7 @@
                     `)
                 })
                 // $('#modal-confirm-generate .modal-footer button[type="submit"]').html('Generate')
-                $('#modal-confirm-generate').modal('show')
+                $('#d').modal('show')
             })
 
             $("#btn-confirm").click(function() {
