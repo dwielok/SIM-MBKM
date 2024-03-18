@@ -36,7 +36,7 @@
                                 <tr>
                                     <th class="w-15 text-right">Deskripsi</th>
                                     <th class="w-1">:</th>
-                                    <td class="w-84">{{ $mitra->mitra_deskripsi }}</td>
+                                    <td class="w-84">{!! $mitra->mitra_deskripsi !!}</td>
                                 </tr>
                                 <tr>
                                     <th class="w-15 text-right">Status</th>

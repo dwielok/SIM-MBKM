@@ -58,7 +58,7 @@
                                     <td class="w-84">{{ $magang->magang_skema }}</td>
                                 </tr>
                                 <tr>
-                                    <th class="w-15 text-right">Tanggal Pendaftaran</th>
+                                    <th class="w-15 text-right">Batas Pendaftaran</th>
                                     <th class="w-1">:</th>
                                     <td class="w-84">
                                         <i class="far fa-calendar-alt text-md text-primary"></i>
