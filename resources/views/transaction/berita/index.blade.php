@@ -30,7 +30,7 @@
                                             <select class="form-control form-control-sm w-100 filter_combobox filter_prodi">
                                                 <option value="">- Semua -</option>
                                                 @foreach ($prodis as $d)
-                                                    <option value="{{ $d->id }}">{{ $d->name }}</option>
+                                                    <option value="{{ $d->prodi_id }}">{{ $d->prodi_name }}</option>
                                                 @endforeach
                                             </select>
                                             <small class="form-text text-muted">Program Studi</small>

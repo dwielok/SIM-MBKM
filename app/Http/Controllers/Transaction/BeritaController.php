@@ -57,7 +57,13 @@ class BeritaController extends Controller
         $this->authAction('read', 'json');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data  = BeritaModel::all();
+        $data  = BeritaModel::with('prodi');
+        if ($request->prodi) {
+            $data->where('prodi_id', $request->prodi);
+        }
+
+        $data = $data->get();
+
         $data = $data->map(function ($item) {
             $item->tanggal = Carbon::parse($item->created_at)->format('d/m/Y');
             $item->prodi = $item->prodi ? ProdiModel::where('prodi_id', $item->prodi_id)->first() : NULL;
