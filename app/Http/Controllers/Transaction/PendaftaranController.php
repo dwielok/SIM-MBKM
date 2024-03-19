@@ -470,6 +470,7 @@ class PendaftaranController extends Controller
         $magang->surat_balasan = $surat_balasan;
         $proposal = DokumenMagangModel::whereIn('magang_id', $id_joined)->where('dokumen_magang_nama', 'PROPOSAL')->first();
         $magang->proposal = $proposal;
+        $magang->proposals = DokumenMagangModel::whereIn('magang_id', $id_joined)->where('dokumen_magang_nama', 'PROPOSAL')->get();
 
         return view($this->viewPath . 'validasi_surat_balasan')
             ->with('page', (object) $page)

@@ -70,6 +70,11 @@ class DaftarMahasiswaDiterimaController extends Controller
             $data = $data->where('prodi_id', $prodi_id)->get();
         }
 
+        //if magang_tipe == 1 and is_accept == 2 then remove the data
+        $data = $data->filter(function ($item) {
+            return $item->magang_tipe != 1 || $item->is_accept != 2;
+        });
+
         return DataTables::of($data)
             ->addIndexColumn()
             ->make(true);

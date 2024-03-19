@@ -63,9 +63,22 @@ class DaftarMagangController extends Controller
             ->where('periode_id', $id_periode)
             //where status == 1 or 3
             ->whereIn('status', [1, 3])
-            ->count();
+            ->first();
 
-        $can_daftar = ($cek > 0) ? false : true;
+        if ($cek) {
+            if ($cek->magang_tipe == 1) {
+                if ($cek->is_accept == 2) {
+                    $can_daftar = true;
+                } else {
+                    $can_daftar = false;
+                }
+            } else {
+                $can_daftar = ($cek) ? false : true;
+            }
+        } else {
+            $can_daftar = ($cek) ? false : true;
+        }
+
 
         return view($this->viewPath . 'index')
             ->with('breadcrumb', (object) $breadcrumb)
@@ -114,8 +127,12 @@ class DaftarMagangController extends Controller
             //TODO: get jumlah pendaftar
             $item['mitra_jumlah_pendaftar'] = Magang::where('mitra_id', $item->mitra_id)
                 ->where('periode_id', PeriodeModel::where('is_current', 1)->first()->periode_id)
-                ->whereIn('status', [1, 3])
-                ->count();
+                ->whereIn('status', [1, 3])->get();
+            //if magang_tipe == 1 and is_accept == 2 then remove
+            $item['mitra_jumlah_pendaftar'] = $item['mitra_jumlah_pendaftar']->filter(function ($item) {
+                return $item->magang_tipe != 1 || $item->is_accept != 2;
+            })->count();
+
             $item['mitra_kuota'] = MitraKuotaModel::where('mitra_id', $item->mitra_id)
                 ->where('prodi_id', $prodi_id)
                 ->first();

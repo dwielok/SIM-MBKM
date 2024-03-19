@@ -87,8 +87,12 @@ class MitraController extends Controller
             //TODO: get jumlah pendaftar
             $item['mitra_jumlah_pendaftar'] = Magang::where('mitra_id', $item->mitra_id)
                 ->where('periode_id', PeriodeModel::where('is_current', 1)->first()->periode_id)
-                ->whereIn('status', [1, 3])
-                ->count();
+                ->whereIn('status', [1, 3])->get();
+            //if magang_tipe == 1 and is_accept == 2 then remove
+            $item['mitra_jumlah_pendaftar'] = $item['mitra_jumlah_pendaftar']->filter(function ($item) {
+                return $item->magang_tipe != 1 || $item->is_accept != 2;
+            })->count();
+
 
             $item['encrypt_mitra_id'] = Crypt::encrypt($item->mitra_id);
 
