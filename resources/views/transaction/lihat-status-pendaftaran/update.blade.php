@@ -194,6 +194,7 @@
                                         </tr>
                                         @if (!$magang->surat_pengantar_exist)
                                             {{-- must ketua --}}
+                                            @if ($magang->proposal->dokumen_magang_status == '1')
                                             @if ($magang->ketua)
                                                 <tr>
                                                     <th class="w-15 text-right">Surat Pengantar</th>
@@ -274,6 +275,7 @@
                                                     </td>
                                                 </tr>
                                             @endif
+                                            @endif
                                         @else
                                             <tr>
                                                 <th class="w-15 text-right">Surat Pengantar</th>
@@ -291,61 +293,127 @@
                                 @endif
                                 @if (!$magang->surat_balasan_exist)
                                     @if ($magang->ketua)
-                                        <tr>
-                                            <th class="w-15 text-right">Surat Balasan</th>
-                                            <th class="w-1">:</th>
-                                            <td class="w-84 py-2">
-                                                <form method="post" action="{{ route('dokumen.upload_surat_balasan') }}"
-                                                    role="form" class="form-horizontal" id="form-sb"
-                                                    enctype="multipart/form-data">
-                                                    @csrf
-                                                    <div class="form-group required d-flex mb-2 align-items-center">
-                                                        <label
-                                                            class="control-label col-form-label font-weight-normal text-left">Status</label>
-                                                        <div class="">
-                                                            <div class="icheck-success d-inline mr-3">
-                                                                <input type="radio" id="radioActive"
-                                                                    name="dokumen_magang_tipe" value="1">
-                                                                <label for="radioActive">Diterima </label>
-                                                            </div>
-                                                            <div class="icheck-danger d-inline mr-3">
-                                                                <input type="radio" id="radioFailed"
-                                                                    name="dokumen_magang_tipe" value="0">
-                                                                <label for="radioFailed">Ditolak</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group mb-2 required">
-                                                        <label
-                                                            class="col-12 col-md-2 control-label col-form-label font-weight-normal text-left">Surat
-                                                            Balasan</label>
-                                                        <div class="col-12 col-md-12">
-                                                            <div class="d-flex">
-                                                                <div class="form-control-sm custom-file">
-                                                                    <input type="hidden"
-                                                                        value="{{ $magang->magang_id }}"
-                                                                        name="magang_id" />
-                                                                    <input type="file"
-                                                                        class="form-control-sm custom-file-input"
-                                                                        data-target="0" id="berita_doc_0"
-                                                                        name="surat_balasan" data-rule-filesize="1"
-                                                                        data-rule-accept="application/pdf"
-                                                                        accept="application/pdf" />
-                                                                    <label
-                                                                        class="form-control-sm custom-file-label file_label_0"
-                                                                        for="berita_doc_0">Choose
-                                                                        file</label>
+                                        @if ($magang->mitra->kegiatan->is_submit_proposal)
+                                            @if ($magang->proposal_exist && $magang->surat_pengantar_exist)
+                                                <tr>
+                                                    <th class="w-15 text-right">Surat Balasan</th>
+                                                    <th class="w-1">:</th>
+                                                    <td class="w-84 py-2">
+                                                        <form method="post"
+                                                            action="{{ route('dokumen.upload_surat_balasan') }}"
+                                                            role="form" class="form-horizontal" id="form-sb"
+                                                            enctype="multipart/form-data">
+                                                            @csrf
+                                                            <div
+                                                                class="form-group required d-flex mb-2 align-items-center">
+                                                                <label
+                                                                    class="control-label col-form-label font-weight-normal text-left">Status</label>
+                                                                <div class="">
+                                                                    <div class="icheck-success d-inline mr-3">
+                                                                        <input type="radio" id="radioActive"
+                                                                            name="dokumen_magang_tipe" value="1">
+                                                                        <label for="radioActive">Diterima </label>
+                                                                    </div>
+                                                                    <div class="icheck-danger d-inline mr-3">
+                                                                        <input type="radio" id="radioFailed"
+                                                                            name="dokumen_magang_tipe" value="0">
+                                                                        <label for="radioFailed">Ditolak</label>
+                                                                    </div>
                                                                 </div>
-                                                                <button type="submit"
-                                                                    class="ml-2 btn btn-sm btn-primary text-white">Upload</button>
                                                             </div>
-                                                            <small class="form-text text-muted">Pilih surat balasan untuk
-                                                                Diupload</small>
+                                                            <div class="form-group mb-2 required">
+                                                                <label
+                                                                    class="col-12 col-md-2 control-label col-form-label font-weight-normal text-left">Surat
+                                                                    Balasan</label>
+                                                                <div class="col-12 col-md-12">
+                                                                    <div class="d-flex">
+                                                                        <div class="form-control-sm custom-file">
+                                                                            <input type="hidden"
+                                                                                value="{{ $magang->magang_id }}"
+                                                                                name="magang_id" />
+                                                                            <input type="file"
+                                                                                class="form-control-sm custom-file-input"
+                                                                                data-target="0" id="berita_doc_0"
+                                                                                name="surat_balasan"
+                                                                                data-rule-filesize="1"
+                                                                                data-rule-accept="application/pdf"
+                                                                                accept="application/pdf" />
+                                                                            <label
+                                                                                class="form-control-sm custom-file-label file_label_0"
+                                                                                for="berita_doc_0">Choose
+                                                                                file</label>
+                                                                        </div>
+                                                                        <button type="submit"
+                                                                            class="ml-2 btn btn-sm btn-primary text-white">Upload</button>
+                                                                    </div>
+                                                                    <small class="form-text text-muted">Pilih surat balasan
+                                                                        untuk
+                                                                        Diupload</small>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                        @else
+                                            <tr>
+                                                <th class="w-15 text-right">Surat Balasan</th>
+                                                <th class="w-1">:</th>
+                                                <td class="w-84 py-2">
+                                                    <form method="post"
+                                                        action="{{ route('dokumen.upload_surat_balasan') }}"
+                                                        role="form" class="form-horizontal" id="form-sb"
+                                                        enctype="multipart/form-data">
+                                                        @csrf
+                                                        <div class="form-group required d-flex mb-2 align-items-center">
+                                                            <label
+                                                                class="control-label col-form-label font-weight-normal text-left">Status</label>
+                                                            <div class="">
+                                                                <div class="icheck-success d-inline mr-3">
+                                                                    <input type="radio" id="radioActive"
+                                                                        name="dokumen_magang_tipe" value="1">
+                                                                    <label for="radioActive">Diterima </label>
+                                                                </div>
+                                                                <div class="icheck-danger d-inline mr-3">
+                                                                    <input type="radio" id="radioFailed"
+                                                                        name="dokumen_magang_tipe" value="0">
+                                                                    <label for="radioFailed">Ditolak</label>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </form>
-                                            </td>
-                                        </tr>
+                                                        <div class="form-group mb-2 required">
+                                                            <label
+                                                                class="col-12 col-md-2 control-label col-form-label font-weight-normal text-left">Surat
+                                                                Balasan</label>
+                                                            <div class="col-12 col-md-12">
+                                                                <div class="d-flex">
+                                                                    <div class="form-control-sm custom-file">
+                                                                        <input type="hidden"
+                                                                            value="{{ $magang->magang_id }}"
+                                                                            name="magang_id" />
+                                                                        <input type="file"
+                                                                            class="form-control-sm custom-file-input"
+                                                                            data-target="0" id="berita_doc_0"
+                                                                            name="surat_balasan" data-rule-filesize="1"
+                                                                            data-rule-accept="application/pdf"
+                                                                            accept="application/pdf" />
+                                                                        <label
+                                                                            class="form-control-sm custom-file-label file_label_0"
+                                                                            for="berita_doc_0">Choose
+                                                                            file</label>
+                                                                    </div>
+                                                                    <button type="submit"
+                                                                        class="ml-2 btn btn-sm btn-primary text-white">Upload</button>
+                                                                </div>
+                                                                <small class="form-text text-muted">Pilih surat balasan
+                                                                    untuk
+                                                                    Diupload</small>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endif
                                     @endif
                                 @else
                                     <tr>

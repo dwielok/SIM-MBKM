@@ -73,6 +73,13 @@ class PendaftaranController extends Controller
             $data = $data->where('prodi_id', $prodi_id)->get();
         }
 
+        //cek proposal ex ist if$data->mitra->kegiatan->is submit proposal == 0 then false
+        $data = $data->map(function ($item) {
+            $item->proposal = DokumenMagangModel::where('magang_id', $item->magang_id)->where('dokumen_magang_nama', 'PROPOSAL')->first();
+            $item->surat_balasan = DokumenMagangModel::where('magang_id', $item->magang_id)->where('dokumen_magang_nama', 'SURAT_BALASAN')->first();
+            return $item;
+        });
+
         return DataTables::of($data)
             ->addIndexColumn()
             ->make(true);
@@ -514,7 +521,7 @@ class PendaftaranController extends Controller
             $kode_magang = DokumenMagangModel::with('magang')->where('dokumen_magang_id', $id)->first()->magang->magang_kode;
             // dd($kode_magang);
             //update status Magang where magang_kode = $kode_magang
-            $res = Magang::where('magang_kode', $kode_magang)->update(['status' => $status]);
+            $res = Magang::where('magang_kode', $kode_magang)->update(['status' => $status == 1 ? 1 : 2]);
             $res = DokumenMagangModel::where('dokumen_magang_id', $id)->where('dokumen_magang_nama', 'SURAT_BALASAN')->update(['dokumen_magang_status' => $status == 1 ? 1 : 0, 'dokumen_magang_keterangan' => $request->keterangan]);
 
             return response()->json([

@@ -98,47 +98,49 @@
                                     </table>
                                 </td>
                             </tr>
-                            <tr>
-                                <th class="w-15 text-right">Berkas Proposal</th>
-                                <th class="w-1">:</th>
-                                <td class="w-84 py-2">
-                                    <table class="table table-sm text-sm table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center w-5 p-1">No</th>
-                                                <th>Nama Berkas</th>
-                                                <th><em>Last Update</em></th>
-                                                <th>Status</th>
-                                                <th>Keterangan</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="text-center w-5 p-1">1</td>
-                                                <td>
-                                                    <a
-                                                        href="{{ asset('assets/proposal/' . $magang->proposal->dokumen_magang_file) }}">{{ $magang->proposal->dokumen_magang_file }}</a>
-                                                </td>
-                                                <td>
-                                                    {{ \Carbon\Carbon::parse($magang->proposal->created_at)->format('d M Y H:i') }}
-                                                </td>
-                                                <td>
-                                                    @if ($magang->proposal->dokumen_magang_status == '1')
-                                                        <span class="badge badge-success">Disetujui</span>
-                                                    @elseif ($magang->proposal->dokumen_magang_status == '0')
-                                                        <span class="badge badge-danger">Ditolak</span>
-                                                    @else
-                                                        <span class="badge badge-warning">Menunggu</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    {{ $magang->proposal->dokumen_magang_keterangan ?? '-' }}
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
+                            @if ($magang->mitra->kegiatan->is_submit_proposal)
+                                <tr>
+                                    <th class="w-15 text-right">Berkas Proposal</th>
+                                    <th class="w-1">:</th>
+                                    <td class="w-84 py-2">
+                                        <table class="table table-sm text-sm table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center w-5 p-1">No</th>
+                                                    <th>Nama Berkas</th>
+                                                    <th><em>Last Update</em></th>
+                                                    <th>Status</th>
+                                                    <th>Keterangan</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-center w-5 p-1">1</td>
+                                                    <td>
+                                                        <a
+                                                            href="{{ asset('assets/proposal/' . $magang->proposal->dokumen_magang_file) }}">{{ $magang->proposal->dokumen_magang_file }}</a>
+                                                    </td>
+                                                    <td>
+                                                        {{ \Carbon\Carbon::parse($magang->proposal->created_at)->format('d M Y H:i') }}
+                                                    </td>
+                                                    <td>
+                                                        @if ($magang->proposal->dokumen_magang_status == '1')
+                                                            <span class="badge badge-success">Disetujui</span>
+                                                        @elseif ($magang->proposal->dokumen_magang_status == '0')
+                                                            <span class="badge badge-danger">Ditolak</span>
+                                                        @else
+                                                            <span class="badge badge-warning">Menunggu</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        {{ $magang->proposal->dokumen_magang_keterangan ?? '-' }}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            @endif
                             <tr>
                                 <th class="w-15 text-right">Keterangan Surat Balasan dari Mitra</th>
                                 <th class="w-1">:</th>

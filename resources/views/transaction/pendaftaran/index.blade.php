@@ -152,7 +152,12 @@
                                 if (!row.mitra.kegiatan.is_submit_proposal) {
                                     return '';
                                 } else {
-                                    return `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/validasi_proposal" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat Proposal" ><i class="fa fa-th"></i> Detail</a> `
+                                    if (row.proposal == null) {
+                                        return ''
+                                    } else {
+
+                                        return `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/validasi_proposal" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat Proposal" ><i class="fa fa-th"></i> Detail</a> `
+                                    }
                                 }
                             }
                         }, {
@@ -162,7 +167,7 @@
                             "bSortable": true,
                             "bSearchable": true,
                             "mRender": function(data, type, row, meta) {
-                                if (1 == 2) {
+                                if (row.surat_balasan == null) {
                                     return '';
                                 } else {
                                     return `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/validasi_surat_balasan" class="ajax_modal btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat Surat Balasan" ><i class="fa fa-th"></i> Detail</a> `
@@ -197,24 +202,24 @@
                         }
                     },
                     @if (auth()->user()->group_id != 4)
-                    {
-                        "mData": "magang_id",
-                        "sClass": "pr-2",
-                        "sWidth": "8%",
-                        "bSortable": false,
-                        "bSearchable": false,
-                        "mRender": function(data, type, row, meta) {
-                            return ''
-                            @if ($allowAccess->update)
-                                +
-                                `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/edit" class="ajax_modal btn btn-xs btn-warning tooltips text-secondary" data-placement="left" data-original-title="Edit Data" ><i class="fa fa-edit"></i></a> `
-                            @endif
-                            @if ($allowAccess->delete)
-                                +
-                                `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/delete" class="ajax_modal btn btn-xs btn-danger tooltips text-light" data-placement="left" data-original-title="Hapus Data" ><i class="fa fa-trash"></i></a> `
-                            @endif ;
-                        }
-                    },
+                        {
+                            "mData": "magang_id",
+                            "sClass": "pr-2",
+                            "sWidth": "8%",
+                            "bSortable": false,
+                            "bSearchable": false,
+                            "mRender": function(data, type, row, meta) {
+                                return ''
+                                @if ($allowAccess->update)
+                                    +
+                                    `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/edit" class="ajax_modal btn btn-xs btn-warning tooltips text-secondary" data-placement="left" data-original-title="Edit Data" ><i class="fa fa-edit"></i></a> `
+                                @endif
+                                @if ($allowAccess->delete)
+                                    +
+                                    `<a href="#" data-block="body" data-url="{{ $page->url }}/${data}/delete" class="ajax_modal btn btn-xs btn-danger tooltips text-light" data-placement="left" data-original-title="Hapus Data" ><i class="fa fa-trash"></i></a> `
+                                @endif ;
+                            }
+                        },
                         // {
                         //     "mData": "magang_id",
                         //     "sClass": "pr-2",

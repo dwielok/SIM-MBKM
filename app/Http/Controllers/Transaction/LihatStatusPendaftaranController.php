@@ -64,6 +64,11 @@ class LihatStatusPendaftaranController extends Controller
             ->with('prodi')
             ->with('mitra.kegiatan');
 
+        //where is_accept == NULL or is_accept == 1
+        // $data = $data->where('is_accept', 0);
+
+
+
         if (auth()->user()->group_id == 1) {
             $data = $data->get();
         } else if (auth()->user()->group_id == 4) {

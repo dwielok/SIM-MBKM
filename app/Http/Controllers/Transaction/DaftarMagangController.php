@@ -332,24 +332,24 @@ class DaftarMagangController extends Controller
             $res = Magang::insertData($request, ['proposal', 'files']);
 
             //cek if $kegiatan is_proposal 1 then
-            if ($kegiatan->kegiatan->is_submit_proposal == 1) {
-                $file = $request->file('proposal');
-                if ($file) {
-                    $fileName = 'proposal_' . time() . '.' . $file->getClientOriginalExtension();
-                    //move to public/assets/
-                    $file->move(public_path('assets/proposal'), $fileName);
-                    // $request['dokumen_magang_file'] = $fileName;
+            // if ($kegiatan->kegiatan->is_submit_proposal == 1) {
+            //     $file = $request->file('proposal');
+            //     if ($file) {
+            //         $fileName = 'proposal_' . time() . '.' . $file->getClientOriginalExtension();
+            //         //move to public/assets/
+            //         $file->move(public_path('assets/proposal'), $fileName);
+            //         // $request['dokumen_magang_file'] = $fileName;
 
-                    $magang_id = Magang::where('magang_kode', $kode)->first()->magang_id;
+            //         $magang_id = Magang::where('magang_kode', $kode)->first()->magang_id;
 
-                    DokumenMagangModel::create([
-                        'mahasiswa_id' => $id_mahasiswa,
-                        'magang_id' => $magang_id,
-                        'dokumen_magang_nama' => 'PROPOSAL',
-                        'dokumen_magang_file' => $fileName
-                    ]);
-                }
-            }
+            //         DokumenMagangModel::create([
+            //             'mahasiswa_id' => $id_mahasiswa,
+            //             'magang_id' => $magang_id,
+            //             'dokumen_magang_nama' => 'PROPOSAL',
+            //             'dokumen_magang_file' => $fileName
+            //         ]);
+            //     }
+            // }
         } else {
             $cek = Magang::whereIn('mahasiswa_id', $mahasiswa)
                 ->where('periode_id', $id_periode)
@@ -376,16 +376,16 @@ class DaftarMagangController extends Controller
                 ->where('mitra_id', $id_mitra)
                 ->first();
 
-            if ($kegiatan->kegiatan->is_submit_proposal == 1) {
-                $file = $request->file('proposal');
-                if (!$file) {
-                    return response()->json([
-                        'stat' => false,
-                        'mc' => false, // close modal
-                        'msg' => 'Proposal belum diisi'
-                    ]);
-                }
-            }
+            // if ($kegiatan->kegiatan->is_submit_proposal == 1) {
+            //     $file = $request->file('proposal');
+            //     if (!$file) {
+            //         return response()->json([
+            //             'stat' => false,
+            //             'mc' => false, // close modal
+            //             'msg' => 'Proposal belum diisi'
+            //         ]);
+            //     }
+            // }
 
             $count = Magang::selectRaw('magang_kode, count(*) as count')
                 ->groupBy('magang_kode')
@@ -422,24 +422,24 @@ class DaftarMagangController extends Controller
             }
 
             //cek if $kegiatan is_proposal 1 then
-            if ($kegiatan->kegiatan->is_submit_proposal == 1) {
-                $file = $request->file('proposal');
-                if ($file) {
-                    $fileName = 'proposal_' . time() . '.' . $file->getClientOriginalExtension();
-                    //move to public/assets/
-                    $file->move(public_path('assets/proposal'), $fileName);
-                    // $request['dokumen_magang_file'] = $fileName;
+            // if ($kegiatan->kegiatan->is_submit_proposal == 1) {
+            //     $file = $request->file('proposal');
+            //     if ($file) {
+            //         $fileName = 'proposal_' . time() . '.' . $file->getClientOriginalExtension();
+            //         //move to public/assets/
+            //         $file->move(public_path('assets/proposal'), $fileName);
+            //         // $request['dokumen_magang_file'] = $fileName;
 
-                    $magang_id = Magang::where('magang_kode', $kode)->first()->magang_id;
+            //         $magang_id = Magang::where('magang_kode', $kode)->first()->magang_id;
 
-                    DokumenMagangModel::create([
-                        'mahasiswa_id' => $id_mahasiswa,
-                        'magang_id' => $magang_id,
-                        'dokumen_magang_nama' => 'PROPOSAL',
-                        'dokumen_magang_file' => $fileName
-                    ]);
-                }
-            }
+            //         DokumenMagangModel::create([
+            //             'mahasiswa_id' => $id_mahasiswa,
+            //             'magang_id' => $magang_id,
+            //             'dokumen_magang_nama' => 'PROPOSAL',
+            //             'dokumen_magang_file' => $fileName
+            //         ]);
+            //     }
+            // }
         }
 
         return response()->json([

@@ -103,10 +103,20 @@
                     <table border="0" style="margin-top:20px;margin-bottom:10px">
                         <tbody>
                             <tr style="font-weight: bold">
-                                <td width="74" style="vertical-align: top"><span style="font-size: 16px;">Kepada
+                                <td width="74" style="vertical-align: bottom"><span
+                                        style="font-size: 16px;line-height:1">Kepada
                                         Yth.</span></td>
                                 <td width="140" style="vertical-align: top"><span
-                                        style="font-size: 16px;">{{ $sp->surat_pengantar_alamat_mitra }}</span>
+                                        style="font-size: 16px;line-height:1">{{ $mitra->mitra->mitra_nama }}</span>
+                                </td>
+                                <td width="11"></td>
+                            </tr>
+                            <tr style="font-weight: bold">
+                                <td width="74" style="vertical-align: top"></td>
+                                <td width="140" style="vertical-align: top">
+                                    <span style="font-size: 16px;line-height:1">
+                                        {{ $sp->surat_pengantar_alamat_mitra }}
+                                    </span>
                                 </td>
                                 <td width="11"></td>
                             </tr>
@@ -143,8 +153,9 @@
                 <td colspan="3" height="180" valign="top">
                     <div align="justify">
                         <span style="font-size: 16px;">Dengan ini kami mohon bantuan Bapak/Ibu agar dapat memberi
-                            kesempatan kepada mahasiswa kami dari Jurusan Teknologi Informasi Program Studi Teknik
-                            Informatika untuk dapat melaksanakan magang industri di Perusahaan/Instansi yang Bapak/Ibu
+                            kesempatan kepada mahasiswa kami dari Jurusan Teknologi Informasi Program Studi
+                            {{ $mitra->prodi->prodi_name }} untuk dapat melaksanakan magang industri di
+                            Perusahaan/Instansi yang Bapak/Ibu
                             pimpin.
                             <br />Adapun nama-nama mahasiswa tersebut sebagai berikut:</span>
                         <table border="1"
@@ -224,7 +235,7 @@
                     {{-- tembusan yth --}}
                     <span style="font-size: 16px;text-decoration:underline">Tembusan Yth : </span><br />
                     <span style="font-size: 16px;">1. Ketua Jurusan Teknologi Informasi</span><br />
-                    <span style="font-size: 16px;">2. KPS Program Studi Teknik Informatika</span>
+                    <span style="font-size: 16px;">2. KPS Program Studi {{ $mitra->prodi->prodi_name }}</span>
                 </td>
             </tr>
         </tbody>
