@@ -13,7 +13,7 @@ class SuratPengantarController extends Controller
     {
         $sp = SuratPengantarModel::where('magang_kode', $kode)->first();
         $anggotas = Magang::with('mahasiswa')->with('periode')->where('magang_kode', $sp->magang_kode)->get();
-        $mitra = Magang::with('mitra')->with('prodi')->where('magang_kode', $sp->magang_kode)->first();
+        $mitra = Magang::with('mitra')->with('prodi')->with('mitra.kegiatan.program')->where('magang_kode', $sp->magang_kode)->first();
 
         // return view('template_surat.surat_pengantar', compact('sp', 'anggotas', 'mitra'));
         $pdf = Pdf::loadView('template_surat.surat_pengantar', compact('sp', 'anggotas', 'mitra'));

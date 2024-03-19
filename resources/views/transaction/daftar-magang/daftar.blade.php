@@ -189,7 +189,7 @@
                                             <a class="btn btn-primary text-white" onclick="stepper1.next()">Simpan</a>
                                         @else --}}
                                         <button id="konfirm-btn" class="btn btn-warning text-dark"
-                                            type="button">Konfirmasi</button>
+                                            type="button">Simpan</button>
                                         {{-- @endif --}}
                                     </div>
                                     {{-- @if ($mitra->kegiatan->is_submit_proposal == 1)

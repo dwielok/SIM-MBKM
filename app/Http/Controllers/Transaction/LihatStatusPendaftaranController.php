@@ -218,12 +218,13 @@ class LihatStatusPendaftaranController extends Controller
         }
         $check = Magang::where('magang_kode', $kode_magang)->get();
         $id_joined = $check->pluck('magang_id');
-        $proposal = DokumenMagangModel::whereIn('magang_id', $id_joined)->where('dokumen_magang_nama', 'PROPOSAL')->first();
+        $proposal = DokumenMagangModel::whereIn('magang_id', $id_joined)->where('dokumen_magang_nama', 'PROPOSAL')->latest()->first();
         $surat_pengantar = SuratPengantarModel::where('magang_kode', $kode_magang)->first();
         $surat_balasan = DokumenMagangModel::whereIn('magang_id', $id_joined)->where('dokumen_magang_nama', 'SURAT_BALASAN')->first();
         if ($proposal) {
             $magang->proposal_exist = TRUE;
             $magang->proposal = $proposal;
+            $magang->proposals = DokumenMagangModel::whereIn('magang_id', $id_joined)->where('dokumen_magang_nama', 'PROPOSAL')->get();
             if ($surat_pengantar) {
                 $magang->surat_pengantar_exist = TRUE;
                 $magang->surat_pengantar = $surat_pengantar;
@@ -234,11 +235,14 @@ class LihatStatusPendaftaranController extends Controller
         } else {
             $magang->proposal_exist = FALSE;
             $magang->proposal = NULL;
+            $magang->proposals = [];
             $magang->surat_pengantar_exist = FALSE;
             $magang->surat_pengantar = NULL;
         }
         $magang->surat_balasan = $surat_balasan;
         $magang->surat_balasan_exist = $surat_balasan ? TRUE : FALSE;
+
+        // dd($magang);
 
 
         $bulans = [

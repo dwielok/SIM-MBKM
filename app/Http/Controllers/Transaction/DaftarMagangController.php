@@ -55,11 +55,24 @@ class DaftarMagangController extends Controller
 
         $programs = ProgramModel::all();
 
+        $id_mahasiswa = MahasiswaModel::where('user_id', Auth::user()->user_id)->first()->mahasiswa_id;
+
+        $id_periode = PeriodeModel::where('is_current', 1)->first()->periode_id;
+
+        $cek = Magang::where('mahasiswa_id', $id_mahasiswa)
+            ->where('periode_id', $id_periode)
+            //where status == 1 or 3
+            ->whereIn('status', [1, 3])
+            ->count();
+
+        $can_daftar = ($cek > 0) ? false : true;
+
         return view($this->viewPath . 'index')
             ->with('breadcrumb', (object) $breadcrumb)
             ->with('activeMenu', (object) $activeMenu)
             ->with('page', (object) $page)
             ->with('programs', $programs)
+            ->with('can_daftar', $can_daftar)
             ->with('allowAccess', $this->authAccessKey());
     }
 

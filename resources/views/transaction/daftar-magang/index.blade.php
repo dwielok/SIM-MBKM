@@ -175,12 +175,16 @@
                         "mRender": function(data, type, row, meta) {
                             var buttons = '';
                             @if ($allowAccess->update)
-                                // if (row.kegiatan.is_kuota == 1) {
-                                buttons +=
-                                    `<a href="{{ $page->url }}/${data}/show" class=" btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat detail" >Daftar</a> `
-                                // }
+                                @if ($can_daftar)
+                                    // if (row.kegiatan.is_kuota == 1) {
+                                    buttons +=
+                                        `<a href="{{ $page->url }}/${data}/show" class=" btn btn-xs btn-info tooltips text-light text-xs" data-placement="left" data-original-title="Lihat detail" >Daftar</a> `
+                                    // }
+                                @endif
+                                return buttons;
+                            @else
+                                return '';
                             @endif
-                            return buttons;
                         }
                     },
                 ],
