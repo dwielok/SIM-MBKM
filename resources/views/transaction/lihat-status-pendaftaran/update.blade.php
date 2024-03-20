@@ -226,17 +226,10 @@
                                                                         Pelaksanaan</label>
                                                                     <div class="">
                                                                         {{-- loop januari until desember --}}
-                                                                        <select class="form-control form-control-sm"
+                                                                        <input type="date"
+                                                                            class="form-control form-control-sm"
                                                                             id="surat_pengantar_awal_pelaksanaan"
                                                                             name="surat_pengantar_awal_pelaksanaan">
-                                                                            <option value="" disabled selected>Pilih
-                                                                                bulan</option>
-                                                                            @foreach ($bulans as $key => $bulan)
-                                                                                <option value="{{ $key + 1 }}">
-                                                                                    {{ $bulan }}
-                                                                                </option>
-                                                                            @endforeach
-                                                                        </select>
                                                                         <small class="form-text text-muted">
                                                                             Masukkan bulan awal pelaksanaan magang
                                                                         </small>
@@ -248,20 +241,14 @@
                                                                         Pelaksanaan</label>
                                                                     <div class="">
                                                                         {{-- loop januari until desember --}}
+                                                                        <input type="date" readonly disabled
+                                                                            class="form-control form-control-sm"
+                                                                            id="surat_pengantar_akhir"
+                                                                            name="surat_pengantar_akhir">
                                                                         <input type="hidden"
+                                                                            class="form-control form-control-sm"
                                                                             id="surat_pengantar_akhir_pelaksanaan"
                                                                             name="surat_pengantar_akhir_pelaksanaan">
-                                                                        <select class="form-control form-control-sm"
-                                                                            id="surat_pengantar_akhir"
-                                                                            name="surat_pengantar_akhir" readonly disabled>
-                                                                            <option value="" disabled selected>Pilih
-                                                                                bulan awal pelaksanaan dahulu</option>
-                                                                            @foreach ($bulans as $key => $bulan)
-                                                                                <option value="{{ $key + 1 }}">
-                                                                                    {{ $bulan }}
-                                                                                </option>
-                                                                            @endforeach
-                                                                        </select>
                                                                     </div>
                                                                 </div>
                                                                 <button id="generate-btn" type="button"
@@ -593,13 +580,11 @@
             //then if december, will count back to january, etc
             $('#surat_pengantar_awal_pelaksanaan').on('change', function() {
                 const durasi = parseInt('{{ $magang->mitra->mitra_durasi }}')
-                const awal = parseInt($(this).val())
-                let akhir = awal + durasi
-                if (akhir > 12) {
-                    akhir = akhir - 12
-                }
-                $('#surat_pengantar_akhir').val(akhir - 1)
-                $('#surat_pengantar_akhir_pelaksanaan').val(akhir - 1)
+                const awal = $(this).val()
+                //count date with durasi
+                const akhir = moment(awal).add(durasi - 1, 'months').format('YYYY-MM-DD')
+                $('#surat_pengantar_akhir').val(akhir)
+                $('#surat_pengantar_akhir_pelaksanaan').val(akhir)
             })
 
             $("#form-proposal").submit(function() {
@@ -654,8 +639,8 @@
                 }
                 const info = {
                     'Alamat Mitra': alamat,
-                    'Awal Pelaksanaan': $('#surat_pengantar_awal_pelaksanaan option:selected').text(),
-                    'Akhir Pelaksanaan': $('#surat_pengantar_akhir option:selected').text()
+                    'Awal Pelaksanaan': $('#surat_pengantar_awal_pelaksanaan').val(),
+                    'Akhir Pelaksanaan': $('#surat_pengantar_akhir_pelaksanaan').val()
                 }
                 $('#modal-confirm-generate .modal-title').html('Konfirmasi Generate Surat Pengantar')
                 $('#modal-confirm-generate .modal-body .landing dl').html('')

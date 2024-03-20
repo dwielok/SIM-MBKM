@@ -21,6 +21,7 @@ use App\Http\Controllers\Proposal\AdminPendaftaranSemproController;
 use App\Http\Controllers\Proposal\AdminProposalMahasiswaBermasalahController;
 use App\Http\Controllers\Proposal\AdminProposalMahasiswaController;
 use App\Http\Controllers\Proposal\AdminUsulanTopikController;
+use App\Http\Controllers\Report\DaftarMahasiswaController;
 use App\Http\Controllers\Report\DaftarMahasiswaDiterimaController;
 use App\Http\Controllers\Report\LogActivityController;
 use App\Http\Controllers\Setting\AccountController;
@@ -161,10 +162,14 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
 });
 
 Route::group(['prefix' => 'laporan', 'middleware' => ['auth']], function () {
-    Route::resource('daftar-mahasiswa-diterima', DaftarMahasiswaDiterimaController::class)->parameter('daftar-mahasiswa-diterima', 'id');
-    Route::post('daftar-mahasiswa-diterima/list', [DaftarMahasiswaDiterimaController::class, 'list']);
-    Route::get('daftar-mahasiswa-diterima/{id}/delete', [DaftarMahasiswaDiterimaController::class, 'confirm']);
+    Route::resource('daftar-mahasiswa', DaftarMahasiswaController::class)->parameter('daftar-mahasiswa', 'id');
+    Route::post('daftar-mahasiswa/list', [DaftarMahasiswaController::class, 'list']);
+    Route::get('daftar-mahasiswa/{id}/delete', [DaftarMahasiswaController::class, 'confirm']);
 });
+
+Route::resource('daftar-mahasiswa-diterima', DaftarMahasiswaDiterimaController::class)->parameter('daftar-mahasiswa-diterima', 'id');
+Route::post('daftar-mahasiswa-diterima/list', [DaftarMahasiswaDiterimaController::class, 'list']);
+Route::get('daftar-mahasiswa-diterima/{id}/delete', [DaftarMahasiswaDiterimaController::class, 'confirm']);
 
 //kuota with url mitra/{id}/kuota
 Route::prefix('mitra/{id}')->group(function () {

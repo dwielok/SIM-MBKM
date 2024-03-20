@@ -203,8 +203,11 @@
                                 @else
                                     magang industri
                                 @endif tersebut rencana akan dilaksanakan pada bulan
-                                {{ $sp->surat_pengantar_awal_pelaksanaan }} sampai
-                                dengan {{ $sp->surat_pengantar_akhir_pelaksanaan }} <br />
+                                {{ \Carbon\Carbon::parse($sp->surat_pengantar_awal_pelaksanaan)->locale('id')->isoFormat('MMMM') }}
+                                sampai
+                                dengan
+                                {{ \Carbon\Carbon::parse($sp->surat_pengantar_akhir_pelaksanaan)->locale('id')->isoFormat('MMMM Y') }}
+                                <br />
                                 Demikian atas perhatian dan kerjasamanya disampaikan terima kasih.
                             </span>
                         </div>
