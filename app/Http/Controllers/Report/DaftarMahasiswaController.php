@@ -87,6 +87,7 @@ class DaftarMahasiswaController extends Controller
                 ->with('mitra.kegiatan')
                 ->where('mahasiswa_id', $item->mahasiswa_id)
                 ->where('periode_id', $active_periode->periode_id)
+                ->latest()
                 ->first();
 
             if (!$magang) {
