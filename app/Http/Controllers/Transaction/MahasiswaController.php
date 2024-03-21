@@ -290,6 +290,8 @@ class MahasiswaController extends Controller
 
     public function cari($nim)
     {
+        $current_mahasiswa = MahasiswaModel::where('user_id', Auth::user()->user_id)->first();
+        $id_prodi = $current_mahasiswa->prodi_id;
 
         $data = MahasiswaModel::where('nim', $nim)->first();
 
@@ -298,6 +300,15 @@ class MahasiswaController extends Controller
                 'stat' => false,
                 'mc' => false, // close modal
                 'msg' => 'Mahasiswa tidak ditemukan',
+            ]);
+        }
+
+        //check if $data->prodi_id != $id_prodi
+        if ($data->prodi_id != $id_prodi) {
+            return response()->json([
+                'stat' => false,
+                'mc' => false, // close modal
+                'msg' => 'Mahasiswa beda prodi',
             ]);
         }
 
