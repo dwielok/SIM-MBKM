@@ -165,6 +165,7 @@ Route::group(['prefix' => 'laporan', 'middleware' => ['auth']], function () {
     Route::resource('daftar-mahasiswa', DaftarMahasiswaController::class)->parameter('daftar-mahasiswa', 'id');
     Route::post('daftar-mahasiswa/list', [DaftarMahasiswaController::class, 'list']);
     Route::get('daftar-mahasiswa/{id}/delete', [DaftarMahasiswaController::class, 'confirm']);
+    Route::get('daftar-mahasiswa/export', [MahasiswaController::class, 'export']);
 });
 
 Route::resource('daftar-mahasiswa-diterima', DaftarMahasiswaDiterimaController::class)->parameter('daftar-mahasiswa-diterima', 'id');

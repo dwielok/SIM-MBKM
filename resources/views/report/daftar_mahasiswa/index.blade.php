@@ -21,7 +21,7 @@
                     <div class="card-body p-0">
                         <div id="filter" class="form-horizontal filter-date p-2 border-bottom">
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-8">
                                     <div class="form-group form-group-sm row text-sm mb-0">
                                         <label class="col-md-1 col-form-label">Filter</label>
                                         <div class="col-md-4">
@@ -49,6 +49,12 @@
                                             </div>
                                         @endif
                                     </div>
+                                </div>
+                                <div class="col-md-4">
+                                    {{-- button export excel with icon fontawesome --}}
+                                    <button type="button" class="btn btn-primary float-right" id="export">
+                                        <i class="fa fa-download"></i> Download
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -238,6 +244,13 @@
             $('.filter_prodi, .filter_status').change(function() {
                 dataMaster.draw();
             });
+
+            $('#export').click(function() {
+                const status = $('.filter_status').val();
+                const prodi_id = $('.filter_prodi').val();
+                window.location.href = "{{ url('laporan/daftar-mahasiswa/export?status=') }}" + status +
+                    "&prodi_id=" + prodi_id;
+            })
         });
     </script>
 @endpush

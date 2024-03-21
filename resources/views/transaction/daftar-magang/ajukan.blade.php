@@ -267,8 +267,10 @@ $is_edit = isset($data);
                         unblockUI(form);
                         setFormMessage('.form-message', data);
                         if (data.stat) {
-                            resetForm('#form-master');
-                            dataMaster.draw(false);
+                            //     resetForm('#form-master');
+                            //     dataMaster.draw(false);
+                            window.location.href =
+                                "{{ url('transaksi/lihat-status-pengajuan') }}"
                         }
                         closeModal($modal, data);
                     }

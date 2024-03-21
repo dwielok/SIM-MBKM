@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Transaction;
 
+use App\Exports\MahasiswaExport;
 use App\Http\Controllers\Controller;
 use App\Models\Master\MahasiswaModel;
+use App\Models\Master\PeriodeModel;
 use App\Models\Master\ProdiModel;
 use App\Models\Setting\UserModel;
 use App\Models\Transaction\Magang;
@@ -12,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 class MahasiswaController extends Controller
@@ -329,5 +332,79 @@ class MahasiswaController extends Controller
             'msg' => 'Data ditemukan',
             'data' => $data,
         ]);
+    }
+
+    public function export(Request $request)
+    {
+
+        $active_periode = PeriodeModel::where('is_current', 1)->first();
+
+        $data  = MahasiswaModel::with('prodi');
+
+
+        if ($request->prodi_id) {
+            $data->where('prodi_id', $request->prodi_id);
+        }
+
+        if (auth()->user()->group_id == 1) {
+            $data = $data->get();
+        } else if (auth()->user()->group_id == 4) {
+            $data = $data->where('mahasiswa_id', auth()->user()->getUserMahasiswa->mahasiswa_id)->get();
+        } else {
+            $prodi_id = auth()->user()->getProdiId();
+            $data = $data->where('prodi_id', $prodi_id)->get();
+        }
+
+        $data = $data->map(function ($item) use ($active_periode) {
+            $magang = Magang::with('mitra')
+                ->with('mitra.kegiatan')
+                ->where('mahasiswa_id', $item->mahasiswa_id)
+                ->where('periode_id', $active_periode->periode_id)
+                ->latest()
+                ->first();
+
+            if (!$magang) {
+                $status_magagng = "Belum Terdaftar";
+            } else {
+                if ($magang->magang_tipe == "1") {
+                    if ($magang->is_accept == "2") {
+                        $status_magagng = "Belum Terdaftar";
+                    } else {
+                        if ($magang->status == 1) {
+                            $status_magagng = "Diterima";
+                        } elseif ($magang->status == 0) {
+                            $status_magagng = "Terdaftar";
+                        } elseif ($magang->status == 2) {
+                            $status_magagng = "Belum Terdaftar";
+                        } elseif ($magang->status == 3) {
+                            $status_magagng = "Terdaftar";
+                        }
+                    }
+                } else {
+                    if ($magang->status == 1) {
+                        $status_magagng = "Diterima";
+                    } elseif ($magang->status == 0) {
+                        $status_magagng = "Terdaftar";
+                    } elseif ($magang->status == 2) {
+                        $status_magagng = "Belum Terdaftar";
+                    } elseif ($magang->status == 3) {
+                        $status_magagng = "Terdaftar";
+                    }
+                }
+            }
+
+            $item->status_magang = (string)$status_magagng;
+
+            $item->magang = $magang;
+
+            return $item;
+        });
+
+        if ($request->status) {
+            $data = $data->where('status_magang', (string)$request->status);
+        }
+
+        $random = rand(100, 999);
+        return Excel::download(new MahasiswaExport($data), 'daftar_mahasiswa_' . $random . '.xlsx');
     }
 }
