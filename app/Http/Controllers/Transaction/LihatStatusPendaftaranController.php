@@ -84,6 +84,11 @@ class LihatStatusPendaftaranController extends Controller
             return $item;
         });
 
+        //if  return $item->magang_tipe != 1 || $item->is_accept != 2 AND return $item->magang_tipe != 1 || $item->is_accept != 0
+        $data = $data->filter(function ($item) {
+            return $item->magang_tipe != 1 || $item->is_accept == 1;
+        });
+
         return DataTables::of($data)
             ->addIndexColumn()
             ->make(true);
