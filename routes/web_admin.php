@@ -23,6 +23,7 @@ use App\Http\Controllers\Proposal\AdminProposalMahasiswaController;
 use App\Http\Controllers\Proposal\AdminUsulanTopikController;
 use App\Http\Controllers\Report\DaftarMahasiswaController;
 use App\Http\Controllers\Report\DaftarMahasiswaDiterimaController;
+use App\Http\Controllers\Report\DaftarMitraController;
 use App\Http\Controllers\Report\LogActivityController;
 use App\Http\Controllers\Setting\AccountController;
 use App\Http\Controllers\Setting\GroupController;
@@ -166,6 +167,11 @@ Route::group(['prefix' => 'laporan', 'middleware' => ['auth']], function () {
     Route::post('daftar-mahasiswa/list', [DaftarMahasiswaController::class, 'list']);
     Route::get('daftar-mahasiswa/{id}/delete', [DaftarMahasiswaController::class, 'confirm']);
     Route::get('daftar-mahasiswa/export', [MahasiswaController::class, 'export']);
+
+    Route::resource('daftar-mitra', DaftarMitraController::class)->parameter('daftar-mitra', 'id');
+    Route::post('daftar-mitra/list', [DaftarMitraController::class, 'list']);
+    Route::get('daftar-mitra/{id}/delete', [DaftarMitraController::class, 'confirm']);
+    Route::get('daftar-mitra/export', [MitraController::class, 'export']);
 });
 
 Route::resource('daftar-mahasiswa-diterima', DaftarMahasiswaDiterimaController::class)->parameter('daftar-mahasiswa-diterima', 'id');

@@ -247,7 +247,7 @@
 
             $('#export').click(function() {
                 const status = $('.filter_status').val();
-                const prodi_id = $('.filter_prodi').val();
+                const prodi_id = $('.filter_prodi').val() ?? ''
                 window.location.href = "{{ url('laporan/daftar-mahasiswa/export?status=') }}" + status +
                     "&prodi_id=" + prodi_id;
             })
