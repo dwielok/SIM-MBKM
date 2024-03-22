@@ -99,6 +99,7 @@ class DaftarMagangController extends Controller
         $data  = MitraModel::with('kegiatan')
             ->with('kegiatan.program')
             ->with('periode')
+            ->with('kota')
             ->where('status', 1);
 
         $programId = $request->program;
@@ -514,6 +515,7 @@ class DaftarMagangController extends Controller
                 'kegiatan_id' => 'required',
                 'mitra_nama' => 'required|string',
                 'mitra_deskripsi' => 'required',
+                'mitra_alamat'=>'required'
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -533,7 +535,7 @@ class DaftarMagangController extends Controller
             $request['periode_id'] = PeriodeModel::where('is_current', 1)->first()->periode_id;
 
             $kota = KabupatenModel::find($request['kota_id']);
-            $request['mitra_alamat'] = $kota->nama_kab_kota;
+            // $request['mitra_alamat'] = $kota->nama_kab_kota;
             $request['status'] = 0;
 
             $request['mitra_skema'] = implode(',', $request->skema_arr);

@@ -70,6 +70,7 @@ class MitraController extends Controller
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
         $data  = MitraModel::with('kegiatan')
+            ->with('kota')
             ->with('periode');
         // ->get();
 
@@ -147,6 +148,7 @@ class MitraController extends Controller
                 'mitra_nama' => 'required|string',
                 'mitra_deskripsi' => 'required',
                 'mitra_batas_pendaftaran' => 'required',
+                'mitra_alamat' => 'required',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -186,7 +188,7 @@ class MitraController extends Controller
             unset($request['skema_arr']);
 
             $kota = KabupatenModel::find($request['kota_id']);
-            $request['mitra_alamat'] = $kota->nama_kab_kota;
+            // $request['mitra_alamat'] = $kota->nama_kab_kota;
             $request['status'] = 1;
 
             $file = $request->file('flyer');
@@ -255,6 +257,7 @@ class MitraController extends Controller
             $rules = [
                 'kegiatan_id' => 'required',
                 'periode_id' => 'required',
+                'mitra_alamat' => 'required',
                 'mitra_nama' => 'required|string',
                 'mitra_deskripsi' => 'required',
                 'mitra_batas_pendaftaran' => 'required'
@@ -272,7 +275,7 @@ class MitraController extends Controller
             }
 
             $kota = KabupatenModel::find($request['kota_id']);
-            $request['mitra_alamat'] = $kota->nama_kab_kota;
+            // $request['mitra_alamat'] = $kota->nama_kab_kota;
 
             if (auth()->user()->group_id == 1) {
                 $request['mitra_prodi'] = implode(',', $request->prodi_arr);
@@ -398,6 +401,7 @@ class MitraController extends Controller
         $mitra = MitraModel::where('mitra_id', $id)
             ->with('kegiatan')
             ->with('periode')
+            ->with('kota')
             ->first();
 
         $datas = [

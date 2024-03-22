@@ -27,6 +27,8 @@ class Magang extends AppModel
         'magang_tipe',
         'is_accept',
         'status',
+        'magang_tgl_awal_pelaksanaan',
+        'magang_tgl_akhir_pelaksanaan',
         'created_at',
         'created_by',
         'updated_at',

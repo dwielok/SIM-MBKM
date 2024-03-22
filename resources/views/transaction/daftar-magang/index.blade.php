@@ -113,7 +113,10 @@
                         "sClass": "",
                         "sWidth": "10%",
                         "bSortable": true,
-                        "bSearchable": true
+                        "bSearchable": true,
+                        "mRender": function(data, type, row, meta) {
+                            return data + ", " + row.kota.nama_kab_kota;
+                        }
                     },
                     {
                         "mData": "mitra_website",

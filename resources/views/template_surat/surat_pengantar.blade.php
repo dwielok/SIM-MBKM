@@ -121,7 +121,8 @@
                                 <td width="74" style="vertical-align: top"></td>
                                 <td width="140" style="vertical-align: top">
                                     <span style="font-size: 16px;line-height:1">
-                                        {{ $sp->surat_pengantar_alamat_mitra }}
+                                        {{ $mitra->mitra->mitra_alamat }}, {{ $mitra->mitra->kota->nama_kab_kota }},
+                                        {{ $mitra->mitra->provinsi->nama_provinsi }}
                                     </span>
                                 </td>
                                 <td width="11"></td>
@@ -203,10 +204,10 @@
                                 @else
                                     magang industri
                                 @endif tersebut rencana akan dilaksanakan pada bulan
-                                {{ \Carbon\Carbon::parse($sp->surat_pengantar_awal_pelaksanaan)->locale('id')->isoFormat('MMMM') }}
+                                {{ \Carbon\Carbon::parse($mitra->magang_tgl_awal_pelaksanaan)->locale('id')->isoFormat('MMMM') }}
                                 sampai
                                 dengan
-                                {{ \Carbon\Carbon::parse($sp->surat_pengantar_akhir_pelaksanaan)->locale('id')->isoFormat('MMMM Y') }}
+                                {{ \Carbon\Carbon::parse($mitra->magang_tgl_akhir_pelaksanaan)->locale('id')->isoFormat('MMMM Y') }}
                                 <br />
                                 Demikian atas perhatian dan kerjasamanya disampaikan terima kasih.
                             </span>

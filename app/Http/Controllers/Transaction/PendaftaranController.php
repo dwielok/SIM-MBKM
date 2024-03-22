@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DokumenMagangModel;
 use App\Models\Master\PeriodeModel;
 use App\Models\MitraModel;
+use App\Models\SuratPengantarModel;
 use App\Models\Transaction\Magang;
 use Illuminate\Http\Request;
 use stdClass;
@@ -498,6 +499,13 @@ class PendaftaranController extends Controller
             //update status Magang where magang_kode = $kode_magang
             $res = Magang::where('magang_kode', $kode_magang)->update(['status' => $status == 3 ? 3 : 0]);
             $res = DokumenMagangModel::where('dokumen_magang_id', $id)->where('dokumen_magang_nama', 'PROPOSAL')->update(['dokumen_magang_status' => $status == 3 ? 1 : 0, 'dokumen_magang_keterangan' => $request->keterangan]);
+
+            $request['surat_pengantar_no'] = '/PL.2.1/PM/' . date('Y');
+            $request['magang_kode'] = $kode_magang;
+
+            if ($status == 3) {
+                SuratPengantarModel::insertData($request, ['status', 'id', 'keterangan']);
+            }
 
             return response()->json([
                 'stat' => $status == 3 ? 1 : 0,
