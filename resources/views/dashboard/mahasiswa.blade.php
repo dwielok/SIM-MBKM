@@ -4,6 +4,16 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+                @if ($mahasiswa->status_profile == 0)
+                    <div class="card bg-warning">
+                        <div class="card-body">
+                            <b>
+                                Lengkapi Data Mahasiswa Anda di Menu Profile Mahasiswa! atau klik <a
+                                    href="{{ url('mahasiswa/profile') }}">disini</a>
+                            </b>
+                        </div>
+                    </div>
+                @endif
                 <div class="card card-outline card-{{ $theme->card_outline }}">
                     <div class="card-header">
                         <h3 class="card-title mt-1">

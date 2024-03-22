@@ -113,9 +113,6 @@ class MahasiswaController extends Controller
                 'prodi_id' => 'required',
                 'nim'  => 'required',
                 'nama_mahasiswa' => 'required',
-                'email_mahasiswa' => 'required',
-                'no_hp' => 'required',
-                'jenis_kelamin' => 'required',
                 'kelas' => 'required',
             ];
 
@@ -199,9 +196,6 @@ class MahasiswaController extends Controller
                 'prodi_id' => 'required',
                 'nim'  => 'required',
                 'nama_mahasiswa' => 'required',
-                'email_mahasiswa' => 'required',
-                'no_hp' => 'required',
-                'jenis_kelamin' => 'required',
                 'kelas' => 'required',
             ];
 

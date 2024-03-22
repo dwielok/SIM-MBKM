@@ -515,7 +515,7 @@ class DaftarMagangController extends Controller
                 'kegiatan_id' => 'required',
                 'mitra_nama' => 'required|string',
                 'mitra_deskripsi' => 'required',
-                'mitra_alamat'=>'required'
+                'mitra_alamat' => 'required'
             ];
 
             $validator = Validator::make($request->all(), $rules);
