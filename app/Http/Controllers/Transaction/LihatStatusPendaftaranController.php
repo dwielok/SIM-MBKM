@@ -10,6 +10,7 @@ use App\Models\SuratPengantarModel;
 use App\Models\Transaction\Magang;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use stdClass;
 use Yajra\DataTables\Facades\DataTables;
@@ -304,5 +305,68 @@ class LihatStatusPendaftaranController extends Controller
 
 
         // dd($request->all(), $id_mitra, $id_periode, $tipe_pendaftar, $id_mahasiswa);
+    }
+
+    public function ganti_anggota($kode)
+    {
+        $this->authAction('read', 'modal');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        $page = [
+            'url' => $this->menuUrl . '/' . $kode . '/ganti-anggota',
+            'title' => 'Ganti Anggota'
+        ];
+
+        return view($this->viewPath . 'ganti-anggota')
+            ->with('page', (object) $page);
+    }
+
+    public function ganti_anggota_action($kode, Request $request)
+    {
+        $check_exist = Magang::where('mahasiswa_id', $request->mahasiswa_id)->where('is_accept', '!=', 2)->first();
+
+        if ($check_exist) {
+            return response()->json([
+                'stat' => false,
+                'mc' => false, // close modal
+                'msg' => 'Mahasiswa sudah mendaftar',
+            ]);
+        }
+
+        //check by count magang if is_accept != 2 more than 3 return error
+        $check = Magang::where('magang_kode', $kode)
+            ->where('is_accept', '!=', "2")
+            ->orWhere('is_accept', null)
+            ->count();
+
+        // dd($check);
+        if ($check == 3) {
+            return response()->json([
+                'stat' => false,
+                'mc' => false, // close modal
+                'msg' => 'Jumlah anggota sudah maksimal',
+            ]);
+        }
+
+        // dd($request->all(), $kode);
+
+        $current_magang = Magang::where('magang_kode', $kode)->first();
+
+        $request['mitra_id'] = $current_magang->mitra_id;
+        $request['periode_id'] = $current_magang->periode_id;
+        $request['prodi_id'] = $current_magang->prodi_id;
+        $request['magang_kode'] = $kode;
+        $request['magang_skema'] = $current_magang->magang_skema;
+        $request['magang_tipe'] = 1;
+        $request['is_accept'] = 0;
+        $request['status'] = 0;
+
+        $res = Magang::insertData($request);
+
+        return response()->json([
+            'stat' => true,
+            'mc' => true, // close modal
+            'msg' => 'Berhasil ganti anggota',
+        ]);
     }
 }

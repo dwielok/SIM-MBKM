@@ -152,6 +152,8 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     Route::post('lihat-status-pendaftaran/list', [LihatStatusPendaftaranController::class, 'list']);
     Route::get('lihat-status-pendaftaran/{encrpyt}', [LihatStatusPendaftaranController::class, 'lengkapi']);
     Route::post('lihat-status-pendaftaran/{id}/suratbalasan', [LihatStatusPendaftaranController::class, 'suratbalasan']);
+    Route::get('lihat-status-pendaftaran/{kode}/ganti-anggota', [LihatStatusPendaftaranController::class, 'ganti_anggota']);
+    Route::post('lihat-status-pendaftaran/{kode}/ganti-anggota', [LihatStatusPendaftaranController::class, 'ganti_anggota_action']);
 
     //lihat status
     Route::resource('lihat-status-pengajuan', LihatStatusPengajuanController::class)->parameter('lihat-status-pengajuan', 'id');

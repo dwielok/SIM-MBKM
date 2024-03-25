@@ -100,6 +100,22 @@
                                                                     <span class="badge badge badge-danger">Menolak</span>
                                                                 @endif
                                                             @endif
+
+                                                            @if ($a->magang_tipe == 1 && $a->is_accept == 2)
+                                                                @if (!$magang->proposal_exist)
+                                                                    @if ($magang->ketua)
+                                                                        @if (!$magang->can_upload_proposal)
+                                                                            <a href="#" data-block="body"
+                                                                                data-url="{{ $page->url }}/{{ $magang->magang_kode }}/ganti-anggota"
+                                                                                class="ajax_modal btn btn-xs btn-light tooltips text-light"
+                                                                                data-placement="left"
+                                                                                data-original-title="Ganti Anggota">
+                                                                                <i class="fas fa-sync-alt text-danger"></i>
+                                                                            </a>
+                                                                        @endif
+                                                                    @endif
+                                                                @endif
+                                                            @endif
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -108,7 +124,6 @@
                                     </td>
                                 </tr>
                                 @if ($magang->mitra->kegiatan->is_submit_proposal)
-
                                     @if (!$magang->proposal_exist)
                                         @if ($magang->ketua)
                                             <tr>

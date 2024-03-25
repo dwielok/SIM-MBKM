@@ -310,7 +310,7 @@ class MahasiswaController extends Controller
             ]);
         }
 
-        $check = Magang::where('mahasiswa_id', $data->mahasiswa_id)->count();
+        $check = Magang::where('mahasiswa_id', $data->mahasiswa_id)->where('is_accept', '!=', 2)->count();
 
         if ($check > 0) {
             return response()->json([
