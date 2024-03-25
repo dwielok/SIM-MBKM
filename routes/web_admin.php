@@ -110,6 +110,8 @@ Route::group(['prefix' => 'transaksi', 'middleware' => ['auth']], function () {
     Route::resource('mahasiswa', MahasiswaController::class)->parameter('mahasiswa', 'id');
     Route::post('mahasiswa/list', [MahasiswaController::class, 'list']);
     Route::get('mahasiswa/{id}/delete', [MahasiswaController::class, 'confirm']);
+    Route::get('mahasiswa/import', [MahasiswaController::class, 'import']);
+    Route::post('mahasiswa/import', [MahasiswaController::class, 'import_action']);
 
     //daftar magang
     Route::resource('daftar-magang', DaftarMagangController::class)->parameter('daftar-magang', 'id');

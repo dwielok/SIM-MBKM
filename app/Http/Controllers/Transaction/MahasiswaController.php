@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Transaction;
 
 use App\Exports\MahasiswaExport;
 use App\Http\Controllers\Controller;
+use App\Imports\MahasiswaImport;
 use App\Models\Master\MahasiswaModel;
 use App\Models\Master\PeriodeModel;
 use App\Models\Master\ProdiModel;
@@ -400,5 +401,88 @@ class MahasiswaController extends Controller
 
         $random = rand(100, 999);
         return Excel::download(new MahasiswaExport($data), 'daftar_mahasiswa_' . $random . '.xlsx');
+    }
+
+    public function import()
+    {
+        $this->authAction('update', 'modal');
+        if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
+
+        $page = [
+            'url' => $this->menuUrl . '/import',
+            'title' => 'Import ' . $this->menuTitle
+        ];
+
+        $prodis = ProdiModel::select('prodi_id', 'prodi_name', 'prodi_code')->get();
+
+        return view($this->viewPath . 'import')
+            ->with('page', (object) $page)
+            ->with('prodis', $prodis);
+    }
+
+    public function import_action(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+
+            $rules = [
+                'file' => 'required|mimes:xls,xlsx'
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'stat'     => false,
+                    'mc'       => false,
+                    'msg'      => 'Terjadi kesalahan.',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            $file = $request->file('file');
+
+            $nama_file = rand() . '.' . $file->getClientOriginalExtension();
+
+            $file->move(public_path('assets/temp_import'), $nama_file);
+
+            $collection = Excel::toCollection(new MahasiswaImport, public_path('assets/temp_import/' . $nama_file));
+            $collection = $collection[0];
+            //remove 0,1,2 index
+            $datas = $collection->splice(3);
+
+            // dd($datas);
+
+            $prodi_id = $request->prodi_id ?? auth()->user()->getProdiId();
+
+            $datas->map(function ($item) use ($prodi_id) {
+                $nim = $item[0];
+                if ($nim != null) {
+                    $user = UserModel::insertGetId([
+                        'username' => $nim,
+                        'name' => $item[1],
+                        'password' => Hash::make($nim),
+                        'group_id' => 4,
+                        'is_active' => 1,
+                    ]);
+                    // dd($user);
+                    MahasiswaModel::insert([
+                        'user_id' => $user,
+                        'prodi_id' => $prodi_id,
+                        'nim' => $item[0],
+                        'nama_mahasiswa' => $item[1],
+                        'kelas' => $item[2],
+                    ]);
+                }
+            });
+
+            //remove file
+            unlink(public_path('assets/temp_import/' . $nama_file));
+
+            return response()->json([
+                'stat' => true,
+                'mc' => true, // close modal
+                'msg' => 'Mahasiswa berhasil diimport'
+            ]);
+        }
     }
 }
