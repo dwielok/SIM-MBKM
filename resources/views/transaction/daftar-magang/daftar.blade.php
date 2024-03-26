@@ -85,7 +85,8 @@
                                                 <small class="form-text text-muted">Pilih skema yang akan diambil</small>
                                             </div>
                                         </div>
-                                        <a class="btn btn-primary text-white" onclick="stepper1.next()">Simpan</a>
+                                        <button type="button" class="btn btn-primary text-white" onclick="stepper1.next()"
+                                            @if ($disabled) disabled @endif>Simpan</button>
                                     </div>
                                     <div id="test-l-2" class="content">
                                         <div class="form-group required row mb-2">
