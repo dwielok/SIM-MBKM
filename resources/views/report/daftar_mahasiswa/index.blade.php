@@ -65,7 +65,7 @@
                                         <th>No</th>
                                         <th>NIM</th>
                                         <th>Nama Mahasiswa</th>
-                                        <th>No Telp</th>
+                                        <th>No HP</th>
                                         <th>Kelas</th>
                                         <th>Prodi</th>
                                         <th>Nama Mitra</th>

@@ -80,7 +80,7 @@ $is_edit = isset($data);
                     </div>
                 @endif
                 <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Skema</label>
+                    <label class="col-sm-3 control-label col-form-label">Skema/Posisi</label>
                     <div class="col-sm-9 d-flex flex-column text-left pr-0 justify-content-center">
                         <div id="skema_form">
                             @if (isset($data->skema))
@@ -294,12 +294,12 @@ $is_edit = isset($data);
                 alamat: {
                     required: true
                 },
-                provinsi_id: {
-                    required: true
-                },
-                kota_id: {
-                    required: true
-                },
+                // provinsi_id: {
+                //     required: true
+                // },
+                // kota_id: {
+                //     required: true
+                // },
                 profil_perusahaan: {
                     required: true
                 },

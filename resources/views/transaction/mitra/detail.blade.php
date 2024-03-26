@@ -78,7 +78,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th class="w-15 text-right">Skema</th>
+                                    <th class="w-15 text-right">Skema/Posisi</th>
                                     <th class="w-1">:</th>
                                     <td class="w-84">{{ $mitra->mitra_skema }}</td>
                                 </tr>

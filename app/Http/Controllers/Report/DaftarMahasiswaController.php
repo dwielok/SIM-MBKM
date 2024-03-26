@@ -32,7 +32,7 @@ class DaftarMahasiswaController extends Controller
 
         $activeMenu = [
             'l1' => 'report',
-            'l2' => 'daftar-mahasiswa',
+            'l2' => 'daftar-mhs',
             'l3' => null
         ];
 

@@ -457,21 +457,33 @@ class MahasiswaController extends Controller
             $datas->map(function ($item) use ($prodi_id) {
                 $nim = $item[0];
                 if ($nim != null) {
-                    $user = UserModel::insertGetId([
-                        'username' => $nim,
-                        'name' => $item[1],
-                        'password' => Hash::make($nim),
-                        'group_id' => 4,
-                        'is_active' => 1,
-                    ]);
-                    // dd($user);
-                    MahasiswaModel::insert([
-                        'user_id' => $user,
-                        'prodi_id' => $prodi_id,
-                        'nim' => $item[0],
-                        'nama_mahasiswa' => $item[1],
-                        'kelas' => $item[2],
-                    ]);
+                    $exist = MahasiswaModel::where('nim', $nim)->first();
+                    if ($exist) {
+                        MahasiswaModel::where('mahasiswa_id', $exist->mahasiswa_id)->where('prodi_id', $prodi_id)
+                            ->update([
+                                'nama_mahasiswa' => $item[1],
+                                'kelas' => $item[2],
+                            ]);
+                        UserModel::where('user_id', $exist->user_id)->update([
+                            'name' => $item[1],
+                        ]);
+                    } else {
+                        $user = UserModel::insertGetId([
+                            'username' => $nim,
+                            'name' => $item[1],
+                            'password' => Hash::make($nim),
+                            'group_id' => 4,
+                            'is_active' => 1,
+                        ]);
+                        // dd($user);
+                        MahasiswaModel::insert([
+                            'user_id' => $user,
+                            'prodi_id' => $prodi_id,
+                            'nim' => $item[0],
+                            'nama_mahasiswa' => $item[1],
+                            'kelas' => $item[2],
+                        ]);
+                    }
                 }
             });
 

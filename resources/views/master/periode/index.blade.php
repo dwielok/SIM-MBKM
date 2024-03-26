@@ -24,7 +24,7 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Nama</th>
+                                        <th>Nama Periode</th>
                                         <th>Direktur</th>
                                         <th>Status</th>
                                         <th>Periode Aktif</th>

@@ -489,7 +489,7 @@ class DaftarMagangController extends Controller
 
         $page = [
             'url' => $this->menuUrl . '/ajukan',
-            'title' => 'Tambah ' . $this->menuTitle
+            'title' => 'Pengajuan Mitra'
         ];
 
 

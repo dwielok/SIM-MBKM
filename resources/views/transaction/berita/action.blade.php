@@ -17,7 +17,7 @@ $is_edit = isset($data);
             <div class="modal-body">
                 <div class="form-message text-center"></div>
                 <div class="form-group required row mb-2">
-                    <label class="col-sm-2 control-label col-form-label">Prodi & Kategori</label>
+                    <label class="col-sm-2 control-label col-form-label">Prodi</label>
                     <div class="col-sm-5">
                         <select id="prodi_id" name="prodi_id" class="form-control form-control-sm select2_combobox">
                             <option value="">~ ALL ~</option>
@@ -186,31 +186,31 @@ $is_edit = isset($data);
 
         $("#form-master").validate({
             rules: {
-                kategori_id: {
-                    required: true
-                },
-                berita_judul: {
-                    required: true,
-                    maxlength: 255
-                },
-                berita_isi: {
-                    required: true
-                },
-                berita_status: {
-                    required: true
-                },
+                // kategori_id: {
+                //     required: true
+                // },
+                // berita_judul: {
+                //     required: true,
+                //     maxlength: 255
+                // },
+                // berita_isi: {
+                //     required: true
+                // },
+                // berita_status: {
+                //     required: true
+                // },
             },
             submitHandler: function(form) {
-                if ($('#berita_isi').summernote('isEmpty')) {
-                    setFormMessage('.form-message', {
-                        stat: false,
-                        msg: 'Deskripsi harus diisi',
-                        msgField: {
-                            'berita_isi': 'Deskripsi harus diisi'
-                        }
-                    });
-                    return false;
-                }
+                // if ($('#berita_isi').summernote('isEmpty')) {
+                //     setFormMessage('.form-message', {
+                //         stat: false,
+                //         msg: 'Deskripsi harus diisi',
+                //         msgField: {
+                //             'berita_isi': 'Deskripsi harus diisi'
+                //         }
+                //     });
+                //     return false;
+                // }
 
                 $('.form-message').html('');
                 blockUI(form);

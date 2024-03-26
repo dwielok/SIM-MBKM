@@ -245,12 +245,12 @@ $is_edit = isset($data);
                 alamat: {
                     required: true
                 },
-                provinsi_id: {
-                    required: true
-                },
-                kota_id: {
-                    required: true
-                },
+                // provinsi_id: {
+                //     required: true
+                // },
+                // kota_id: {
+                //     required: true
+                // },
                 profil_perusahaan: {
                     required: true
                 },

@@ -29,7 +29,7 @@
                                         <th>Nama Mitra</th>
                                         {{-- <th>Alamat</th>
                                         <th>Website</th> --}}
-                                        <th>Skema</th>
+                                        <th>Skema/Posisi</th>
                                         <th>Durasi</th>
                                         <th>Jumlah Pendaftar</th>
                                         <th>Status</th>

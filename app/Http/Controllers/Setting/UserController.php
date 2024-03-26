@@ -169,7 +169,7 @@ class UserController extends Controller
             'title' => 'Edit ' . $this->menuTitle
         ];
 
-        $data  = UserView::where('user_id', $id)->first();
+        $data  = UserModel::where('user_id', $id)->first();
         if (!$data) return $this->showModalError();
 
         if ($data->group_id == 1) return $this->showModalError('Kesalahan', 'Terjadi Kesalahan!!!', 'Data level Admin tidak bisa diedit.');
@@ -212,7 +212,7 @@ class UserController extends Controller
                 ]);
             }
 
-            $data  = UserView::where('user_id', $id)->first();
+            $data  = UserModel::where('user_id', $id)->first();
             if (!$data or $data->group_id == 1) {
                 return response()->json([
                     'stat' => false,
@@ -239,7 +239,7 @@ class UserController extends Controller
         $this->authAction('delete', 'modal');
         if ($this->authCheckDetailAccess() !== true) return $this->authCheckDetailAccess();
 
-        $data = UserView::where('user_id', $id)->first();
+        $data = UserModel::with('role')->where('user_id', $id)->first();
         if (!$data) return $this->showModalError();
 
         if ($data->group_id == 1) return $this->showModalError('Kesalahan', 'Terjadi Kesalahan!!!', 'Data level Admin tidak bisa dihapus.');
@@ -248,9 +248,9 @@ class UserController extends Controller
         return $this->showModalConfirm($this->menuUrl . '/' . $id, [
             'Username' => $data->username,      // tampilkan data-data yang ditampilkan (untuk dihapus)
             'Name' => $data->name,
-            'Group' => $data->group_name,
+            'Group' => $data->role->group_name,
             'Email' => $data->email,
-            'HP' => $data->hp,
+            // 'HP' => $data->hp,
         ]);
     }
 
@@ -261,7 +261,7 @@ class UserController extends Controller
 
         // cek untuk Insert/Update/Delete harus via AJAX
         if ($request->ajax() || $request->wantsJson()) {
-            $data  = UserView::where('user_id', $id)->first();
+            $data  = UserModel::where('user_id', $id)->first();
             if (!$data or $data->group_id == 1) {
                 return response()->json([
                     'stat' => false,

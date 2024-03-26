@@ -17,7 +17,7 @@ $is_edit = isset($data);
             <div class="modal-body">
                 <div class="form-message text-center"></div>
                 <div class="form-group required row mb-2">
-                    <label class="col-sm-3 control-label col-form-label">Nama</label>
+                    <label class="col-sm-3 control-label col-form-label">Nama Periode</label>
                     <div class="col-sm-9">
                         <input type="text" class="form-control form-control-sm" id="periode_nama" name="periode_nama"
                             value="{{ isset($data->periode_nama) ? $data->periode_nama : '' }}" />

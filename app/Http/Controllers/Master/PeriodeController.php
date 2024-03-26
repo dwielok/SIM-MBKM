@@ -226,7 +226,7 @@ class PeriodeController extends Controller
         $data = PeriodeModel::find($id);
 
         return (!$data) ? $this->showModalError() :
-            $this->showModalConfirm($this->menuUrl . '/' . $id . '/active', [
+            $this->showModalConfirmCustom($this->viewPath . '.active', $this->menuUrl . '/' . $id . '/active', [
                 'Nama' => "$data->periode_nama",
             ], 'Konfirmasi Aktif Periode', 'Apakah anda yakin ingin mengset periode berikut:', 'Ya, Set', 'PUT');
     }

@@ -31,7 +31,7 @@
                                         @endif
                                         <th>Nama Mitra</th>
                                         <th>Jenis Kegiatan</th>
-                                        <th>Skema</th>
+                                        <th>Skema/Posisi</th>
                                         <th>Durasi</th>
                                         <th>Tipe Pendaftar</th>
                                         <th>Status</th>

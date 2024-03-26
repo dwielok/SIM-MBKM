@@ -209,7 +209,8 @@ class KegiatanController extends Controller
 
         return (!$data) ? $this->showModalError() :
             $this->showModalConfirm($this->menuUrl . '/' . $id, [
-                'Nama' => $data->nama_magang,
+                'Kode' => $data->kegiatan_kode,
+                'Nama' => $data->kegiatan_nama,
             ]);
     }
 
